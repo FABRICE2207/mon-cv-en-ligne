@@ -199,7 +199,7 @@ export default function HomePage() {
               transition={{ duration: 4 }}
               className="max-w-3xl mx-auto text-center"
             >
-              <Image src={ImageOrdinateur} alt="Ordinateur" />
+              <img src={"/mes-appareils.png"} alt="Ordinateur" />
             </motion.div>
           </div>
         </div>
