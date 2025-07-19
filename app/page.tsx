@@ -31,7 +31,7 @@ import { motion } from "framer-motion";
 import { Input } from "@/components/ui/input";
 import { useState, useEffect } from "react";
 import Image from "next/image";
-import PhotoOrdinateur from "../app/assets/mes-appareils.png"
+import PhotoOrdinateur from "./assets/mes-appareils.png"
 
 export default function HomePage() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -85,7 +85,10 @@ export default function HomePage() {
 
           <div className="hidden md:flex items-center space-x-4">
             <Link href="/login">
-              <Button variant="ghost" className="hover:bg-blue-950 hover:text-white">
+              <Button
+                variant="ghost"
+                className="hover:bg-blue-950 hover:text-white"
+              >
                 Connexion
               </Button>
             </Link>
@@ -199,7 +202,13 @@ export default function HomePage() {
               transition={{ duration: 4 }}
               className="max-w-3xl mx-auto text-center"
             >
-              <Image src={PhotoOrdinateur} alt="Ordinateur" />
+              <Image
+                src={PhotoOrdinateur}
+                alt="Ordinateur"
+                layout="responsive"
+                width={700}
+                height={475}
+              />
             </motion.div>
           </div>
         </div>
