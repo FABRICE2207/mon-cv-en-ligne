@@ -1,3 +1,4 @@
+import { apiImg } from "@/axios.config"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Mail, Phone, MapPin, Linkedin, Calendar, Award, Code, Globe } from "lucide-react"
 
@@ -10,7 +11,7 @@ interface CVData {
     telephone: string
     adresse: string
     linkedin: string
-    photo: string // Add this line
+    photos: string // Add this line
   }
   experiences: Array<{
     id: string
@@ -79,6 +80,8 @@ export default function ModerneTemplate({ cvData,
   const accentColor = includeColors ? "text-blue-600" : "text-gray-600"
   const gradientBg = includeColors ? "bg-gradient-to-r from-blue-600 via-blue-700 to-indigo-800" : "bg-gray-800"
 
+  const API_URL = "http://192.168.1.2:5000";
+
   return (
     <div
       id="cv-preview"
@@ -108,14 +111,15 @@ export default function ModerneTemplate({ cvData,
                   {info.username} 
                 </h1>
                 {/* Add this section after the title div and before the description */}
-                {info.photo && (
+                {info.photos && (
                   <div className="flex justify-center mb-4">
                     <div className="relative">
                       <img
-                        src={info.photo || "/placeholder.svg"}
+                        src={`${info.photos}`}
                         alt={`${info.username}`}
                         className="w-32 h-32 rounded-full object-cover border-4 border-white/30 shadow-lg"
                       />
+
                       <div className="absolute inset-0 rounded-full bg-gradient-to-t from-black/20 to-transparent"></div>
                     </div>
                   </div>

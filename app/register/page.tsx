@@ -120,37 +120,40 @@ export default function RegisterPage() {
 
               <div className="space-y-2">
                 <Label htmlFor="username">Nom d'utilisateur</Label>
-                <Input
+                <input
                   id="username"
                   placeholder="jeandupont"
                   value={formData.username}
                   onChange={(e) => setFormData((prev) => ({ ...prev, username: e.target.value }))}
                   required
+                  className="w-full p-2 rounded border  focus:bg-white border-gray-300 focus:outline-none focus:border-blue-950 focus:ring-1 focus:ring-blue-950 "
                 />
               </div>
 
               <div className="space-y-2">
                 <Label htmlFor="email">Email</Label>
-                <Input
+                <input
                   id="email"
                   type="email"
                   placeholder="jean.dupont@email.com"
                   value={formData.email}
                   onChange={(e) => setFormData((prev) => ({ ...prev, email: e.target.value }))}
                   required
+                  className="w-full p-2 rounded border  focus:bg-white border-gray-300 focus:outline-none focus:border-blue-950 focus:ring-1 focus:ring-blue-950 "
                 />
               </div>
 
               <div className="space-y-2">
                 <Label htmlFor="password">Mot de passe</Label>
                 <div className="relative">
-                  <Input
+                  <input
                     id="password"
                     type={showPassword ? "text" : "password"}
                     placeholder="Au moins 6 caractères"
                     value={formData.password}
                     onChange={(e) => setFormData((prev) => ({ ...prev, password: e.target.value }))}
                     required
+                    className="w-full p-2 rounded border  focus:bg-white border-gray-300 focus:outline-none focus:border-blue-950 focus:ring-1 focus:ring-blue-950 "
                   />
                   <Button
                     type="button"
@@ -168,13 +171,14 @@ export default function RegisterPage() {
               <div className="space-y-2">
                 <Label htmlFor="confirmPassword">Confirmer le mot de passe</Label>
                 <div className="relative">
-                  <Input
+                  <input
                     id="confirmPassword"
                     type={showConfirmPassword ? "text" : "password"}
                     placeholder="Répétez votre mot de passe"
                     value={formData.confirmPassword}
                     onChange={(e) => setFormData((prev) => ({ ...prev, confirmPassword: e.target.value }))}
                     required
+                    className="w-full p-2 rounded border  focus:bg-white border-gray-300 focus:outline-none focus:border-blue-950 focus:ring-1 focus:ring-blue-950 "
                   />
                   <Button
                     type="button"
@@ -189,7 +193,7 @@ export default function RegisterPage() {
                 </div>
               </div>
 
-              <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700" disabled={isLoading}>
+              <Button type="submit" className="w-full bg-blue-950 hover:bg-blue-900" disabled={isLoading}>
                 {isLoading ? "Création du compte..." : "Créer mon compte"}
               </Button>
             </form>
@@ -197,7 +201,7 @@ export default function RegisterPage() {
             <div className="mt-6 text-center">
               <p className="text-sm text-gray-600">
                 Déjà un compte ?{" "}
-                <Link href="/login" className="text-blue-600 hover:underline">
+                <Link href="/login" className="text-blue-950 hover:underline">
                   Se connecter
                 </Link>
               </p>

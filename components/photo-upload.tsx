@@ -8,58 +8,88 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
 import { Upload, X, Camera, User } from "lucide-react"
 import { Alert, AlertDescription } from "@/components/ui/alert"
+import { apiImg } from "@/axios.config"
 
 interface PhotoUploadProps {
-  photo: string
-  onPhotoChange: (photo: string) => void
+  photo:  string;
+  onPhotoChange: (filename: string) => void;
 }
 
 export default function PhotoUpload({ photo, onPhotoChange }: PhotoUploadProps) {
   const [isDragging, setIsDragging] = useState(false)
   const [error, setError] = useState("")
+  const [photos, setPhotos] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null)
 
-  const handleFileSelect = (file: File) => {
-    setError("")
+  const [preview, setPreview] = useState<string | null>(null) 
 
-      // ✅ Afficher le nom de l'image
-      console.log("📸 Nom de l'image sélectionnée :", file.name);
+const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const files = e.target.files;
+  if (files && files.length > 0) {
+    const file = files[0];
+    setPhotos(file);
 
-    // Vérifier le type de fichier
-    if (!file.type.startsWith("image/")) {
-      setError("Veuillez sélectionner un fichier image (JPG, PNG, etc.)")
-      return
-    }
+    // Aperçu immédiat
+    const previewUrl = URL.createObjectURL(file);
+    setPreview(previewUrl); // pour affichage immédiat dans le template (state `preview` à définir)
 
-    // Vérifier la taille (max 5MB)
-    if (file.size > 5 * 1024 * 1024) {
-      setError("L'image ne doit pas dépasser 5MB")
-      return
-    }
+    console.log("📸 Nom de l'image sélectionnée :", file.name);
 
-    // Convertir en base64
-    const reader = new FileReader()
-    reader.onload = (e) => {
-      const result = e.target?.result as string
-      onPhotoChange(result)
-    }
-    reader.onerror = () => {
-      setError("Erreur lors du chargement de l'image")
-    }
-    // reader.readAsDataURL(file)
-    const url = URL.createObjectURL(file)
-    onPhotoChange(url)
-  }
+    // Upload vers API Flask
+    const formData = new FormData();
+    formData.append("photos", file);
 
-  const handleDrop = (e: React.DragEvent) => {
-    e.preventDefault()
-    setIsDragging(false)
+    try {
+      const res = await apiImg.post("/cv/photo_user_cv", formData);
 
-    const files = Array.from(e.dataTransfer.files)
-    if (files.length > 0) {
-      handleFileSelect(files[0])
+      if (res.data?.filename) {
+        // Stocke seulement le nom du fichier dans le cvData
+        onPhotoChange(res.data.filename); // tu mets à jour cvData.informations_personnelles.photos
+      }
+    } catch (error) {
+      console.error("Erreur d'upload :", error);
     }
   }
+};
+
+  // const handleDrop = (e: React.DragEvent) => {
+  //   e.preventDefault()
+  //   setIsDragging(false)
+
+  //   const files = Array.from(e.dataTransfer.files)
+  //   if (files.length > 0) {
+  //     handleFileSelect(files[0])
+  //   }
+  // }
+
+//   const handleFileInputChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+//   const files = e.target.files;
+//   if (files && files.length > 0) {
+//     const file = files[0];
+
+//     // Aperçu immédiat
+//     const previewUrl = URL.createObjectURL(file);
+//     setPreview(previewUrl); // pour affichage immédiat dans le template (state `preview` à définir)
+
+//     // Upload vers API Flask
+//     const formData = new FormData();
+//     formData.append("photo", file);
+
+//     try {
+//       const res = await api.post(
+//         "http://localhost:5000/api/upload_photo",
+//         formData);
+
+//       if (res.data?.filename) {
+//         // Stocke seulement le nom du fichier dans le cvData
+//         onPhotoChange(res.data.filename); // tu mets à jour cvData.informations_personnelles.photos
+//       }
+//     } catch (error) {
+//       console.error("Erreur d'upload :", error);
+//     }
+//   }
+// };
+
 
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault()
@@ -71,19 +101,22 @@ export default function PhotoUpload({ photo, onPhotoChange }: PhotoUploadProps) 
     setIsDragging(false)
   }
 
-  const handleFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files
-    if (files && files.length > 0) {
-      handleFileSelect(files[0])
-    }
-  }
+  // const handleFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   const files = e.target.files
+  //   if (files && files.length > 0) {
+  //     handleFileSelect(files[0])
+  //   }
+  // }
 
-  const handleRemovePhoto = () => {
-    onPhotoChange("")
-    if (fileInputRef.current) {
-      fileInputRef.current.value = ""
-    }
+  const handleRemovePhoto = async () => {
+  if (photo) { 
+    // Supprime le fichier de l'API
+    await apiImg.delete(`/cv/delete_photo/${photo}`);
   }
+  onPhotoChange("");
+  if (fileInputRef.current) fileInputRef.current.value = "";
+};
+
 
   const handleButtonClick = () => {
     fileInputRef.current?.click()
@@ -100,7 +133,7 @@ export default function PhotoUpload({ photo, onPhotoChange }: PhotoUploadProps) 
             <div className="flex items-center gap-4">
               <div className="relative">
                 <img
-                  src={photo || "/placeholder.svg"}
+                  src={preview || "/placeholder.svg"}
                   alt="Photo de profil"
                   className="w-24 h-24 rounded-full object-cover border-2 border-gray-200"
                 />
@@ -141,7 +174,7 @@ export default function PhotoUpload({ photo, onPhotoChange }: PhotoUploadProps) 
               ? "border-blue-500 bg-blue-50"
               : "border-gray-300 hover:border-gray-400"
           }`}
-          onDrop={handleDrop}
+          // onDrop={handleDrop}
           onDragOver={handleDragOver}
           onDragLeave={handleDragLeave}
           onClick={handleButtonClick}
@@ -176,12 +209,20 @@ export default function PhotoUpload({ photo, onPhotoChange }: PhotoUploadProps) 
       )}
 
       <input
-        ref={fileInputRef}
         type="file"
         accept="image/*"
-        onChange={handleFileInputChange}
-        className="hidden"
+        onChange={handleFileChange}
+        ref={fileInputRef}
+        className="mb-2 hidden"
       />
+
+      {/* {photo && (
+        <img
+          src={`/cv/modele_cv/${photo}`}
+          alt="Photo de profil"
+          className="w-24 h-24 rounded-full object-cover"
+        />
+      )} */}
     </div>
   );
 }

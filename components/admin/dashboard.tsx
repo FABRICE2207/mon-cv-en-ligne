@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { api, apiImg } from "@/axios.config";
 import Swal from "sweetalert2";
 import { number } from "framer-motion";
+import ReactPaginate from "react-paginate";
 
 type Modele = {
   id: number;
@@ -23,12 +24,23 @@ export default function DashbaordAdmin() {
   const [statut, setStatut] = useState("");
   const [modeles, setModeles] = useState<any[]>([]);
   const [modelesStatut, setModelesStatut] = useState(null);
-  const [users, setUsers] = useState([]);
+  const [usersData, setUsersData] = useState<any[]>([]);
+
   const [selectedUser, setSelectedUser] = useState<any>(null);
+  const itemsPerPage = 5;
+  const [currentPage, setCurrentPage] = useState(0);
+
+  const pageCount = Math.ceil(usersData.length / itemsPerPage);
+  const offset = currentPage * itemsPerPage;
+  const currentUsers = usersData.slice(offset, offset + itemsPerPage);
+
+  const handlePageClick = ({ selected }: { selected: number }) => {
+    setCurrentPage(selected);
+  };
 
   useEffect(() => {
     fetchTemplates();
-    // fetchUsers()
+    fetchUsers();
   }, []);
 
   const fetchTemplates = async () => {
@@ -37,10 +49,11 @@ export default function DashbaordAdmin() {
     console.log(res.data);
   };
 
-  // const fetchUsers = async () => {
-  //   const res = await axios.get("http://127.0.0.1:5000/api/users")
-  //   setUsers(res.data)
-  // }
+  const fetchUsers = async () => {
+    const res = await api.get("users/liste_users");
+    setUsersData(res.data);
+    console.log("Liste users", res.data);
+  };
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -122,13 +135,27 @@ export default function DashbaordAdmin() {
 
   return (
     <div className="p-2">
-      <Tabs defaultValue="ajout">
-        <TabsList className="flex gap-4 justify-center mb-6  bg-blue-600 hover:bg-blue-700 text-white px-8 py-6 shadow-lg hover:shadow-blue-500/40 transition-all">
+      <Tabs defaultValue="stat">
+        <TabsList className="flex gap-4 justify-center mb-6  bg-blue-950  text-white px-8 py-6">
+          <TabsTrigger value="stat">Statistiques</TabsTrigger>
           <TabsTrigger value="ajout">Ajouter un modèle</TabsTrigger>
+          <TabsTrigger value="users">Liste des utilisateurs</TabsTrigger>
           <TabsTrigger value="liste">Liste des modèles de cv</TabsTrigger>
-          <TabsTrigger value="users">Utilisateurs</TabsTrigger>
           <TabsTrigger value="user-info">Mon profil</TabsTrigger>
         </TabsList>
+
+        {/* --- STATISTIQUES --- */}
+        <TabsContent value="stat">
+          <div className="space-y-4">
+            <h2 className="text-xl font-bold">Statistiques</h2>
+
+            <Card className="overflow-x-auto shadow-sm">
+              
+            </Card>
+
+           
+          </div>
+        </TabsContent>
 
         {/* --- AJOUT --- */}
         <TabsContent value="ajout">
@@ -148,28 +175,32 @@ export default function DashbaordAdmin() {
 
                 <div>
                   <Label htmlFor="libelle">Nom du modèle</Label>
-                  <Input
+                  <input
                     id="libelle"
                     value={libelle}
                     onChange={(e) => setLibelle(e.target.value)}
+                    required
+                    className="w-full p-2 rounded border  focus:bg-white border-gray-300 focus:outline-none focus:border-blue-950 focus:ring-1 focus:ring-blue-950 "
                   />
                 </div>
 
                 <div>
                   <Label htmlFor="images">Image</Label>
-                  <Input
+                  <input
                     type="file"
                     accept="image/*"
                     onChange={handleImageChange}
+                    className="w-full p-2 rounded border  focus:bg-white border-gray-300 focus:outline-none focus:border-blue-950 focus:ring-1 focus:ring-blue-950 "
                   />
                 </div>
 
                 <div>
                   <Label htmlFor="statut">Statut</Label>
                   <select
-                    className="w-full border rounded p-2"
                     value={statut}
                     onChange={(e) => setStatut(e.target.value)}
+                    required
+                    className="w-full p-2 rounded border  focus:bg-white border-gray-300 focus:outline-none focus:border-blue-950 focus:ring-1 focus:ring-blue-950 "
                   >
                     <option>Choisir un statut</option>
                     <option value="Activé">Activé</option>
@@ -177,7 +208,10 @@ export default function DashbaordAdmin() {
                   </select>
                 </div>
 
-                <Button type="submit" className="w-full">
+                <Button
+                  type="submit"
+                  className="w-full bg-blue-950 hover:bg-blue-900"
+                >
                   Enregistrer
                 </Button>
               </form>
@@ -200,13 +234,12 @@ export default function DashbaordAdmin() {
                   />
 
                   <div className="flex justify-between items-center space-x-2">
-                            <div
-          className={`text-white text-sm font-medium px-2 rounded-full inline-block
+                    <div
+                      className={`text-white text-sm font-medium px-2 rounded-full inline-block
             ${tpl.statut === "Activé" ? "bg-green-500" : "bg-red-500"}`}
-        >
-          {tpl.statut}
-        </div>
-
+                    >
+                      {tpl.statut}
+                    </div>
 
                     <Button
                       variant="outline"
@@ -230,17 +263,88 @@ export default function DashbaordAdmin() {
         {/* --- LISTE UTILISATEURS --- */}
         <TabsContent value="users">
           <div className="space-y-4">
-            <h2 className="text-xl font-bold mb-4">Utilisateurs</h2>
-            {users.map((user: any) => (
-              <Card
-                key={user.id}
-                className="p-4 cursor-pointer hover:bg-slate-100"
-                onClick={() => setSelectedUser(user)}
-              >
-                <p className="font-semibold">{user.nom}</p>
-                <p className="text-sm text-gray-500">{user.email}</p>
-              </Card>
-            ))}
+            <Card className="overflow-x-auto shadow-sm">
+              <h2 className="text-xl font-bold">Liste des utilisateurs</h2>
+              <span className="font-bold">
+                Total: {usersData.length} utilisateurs
+              </span>
+
+              <table className="min-w-full divide-y divide-gray-200 text-sm">
+                <thead className="bg-gray-100">
+                  <tr>
+                    <th className="px-4 py-3 text-left font-semibold text-gray-700">
+                      Nom et prénom
+                    </th>
+                    <th className="px-4 py-3 text-left font-semibold text-gray-700">
+                      Email
+                    </th>
+                    <th className="px-4 py-3 text-left font-semibold text-gray-700">
+                      Créé le
+                    </th>
+                    <th className="px-4 py-3 text-left font-semibold text-gray-700">
+                      Modifié le
+                    </th>
+                    <th className="px-4 py-3 text-left font-semibold text-gray-700">
+                      Action
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {currentUsers.map((user: any) => (
+                    <tr
+                      key={user.id}
+                      className="hover:bg-slate-100 cursor-pointer transition"
+                      onClick={() => setSelectedUser(user)}
+                    >
+                      <td className="px-4 py-3 font-medium">{user.username}</td>
+                      <td className="px-4 py-3 text-gray-600">{user.email}</td>
+                      <td className="px-4 py-3 text-gray-600">
+                        {new Date(user.created_at).toLocaleString("fr-FR", {
+                          year: "numeric",
+                          month: "long",
+                          day: "numeric",
+                          hour: "2-digit",
+                          minute: "2-digit",
+                          second: "2-digit",
+                        })}
+                      </td>
+                      <td className="px-4 py-3 text-gray-600">
+                        {new Date(user.updated_at).toLocaleString("fr-FR", {
+                          year: "numeric",
+                          month: "long",
+                          day: "numeric",
+                          hour: "2-digit",
+                          minute: "2-digit",
+                          second: "2-digit",
+                        })}
+                      </td>
+                      <td className="px-4 py-3 text-blue-600 underline">
+                        Voir
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </Card>
+
+            {/* Pagination */}
+            <div className="flex justify-center mt-4">
+              <ReactPaginate
+                previousLabel={"← Précédent"}
+                nextLabel={"Suivant →"}
+                breakLabel={"..."}
+                pageCount={pageCount}
+                marginPagesDisplayed={1}
+                pageRangeDisplayed={2}
+                onPageChange={handlePageClick}
+                containerClassName="flex items-center space-x-2"
+                pageClassName="px-3 py-1 border rounded-md hover:bg-gray-100"
+                activeClassName="bg-blue-950 text-white"
+                previousClassName="px-3 py-1 border rounded-md hover:bg-gray-100"
+                nextClassName="px-3 py-1 border rounded-md hover:bg-gray-100"
+                disabledClassName="opacity-50 pointer-events-none"
+              />
+            </div>
           </div>
         </TabsContent>
 

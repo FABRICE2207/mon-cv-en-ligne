@@ -519,15 +519,19 @@ export default function DashboardPage() {
       <header className="bg-white border-b">
         <div className="container mx-auto px-4 py-4 flex justify-between items-center">
           <div className="flex items-center space-x-2">
-            <FileText className="h-8 w-8 text-blue-600" />
-            <h1 className="text-2xl font-bold text-gray-900">Mon cv en ligne</h1>
+            
+            <h1 className="text-2xl font-bold text-blue-950">
+              Mon cv en ligne
+            </h1>
           </div>
           <div className="flex items-center space-x-4">
             <div className="flex items-center space-x-2">
               <User className="h-5 w-5 text-gray-600" />
               {/* <span className="text-gray-700">{user.name}</span> */}
             </div>
-            <Button variant="outline" onClick={handleLogout}>
+            <Button 
+            className="bg-blue-950"
+            onClick={handleLogout}>
               <LogOut className="h-4 w-4 mr-2" />
               Déconnexion
             </Button>
@@ -537,20 +541,20 @@ export default function DashboardPage() {
 
       <main className="container mx-auto px-4 py-4">
         <div className="mb-2">
-          <h2 className="text-3xl font-bold text-gray-900 mb-2">
+          <h2 className="text-xl font-bold text-gray-900 mb-2">
             Tableau de bord
           </h2>
-          {isClient && (
+          {/* {isClient && (
             <p className="text-gray-600">
               Gérez vos CV et créez-en de nouveaux
             </p>
-          )}
+          )} */}
         </div>
 
         {/* Quick Actions */}
         {isClient && (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-            <Card className="border-dashed border-2 border-gray-300 hover:border-blue-500 transition-colors">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-4">
+            <Card className="border border-gray-300 hover:border-blue-950">
               <CardHeader className="text-center">
                 <Plus className="h-12 w-12 text-gray-400 mx-auto mb-4" />
                 <CardTitle>Créer un nouveau CV</CardTitle>
@@ -560,33 +564,35 @@ export default function DashboardPage() {
               </CardHeader>
               <CardContent>
                 <Link href="/cv/create">
-                  <Button className="w-full bg-blue-600 hover:bg-blue-700 text-lg px-8 py-6 shadow-lg hover:shadow-blue-500/40 transition-all">Créer un CV</Button>
+                  <Button className="w-full bg-blue-950 hover:bg-blue-900 text-lg px-8 py-6">
+                    Créer un CV
+                  </Button>
                 </Link>
               </CardContent>
             </Card>
 
-            <Card>
-              {
-                nbreCv ? (
-                  <CardHeader>
-                <CardTitle>
-                  <FileText className="h-32 w-32 text-gray-300 mx-auto mb-4" />
-                  <div className="mx-auto mb-4 w-full text-center">{nbreCv?.length} CV créés</div>
-                </CardTitle>
-                
-              </CardHeader>
-              
-                ) : (
-                  <CardContent>
-                <p className="text-sm text-gray-600">
-                  Vous n'avez pas encore créé de CV. Commencez dès maintenant !
-                </p>
-              </CardContent>
-                )
-              }
+            <Card className="border border-gray-300 hover:border-blue-950">
+              {nbreCv ? (
+                <CardHeader>
+                  <CardTitle>
+                    <FileText className="h-28 w-28 text-gray-300 mx-auto mb-4" />
+                    <div className="mx-auto mb-4 w-full text-center">
+                      {nbreCv?.length} CV crées
+                    </div>
+                  </CardTitle>
+                </CardHeader>
+              ) : (
+                <CardContent>
+                  <p className="text-sm text-gray-600">
+                    <FileText className="h-28 w-28 text-gray-300 mx-auto mb-4" />
+                    Vous n'avez pas encore créé de CV. Commencez dès maintenant
+                    !
+                  </p>
+                </CardContent>
+              )}
             </Card>
 
-            <Card>
+            <Card className="border border-gray-300 hover:border-blue-950">
               <CardHeader>
                 <CardTitle>Modèles disponibles</CardTitle>
                 <CardDescription>5 modèles professionnels</CardDescription>
@@ -601,9 +607,7 @@ export default function DashboardPage() {
         )}
 
         {/* Liste des cv user = client */}
-        {isClient && (
-          <CvListDisplay  />
-        )}
+        {isClient && <CvListDisplay />}
 
         {/* Recent CVs */}
         {isAdmin && (
@@ -904,7 +908,9 @@ export default function DashboardPage() {
                                     <div>
                                       <Label>Description</Label>
                                       <Textarea
-                                        value={exp.missions[0]?.missions_details}
+                                        value={
+                                          exp.missions[0]?.missions_details
+                                        }
                                         onChange={(e) =>
                                           updateExperience(
                                             exp.id,

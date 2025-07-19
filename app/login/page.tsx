@@ -84,14 +84,21 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
-      <div className="w-full max-w-md">
-        
+    <div className="relative min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4 overflow-hidden">
+      {/* Image de fond */}
+      <div
+        className="absolute inset-0 bg-cover bg-center opacity-20 blur-sm"
+        style={{
+          backgroundImage:
+            "url('https://www.istockphoto.com/photo/university-student-studying-with-laptop-in-bright-hallway-gm2167617586-587674783?utm_campaign=srp_photos_top&utm_content=https%3A%2F%2Funsplash.com%2Ffr%2Fs%2Fphotos%2FHomme-noir-qui-%25C3%25A9crit&utm_medium=affiliate&utm_source=unsplash&utm_term=Homme+noir+qui+%C3%A9crit%3A%3A%3A')",
+        }}
+      ></div>
+
+      {/* Contenu au-dessus */}
+      <div className="relative z-10 w-full max-w-md">
         <Card>
           <CardHeader>
-            <Link href="/" >
-              Retour sur le site
-            </Link>
+            <Link href="/">Retour sur le site</Link>
             <CardTitle>Connexion</CardTitle>
             <CardDescription>
               Connectez-vous à votre compte pour accéder à vos CV
@@ -107,7 +114,7 @@ export default function LoginPage() {
 
               <div className="space-y-2">
                 <Label htmlFor="email">Email</Label>
-                <Input
+                <input
                   id="email"
                   type="email"
                   placeholder="votre@email.com"
@@ -116,13 +123,14 @@ export default function LoginPage() {
                     setFormData((prev) => ({ ...prev, email: e.target.value }))
                   }
                   required
+                  className="w-full p-2 rounded border  focus:bg-white border-gray-300 focus:outline-none focus:border-blue-950 focus:ring-1 focus:ring-blue-950 "
                 />
               </div>
 
               <div className="space-y-2">
                 <Label htmlFor="password">Mot de passe</Label>
                 <div className="relative">
-                  <Input
+                  <input
                     id="password"
                     type={showPassword ? "text" : "password"}
                     placeholder="Votre mot de passe"
@@ -134,6 +142,7 @@ export default function LoginPage() {
                       }))
                     }
                     required
+                    className="w-full p-2 rounded border  focus:bg-white border-gray-300 focus:outline-none focus:border-blue-950 focus:ring-1 focus:ring-blue-950 "
                   />
                   <Button
                     type="button"
@@ -153,7 +162,7 @@ export default function LoginPage() {
 
               <Button
                 type="submit"
-                className="w-full bg-blue-600 hover:bg-blue-700"
+                className="w-full bg-blue-950 hover:bg-blue-900"
                 disabled={isLoading}
               >
                 {isLoading ? "Connexion..." : "Se connecter"}
@@ -165,16 +174,16 @@ export default function LoginPage() {
                 Pas encore de compte ?{" "}
                 <Link
                   href="/register"
-                  className="text-blue-600 hover:underline"
+                  className="text-blue-900 hover:underline"
                 >
                   S'inscrire
                 </Link>
               </p>
             </div>
-
           </CardContent>
         </Card>
       </div>
     </div>
   );
+
 }

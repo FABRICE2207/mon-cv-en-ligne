@@ -66,7 +66,11 @@ export default function CvListDisplay() {
   }
 
   return (
-    <Card className="mt-6">
+    <div>
+      <h2 className="text-xl font-bold text-gray-900">
+            Liste de vos cv crées
+          </h2>
+           <Card className="mt-2">
       <CardContent>
         {!cvList || cvList.length === 0 ? (
           <div className="p-8 text-center">
@@ -120,5 +124,7 @@ export default function CvListDisplay() {
         )}
       </CardContent>
     </Card>
+    </div>
+   
   );
 }

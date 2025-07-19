@@ -39,7 +39,7 @@ interface CVData {
     telephone: string;
     adresse: string;
     linkedin: string;
-    photos: string;
+    photos:  string;
   };
   experiences: Array<{
     id: string;
@@ -691,7 +691,8 @@ export default function CreateCVPage({ previewTemplate }: CreateCVPageProps) {
       ...cvData,
       informations_personnelles: {
         ...cvData.informations_personnelles,
-        photos: cvData.informations_personnelles.photos, // ajouter images requis par le type
+        // photos: cvData.informations_personnelles.photos,
+        photos: cvData.informations_personnelles.photos, 
       },
       images: getModele.images,
     };
@@ -933,17 +934,19 @@ export default function CreateCVPage({ previewTemplate }: CreateCVPageProps) {
                     </div>
                     <div>
                       <PhotoUpload
-                        photo={cvData.informations_personnelles.photos}
-                        onPhotoChange={(photos) =>
-                          setCvData((prev) => ({
-                            ...prev,
-                            informations_personnelles: {
-                              ...prev.informations_personnelles,
-                              photos,
-                            },
-                          }))
-                        }
-                      />
+  photo={cvData.informations_personnelles.photos} // une string (filename)
+  onPhotoChange={(filename) =>
+    setCvData((prev) => ({
+      ...prev,
+      informations_personnelles: {
+        ...prev.informations_personnelles,
+        photos: filename, // ✅ juste le nom du fichier
+      },
+    }))
+  }
+/>
+
+
                     </div>
                   </CardContent>
                 </Card>

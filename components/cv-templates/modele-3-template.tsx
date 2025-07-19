@@ -9,6 +9,8 @@ import {
   Code,
   Globe,
 } from "lucide-react";
+import PhotoCvExemple from "@/app/assets/photo-cv.png";
+import Image from "next/image";
 
 interface CVData {
   titre: string;
@@ -96,6 +98,8 @@ export default function ModerneTemplateFirst({
   const accentColor = includeColors ? "text-black-600" : "text-gray-600";
   const gradientBg = includeColors ? "bg-black" : "bg-gray-800";
 
+  const API_URL = "http://192.168.1.2:5000";
+
   return (
     <div
       id="cv-preview"
@@ -103,17 +107,20 @@ export default function ModerneTemplateFirst({
       style={
         exportMode
           ? {
-              fontFamily: "Arial, sans-serif",
+              fontFamily: "Monserrat, medium",
               fontSize: "14px",
               lineHeight: "1.4",
               color: "#333",
-              width: "794px", // A4 width in px
+              width: "600px", // A4 width in px
+              height: "1200px", // A4 height in px
               padding: "20px",
             }
           : {}
       }
     >
-      <div className={`${exportMode ? "border-0" : ""} overflow-hidden`}>
+      <div
+        className={`${exportMode ? "border-0" : ""} overflow-hidden h-[118vh]`}
+      >
         {/* Header avec design moderne */}
         {!previewOnly && (
           <div>
@@ -125,25 +132,33 @@ export default function ModerneTemplateFirst({
 
               <div className="relative z-10 p-2 text-center space-x-2 flex flex-row">
                 {/* Colonne gauche - PHOTO */}
-                <div className="w-50 flex-shrink-0 space-y-2 max-auto mx-8 mt-5">
-                  {info.photos && (
+                <div className="w-50 flex-shrink-0 space-y-2 max-auto w-[30%]">
+                  
                     <div className="flex justify-center mb-2 mt-2">
                       <div className="relative">
+                        {info.photos ? (
                         <img
-                          src={info.photos || "/placeholder.svg"}
+                          src={`${API_URL}/api/cv/get_cv_photo/${info.photos}`}
                           alt={`${info.username}`}
                           className="w-32 h-32 rounded-full object-cover border-4 border-white/30 shadow-lg"
                         />
+                         ) : (
+                        <img
+                          src="/photo-cv.png"
+                          alt="Photo de profil"
+                          className="w-32 h-32 rounded-full object-cover border-4 border-white/30 shadow-lg"
+                        />  
+                         )}
                         <div className="absolute inset-0 rounded-full bg-gradient-to-t from-black/20 to-transparent"></div>
                       </div>
                     </div>
-                  )}
+                 
                 </div>
 
                 {/* Colonne droite - INFOS */}
                 <div className="w-full flex flex-col space-y-2 justify-center items-center text-left">
                   <div className="justify-center items-center">
-                    <h1 className="text-xl font-bold text-center tracking-tight">
+                    <h1 className="text-[20px] uppercase font-bold text-center tracking-tight">
                       {info.username}
                     </h1>
 
@@ -167,9 +182,11 @@ export default function ModerneTemplateFirst({
 
             <div className={`${exportMode ? "mt-[-5%] lg:h-fit" : "lg:h-fit"}`}>
               <div className="flex flex-row gap-x-4">
-                <div className="w-50 p-2 lg:h-[100vh]">
-                  {/* Contacts */}
-                  <h2 className="text-xl font-bold text-gray-900">Contacts</h2>
+                <div className="w-[30%] p-2 lg:h-[290%]">
+                  {/* INFORMATIONS */}
+                  <h2 className="text-[16px] uppercase font-bold text-gray-900">
+                    INFORMATIONS
+                  </h2>
 
                   <div className="flex flex-col justify-center">
                     {info.email && (
@@ -210,8 +227,8 @@ export default function ModerneTemplateFirst({
 
                   {/* Compétences */}
                   <div className="mt-4">
-                    <h2 className="text-xl font-bold text-gray-900">
-                      Compétences
+                    <h2 className="text-[16px] uppercase font-bold text-gray-900">
+                      Competences
                     </h2>
                     <div className="border mt-1"></div>
                     <div className="flex flex-col justify-center">
@@ -231,7 +248,7 @@ export default function ModerneTemplateFirst({
                         >
                           <Code className="h-5 w-5 text-white" />
                         </div>
-                        <h2 className="text-xl font-bold text-gray-900">
+                        <h2 className="text-[16px] uppercase font-bold text-gray-900">
                           Compétences
                         </h2>
                       </div> */}
@@ -264,7 +281,7 @@ export default function ModerneTemplateFirst({
 
                   {/* Langues */}
                   <div className="mt-4">
-                    <h2 className="text-xl font-bold text-gray-900">Langues</h2>
+                    <h2 className="text-[16px] uppercase font-bold text-gray-900">Langues</h2>
                     <div className="border mt-1"></div>
                     {cvData.langues.length > 0 && (
                       <section
@@ -282,7 +299,7 @@ export default function ModerneTemplateFirst({
                           >
                             <Globe className="h-5 w-5 text-white" />
                           </div>
-                          <h2 className="text-xl font-bold text-gray-900">
+                          <h2 className="text-[16px] uppercase font-bold text-gray-900">
                             Langues
                           </h2> */}
                         </div>
@@ -314,7 +331,9 @@ export default function ModerneTemplateFirst({
 
                   {/* Centre intétêt*/}
                   <div className="mt-4">
-                    <h2 className="text-xl font-bold text-gray-900">Centres d'intérêt</h2>
+                    <h2 className="text-[16px] uppercase font-bold text-gray-900">
+                      Centres d'interet
+                    </h2>
                     <div className="border mt-1"></div>
                     {cvData.centres_interet.length > 0 && (
                       <section
@@ -332,7 +351,7 @@ export default function ModerneTemplateFirst({
                           >
                             <Globe className="h-5 w-5 text-white" />
                           </div>
-                          <h2 className="text-xl font-bold text-gray-900">
+                          <h2 className="text-[16px] uppercase font-bold text-gray-900">
                             Langues
                           </h2>
                         </div> */}
@@ -362,10 +381,10 @@ export default function ModerneTemplateFirst({
                     )}
                   </div>
                 </div>
-                <div className="w-full bg-gray-50 lg:h-[100vh]">
+                <div className="w-[70%] bg-gray-50 h-[290vh]">
                   <div className="p-2">
-                    <h2 className="text-xl font-bold text-gray-900">
-                      Expériences Professionnelles
+                    <h2 className="text-[16px] uppercase font-bold text-gray-900">
+                      Experiences Professionnelles
                     </h2>
                     <div className="border mt-1"></div>
                   </div>
@@ -388,13 +407,13 @@ export default function ModerneTemplateFirst({
 
                                   {/* poste */}
                                   <div>
-                                    <h3 className="text-[18px] font-semibold text-gray-900">
+                                    <h3 className="text-[18px] font-extralight text-gray-900">
                                       {exp.titre_poste}
                                     </h3>
                                   </div>
                                   {/* entreprise */}
                                   <p
-                                    className={`text-[16px] font-normal uppercase ${accentColor}`}
+                                    className={`text-[16px] uppercase font-normal  ${accentColor}`}
                                   >
                                     {exp.nom_entreprise}
                                   </p>
@@ -410,14 +429,20 @@ export default function ModerneTemplateFirst({
                                       </span>
                                     </div>
                                   )}
-                                  <h4 className="mt-2 font-medium">Missions :</h4>
-                                  <ul className="list-disc list-inside">
+                                  
+                                  <div className="max-w-full">
+                                     <ul className="list-disc list-inside">
                                     {exp.missions.map((mission) => (
-                                      <li key={mission.id} className="text-gray-800">
+                                      <li
+                                        key={mission.id}
+                                        className="text-gray-800"
+                                      >
                                         {mission.missions_details}
                                       </li>
                                     ))}
                                   </ul>
+                                  </div>
+
                                 </div>
                               </div>
                             </div>
@@ -437,7 +462,7 @@ export default function ModerneTemplateFirst({
                           <Award className="h-5 w-5 text-white" />
                         </div> */}
                     <div className="p-2">
-                      <h2 className="text-xl font-bold text-gray-900">
+                      <h2 className="text-[16px] uppercase font-bold text-gray-900">
                         Formations
                       </h2>
                       <div className="border mt-1"></div>
