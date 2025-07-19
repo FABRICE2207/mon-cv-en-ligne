@@ -31,7 +31,6 @@ import { motion } from "framer-motion";
 import { Input } from "@/components/ui/input";
 import { useState, useEffect } from "react";
 import Image from "next/image";
-import PhotoOrdinateur from "./assets/mes-appareils.png"
 
 export default function HomePage() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -203,7 +202,7 @@ export default function HomePage() {
               className="max-w-3xl mx-auto text-center"
             >
               <Image
-                src={PhotoOrdinateur}
+                src="/assets/mes-appareils.png"
                 alt="Ordinateur"
                 layout="responsive"
                 width={700}
