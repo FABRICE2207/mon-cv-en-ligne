@@ -30,8 +30,8 @@ import {
 import { motion } from "framer-motion";
 import { Input } from "@/components/ui/input";
 import { useState, useEffect } from "react";
-import ImageOrdinateur from "../app/assets/mes-appareils.png";
 import Image from "next/image";
+import PhotoOrdinateur from "../app/assets/mes-appareils.png"
 
 export default function HomePage() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -199,7 +199,7 @@ export default function HomePage() {
               transition={{ duration: 4 }}
               className="max-w-3xl mx-auto text-center"
             >
-              <img src={"/mes-appareils.png"} alt="Ordinateur" />
+              <Image src={PhotoOrdinateur} alt="Ordinateur" />
             </motion.div>
           </div>
         </div>
