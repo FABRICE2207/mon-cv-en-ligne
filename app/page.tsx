@@ -201,7 +201,7 @@ export default function HomePage() {
               transition={{ duration: 4 }}
               className="max-w-3xl mx-auto text-center"
             >
-              <Image
+              <img
                 src="/assets/mes-appareils.png"
                 alt="Ordinateur"
                 layout="responsive"
