@@ -123,15 +123,15 @@ const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
   }
 
   return (
-    <div className="space-y-4">
+    <div>
       <Label>Photo de profil</Label>
 
       {photo ? (
         // Affichage de la photo sélectionnée
         <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center gap-4">
-              <div className="relative">
+          <CardContent>
+            <div className="grid grid-cols-2 mt-2 justify-center items-center">
+              <div className="relative mt-3">
                 <img
                   src={preview || "/placeholder.svg"}
                   alt="Photo de profil"
@@ -139,10 +139,10 @@ const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
                 />
               </div>
               <div className="flex-1">
-                <p className="text-sm text-gray-600 mb-2">
+                <p className="text-sm text-center text-gray-600 mb-2">
                   Photo de profil ajoutée
                 </p>
-                <div className="flex gap-2">
+                <div className="flex flex-col gap-2">
                   <Button
                     type="button"
                     variant="outline"
@@ -169,7 +169,7 @@ const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
       ) : (
         // Zone de drop pour ajouter une photo
         <Card
-          className={`border-2 border-dashed transition-colors cursor-pointer ${
+          className={`border  transition-colors cursor-pointer w-full ${
             isDragging
               ? "border-blue-500 bg-blue-50"
               : "border-gray-300 hover:border-gray-400"
@@ -179,24 +179,24 @@ const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
           onDragLeave={handleDragLeave}
           onClick={handleButtonClick}
         >
-          <CardContent className="p-8 text-center">
-            <div className="space-y-4">
-              <div className="mx-auto w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center">
+          <CardContent className="p-9 text-center">
+            <div className="space-y-6">
+              {/* <div className="mx-auto w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center">
                 <User className="h-8 w-8 text-gray-400" />
-              </div>
+              </div> */}
               <div>
-                <p className="text-lg font-medium text-gray-900 mb-1">
+                {/* <p className="text-lg font-medium text-gray-900 mb-1">
                   Ajouter une photo
                 </p>
                 <p className="text-sm text-gray-600 mb-4">
                   Glissez-déposez une image ou cliquez pour sélectionner
-                </p>
+                </p> */}
                 <Button type="button" variant="outline" size="sm">
                   <Upload className="h-4 w-4 mr-2" />
                   Choisir une image
                 </Button>
               </div>
-              <p className="text-xs text-gray-500">JPG, PNG jusqu'à 5MB</p>
+              <p className="text-xs text-gray-500">JEPG, JPG, PNG jusqu'à 5MB</p>
             </div>
           </CardContent>
         </Card>
@@ -215,6 +215,14 @@ const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         ref={fileInputRef}
         className="mb-2 hidden"
       />
+
+      {/* {photo && (
+        <img
+          src={`/cv/modele_cv/${photo}`}
+          alt="Photo de profil"
+          className="w-24 h-24 rounded-full object-cover"
+        />
+      )} */}
 
       {/* {photo && (
         <img

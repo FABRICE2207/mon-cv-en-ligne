@@ -13,6 +13,11 @@ interface CVData {
     adresse: string
     linkedin: string
     photos: string
+    date_naissance: string;
+    situation_familiale: string;
+    nbre_enfants: string; // Change to number or string
+    nationalite: string;
+    permis_conduire: string;
   }
   experiences: Array<{
     id: string

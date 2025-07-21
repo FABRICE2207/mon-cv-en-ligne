@@ -109,10 +109,138 @@ body {
   scrollbar-width: none; /* Firefox */
 }
 
-@media print {
-  body, html, #cv-preview {
+/* Conserver les couleurs exactes (fond, texte, etc.) */
+/* @media print {
+  html, body, #cv-preview {
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
-    /* background-color: #votre_couleur !important;  */
+  }
+} */
+@media print {
+  /* Reset universel - Fonctionne sur Chrome et Firefox */
+  @page {
+    size: A4;
+    margin: 0;
+    padding: 0;
+  }
+
+  html, body, #cv-preview {
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    -webkit-print-color-adjust: exact !important; /* Chrome */
+    print-color-adjust: exact !important; /* Firefox */
+    background: white !important;
+  }
+
+  /* Corrections Chrome spécifiques */
+/* Corrections Chrome spécifiques avec marges */
+@media print and (-webkit-min-device-pixel-ratio:0) {
+  #cv-preview {
+    width: 210mm !important;
+    min-height: 297mm !important;
+    transform: scale(1) !important;
+    zoom: 1 !important;
+    margin-top: 10mm !important;   /* Marge supérieure personnalisable */
+    margin-left: 15mm !important;  /* Marge gauche personnalisable */
+    margin-right: auto !important;
+    margin-bottom: auto !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Correction du positionnement absolu dans Chrome */
+  body > #cv-preview {
+    position: relative !important;
+    top: 0 !important;
+    left: 0 !important;
+  }
+
+  /* Reset des marges parasites */
+  @page {
+    margin-top: -2%;
+    margin-left: -2%;
+  }
+}
+
+@-moz-document url-prefix() {
+  @media print {
+    #cv-preview {
+      width: 210mm !important;
+      min-height: 297mm !important;
+      margin: 0 !important;
+      padding: 10mm 15mm !important; /* Marge intérieure équivalente aux marges Chrome */
+      box-sizing: border-box !important;
+      position: absolute !important;
+      top: 0 !important;
+      left: 0 !important;
+      -moz-print-color-adjust: exact !important;
+    }
+
+    /* Correction spécifique du conteneur parent */
+    body, html {
+      width: 100% !important;
+      height: 100% !important;
+      margin: 0 !important;
+      padding: 0 !important;
+    }
+
+    /* Reset agressif des marges PDF */
+    @page {
+      size: A4;
+      margin: 0 !important;
+      padding: 0 !important;
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+    }
+
+    /* Correction du rendu des bordures */
+    * {
+      -moz-print-border-radius: 0 !important;
+    }
+  }
+}
+
+  /* Suppression des éléments indésirables (commun) */
+  a[href="#"], 
+  header, 
+  .header, 
+  .cv-header, 
+  #choix-modele,
+  .no-print {
+    display: none !important;
+    height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  /* Styles principaux (optimisés pour les deux navigateurs) */
+  #cv-preview {
+    width: 210mm !important;
+    min-height: 297mm !important;
+    margin: 0 auto !important;
+    padding: 0 !important;
+    box-sizing: border-box !important;
+    page-break-after: always;
+  }
+
+  /* Gestion des sauts de page (cross-browser) */
+  .page-break {
+    page-break-before: always;
+    break-before: page;
+    -webkit-column-break-before: always; /* Chrome */
+  }
+
+  .avoid-break {
+    page-break-inside: avoid;
+    break-inside: avoid;
+    -webkit-column-break-inside: avoid; /* Chrome */
+  }
+
+  /* Correction des images et tableaux */
+  img, table {
+    max-width: 100% !important;
+    page-break-inside: avoid;
+    -webkit-column-break-inside: avoid; /* Chrome */
   }
 }

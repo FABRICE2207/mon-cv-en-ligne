@@ -4,7 +4,6 @@ import { useState, useEffect, use } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import {
@@ -39,7 +38,12 @@ interface CVData {
     telephone: string;
     adresse: string;
     linkedin: string;
-    photos:  string;
+    photos: string;
+    date_naissance: string;
+    situation_familiale: string;
+    nbre_enfants: string;
+    nationalite: string;
+    permis_conduire: string;
   };
   experiences: Array<{
     id: string;
@@ -126,6 +130,11 @@ export default function CreateCVPage({ previewTemplate }: CreateCVPageProps) {
       adresse: "",
       linkedin: "",
       photos: "",
+      date_naissance: "",
+      situation_familiale: "",
+      nbre_enfants: "",
+      nationalite: "",
+      permis_conduire: "",
     },
     experiences: [],
     formations: [],
@@ -151,6 +160,11 @@ export default function CreateCVPage({ previewTemplate }: CreateCVPageProps) {
       adresse: "",
       linkedin: "",
       photos: "",
+      date_naissance: "",
+      situation_familiale: "",
+      nbre_enfants: "",
+      nationalite: "",
+      permis_conduire: "",
     },
     experiences: [],
     formations: [],
@@ -471,119 +485,6 @@ export default function CreateCVPage({ previewTemplate }: CreateCVPageProps) {
     }));
   };
 
-  // const exportToPDF = async (options: ExportOptionsType) => {
-  //   setIsExporting(true);
-  //   try {
-  //     // Import dynamique des bibliothèques
-  //     const [html2canvas, jsPDF] = await Promise.all([
-  //       import("html2canvas"),
-  //       import("jspdf"),
-  //     ]);
-
-  //     const element = document.getElementById("cv-preview");
-  //     if (!element) {
-  //       throw new Error(
-  //         "Élément CV non trouvé. Assurez-vous que la prévisualisation est activée."
-  //       );
-  //     }
-
-  //     // Configuration du canvas
-  //     const scale = options.quality === "high" ? 2 : 1.5;
-  //     const canvas = await html2canvas.default(element, {
-  //       scale,
-  //       useCORS: true,
-  //       allowTaint: true,
-  //       backgroundColor: "#ffffff",
-  //       logging: false,
-  //       width: element.scrollWidth,
-  //       height: element.scrollHeight,
-  //       onclone: (clonedDoc) => {
-  //         // S'assurer que les styles sont appliqués au clone
-  //         const clonedElement = clonedDoc.getElementById("cv-preview");
-  //         if (clonedElement) {
-  //           clonedElement.style.transform = "none";
-  //           clonedElement.style.position = "static";
-  //         }
-  //       },
-  //     });
-
-  //     // Vérifier que le canvas a été créé
-  //     if (!canvas || canvas.width === 0 || canvas.height === 0) {
-  //       throw new Error("Impossible de générer l'image du CV");
-  //     }
-
-  //     const imgData = canvas.toDataURL("image/png", 0.9);
-
-  //     // Configuration du PDF
-  //     const format = options.format.toLowerCase() as "a4" | "letter";
-  //     const orientation = options.orientation === "portrait" ? "p" : "l";
-  //     const pdf = new jsPDF.default({
-  //       orientation,
-  //       unit: "mm",
-  //       format,
-  //     });
-
-  //     const pdfWidth = pdf.internal.pageSize.getWidth();
-  //     const pdfHeight = pdf.internal.pageSize.getHeight();
-
-  //     // Calcul des dimensions de l'image
-  //     const imgWidth = pdfWidth;
-  //     const imgHeight = (canvas.height * pdfWidth) / canvas.width;
-
-  //     // Ajouter l'image au PDF
-  //     if (imgHeight <= pdfHeight) {
-  //       // L'image tient sur une page
-  //       pdf.addImage(imgData, "PNG", 0, 0, imgWidth, imgHeight);
-  //     } else {
-  //       // L'image nécessite plusieurs pages
-  //       let heightLeft = imgHeight;
-  //       let position = 0;
-
-  //       // Première page
-  //       pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
-  //       heightLeft -= pdfHeight;
-
-  //       // Pages suivantes
-  //       while (heightLeft > 0) {
-  //         position -= pdfHeight;
-  //         pdf.addPage();
-  //         pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
-  //         heightLeft -= pdfHeight;
-  //       }
-  //     }
-
-  //     // Génération du nom de fichier
-  //     const timestamp = new Date().toISOString().split("T")[0];
-  //     const username = cvData.informations_personnelles.username || "Export";
-  //     const fileName = options.filename || `CV_${username}_${timestamp}.pdf`;
-
-  //     // Téléchargement du fichier
-  //     pdf.save(fileName);
-  //   } catch (error) {
-  //     console.error("Erreur lors de l'export PDF:", error);
-
-  //     let errorMessage = "Erreur lors de l'export PDF. ";
-
-  //     if (error instanceof Error) {
-  //       if (error.message.includes("CV non trouvé")) {
-  //         errorMessage +=
-  //           "Veuillez activer la prévisualisation avant d'exporter.";
-  //       } else if (error.message.includes("Impossible de générer")) {
-  //         errorMessage +=
-  //           "Problème de génération de l'image. Réessayez dans quelques secondes.";
-  //       } else {
-  //         errorMessage += error.message;
-  //       }
-  //     } else {
-  //       errorMessage += "Veuillez réessayer.";
-  //     }
-
-  //     alert(errorMessage);
-  //   } finally {
-  //     setIsExporting(false);
-  //   }
-  // };
-
   const exportToPDF = async (options: ExportOptionsType) => {
     setIsExporting(true);
     try {
@@ -601,12 +502,20 @@ export default function CreateCVPage({ previewTemplate }: CreateCVPageProps) {
       printFrame.style.height = "0";
       printFrame.style.border = "none";
 
+      const now = new Date();
+      const day = String(now.getDate()).padStart(2, "0");
+      const month = String(now.getMonth() + 1).padStart(2, "0");
+      const year = now.getFullYear();
+      const timestamp = `${day}-${month}-${year}`;
+      const username = cvData?.informations_personnelles?.username || "Export";
+      const fileName = options.filename || `CV_${username}_${timestamp}.pdf`;
+
       // Copier le contenu + styles de l'élément CV
       printFrame.srcdoc = `
       <!DOCTYPE html>
       <html>
         <head>
-          <title>Export PDF</title>
+          <title>${fileName}</title>
           <style>
             /* Réinjecter les styles critiques */
             ${Array.from(document.styleSheets)
@@ -650,6 +559,13 @@ export default function CreateCVPage({ previewTemplate }: CreateCVPageProps) {
         printFrame.onload = () => resolve();
       });
 
+      // // Génération du nom de fichier
+      // const timestamp = new Date().toISOString().split("T")[0];
+      // const username = cvData.informations_personnelles.username || "Export";
+      // const fileName = options.filename || `CV_${username}_${timestamp}.pdf`;
+
+      console.log("Nom du fichier :", fileName);
+
       // Démarrer l'impression
       printFrame.contentWindow?.focus();
       printFrame.contentWindow?.print();
@@ -660,9 +576,12 @@ export default function CreateCVPage({ previewTemplate }: CreateCVPageProps) {
       }, 1000);
     } catch (error) {
       console.error("Erreur d'export :", error);
-      alert(
-        "Erreur lors de l'export. Utilisez Ctrl+P pour lancer l'impression manuellement."
-      );
+      Swal.fire({
+        icon: "error",
+        title: "Modèle manquant",
+        text: "Veuillez sélectionner un modèle avant de télécharger votre CV. Merci !",
+        confirmButtonColor: "#3085d6",
+      });
     } finally {
       setIsExporting(false);
     }
@@ -692,7 +611,7 @@ export default function CreateCVPage({ previewTemplate }: CreateCVPageProps) {
       informations_personnelles: {
         ...cvData.informations_personnelles,
         // photos: cvData.informations_personnelles.photos,
-        photos: cvData.informations_personnelles.photos, 
+        photos: cvData.informations_personnelles.photos,
       },
       images: getModele.images,
     };
@@ -729,181 +648,196 @@ export default function CreateCVPage({ previewTemplate }: CreateCVPageProps) {
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
       <header className="bg-white border-b sticky top-0 z-40">
-        <div className="container mx-auto px-4 py-4 flex justify-between items-center">
+        <div className="container grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 gap-6 mx-auto px-4 py-4 items-center">
           <div className="flex items-center space-x-4">
             <Button variant="ghost" onClick={() => router.push("/dashboard")}>
               <ArrowLeft className="h-4 w-4 mr-2" />
               Retour
             </Button>
-            <div className="flex items-center space-x-2">
-              <FileText className="h-6 w-6 text-blue-600" />
+            <div className="flex items-center space-x-2 w-full">
+              {/* <FileText className="h-6 w-6 text-blue-600" /> */}
               <h1 className="text-xl font-bold text-gray-900">
-                Créer votre CV
+                Mon CV en ligne
               </h1>
             </div>
           </div>
-          <div className="flex items-center space-x-4">
-            <Button
+          <div className="flex items-center space-x-4 w-full justify-end">
+            {/* <Button
               variant="outline"
               onClick={() => setShowPreview(!showPreview)}
             >
               <Eye className="h-4 w-4 mr-2" />
               {showPreview ? "Masquer" : "Prévisualiser"}
-            </Button>
+            </Button> */}
             <ExportOptions
               onExport={exportToPDF}
               isExporting={isExporting}
-              disabled={!showPreview}
+              // disabled={!showPreview}
             />
           </div>
         </div>
       </header>
 
-      <div className="container mx-auto px-4 py-6">
-        <div
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mx-auto px-4 py-6">
+        {/* <div
           className={`grid gap-6 ${
-            showPreview ? "lg:grid-cols-2" : "lg:grid-cols-1"
+            showPreview ? "lg:grid-cols-1" : ""
           }`}
-        >
-          {/* Formulaire d'édition */}
+        > */}
+        {/* Prévisualisation */}
+        <div className="lg:sticky lg:top-24 lg:h-fit">{renderCVTemplate()}</div>
 
-          <div className="space-y-6">
-            {/* Informations générales */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Choix du modèle</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <TemplateSelector
-                  selectedTemplate={selectedTemplate}
-                  modelesId={modelesId}
-                  onTemplateSelect={handleTemplateSelect}
-                  cvData={cvData}
-                  setSelectedTemplate={setSelectedTemplate}
-                />
-              </CardContent>
-            </Card>
+        {/* Formulaire d'édition */}
+        <div className="w-50 gap-6 space-y-4" id="choix-modele">
+          {/* Informations générales */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Liste des modèles</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <TemplateSelector
+                selectedTemplate={selectedTemplate}
+                modelesId={modelesId}
+                onTemplateSelect={handleTemplateSelect}
+                cvData={cvData}
+                setSelectedTemplate={setSelectedTemplate}
+              />
+            </CardContent>
+          </Card>
 
-            <form onSubmit={handleSubmit}>
-              <div>
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Informations générales</CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div className="hidden">
-                      <Label htmlFor="models_cv_id">Id mODEL</Label>
-                      <Input
-                        id="model_cv_id"
-                        placeholder="Ex: Développeur Full Stack"
-                        value={cvData.models_cv_id}
-                      />
-                    </div>
-                    <div className="hidden">
-                      <Label htmlFor="users_id">Id USERS</Label>
-                      <Input
-                        id="users_id"
-                        placeholder="Ex: Développeur Full Stack"
-                        value={cvData.users_id}
-                      />
-                    </div>
+          <form onSubmit={handleSubmit}>
+            <div>
+              <Card>
+                <CardHeader>
+                  <CardTitle>Informations générales</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="hidden">
+                    <Label htmlFor="models_cv_id">Id mODEL</Label>
+                    <input
+                      id="model_cv_id"
+                      placeholder="Ex: Développeur Full Stack"
+                      value={cvData.models_cv_id}
+                    />
+                  </div>
+                  <div className="hidden">
+                    <Label htmlFor="users_id">Id USERS</Label>
+                    <input
+                      id="users_id"
+                      placeholder="Ex: Développeur Full Stack"
+                      value={cvData.users_id}
+                    />
+                  </div>
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                     <div>
-                      <Label htmlFor="titre">Titre</Label>
-                      <Input
-                        id="titre"
-                        placeholder="Ex: Développeur Full Stack"
-                        value={cvData.titre}
-                        onChange={(e) =>
+                      <PhotoUpload
+                        photo={cvData.informations_personnelles.photos} // une string (filename)
+                        onPhotoChange={(filename) =>
                           setCvData((prev) => ({
                             ...prev,
-                            titre: e.target.value,
+                            informations_personnelles: {
+                              ...prev.informations_personnelles,
+                              photos: filename, // ✅ juste le nom du fichier
+                            },
                           }))
                         }
                       />
                     </div>
+
+                    <div className="w-full">
+                      <div className="flex flex-col gap-4">
+                        <div>
+                          <Label>Profil</Label>
+                          <input
+                            id="titre"
+                            placeholder="Ex: Responsable Marketing"
+                            value={cvData.titre}
+                            onChange={(e) =>
+                              setCvData((prev) => ({
+                                ...prev,
+                                titre: e.target.value,
+                              }))
+                            }
+                            required
+                            className="w-full p-2 rounded border  focus:bg-white border-gray-300 focus:outline-none focus:border-blue-950 focus:ring-1 focus:ring-blue-950"
+                          />
+                        </div>
+                        <div>
+                          <Label>Description de votre profil</Label>
+                          <textarea
+                            id="titre"
+                            placeholder="Ex: Responsable Marketing"
+                            value={cvData.description}
+                            onChange={(e) =>
+                              setCvData((prev) => ({
+                                ...prev,
+                                description: e.target.value,
+                              }))
+                            }
+                            required
+                            className="w-full p-2 rounded border  focus:bg-white border-gray-300 focus:outline-none focus:border-blue-950 focus:ring-1 focus:ring-blue-950"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Informations personnelles */}
+              <Card className="mt-8">
+                <CardHeader>
+                  <CardTitle>Informations personnelles</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                     <div>
-                      <Label htmlFor="description">
-                        Description de votre profil
-                      </Label>
-                      <Textarea
-                        id="description"
-                        placeholder="Ex: Développeur Full Stack"
-                        value={cvData.description}
+                      <Label htmlFor="username">Nom complet</Label>
+                      <input
+                        id="username"
+                        value={cvData.informations_personnelles.username}
+                        placeholder="Ex: KOUAKOU KAN JEAN-MARIE"
                         onChange={(e) =>
                           setCvData((prev) => ({
                             ...prev,
-                            description: e.target.value,
+                            informations_personnelles: {
+                              ...prev.informations_personnelles,
+                              username: e.target.value,
+                            },
                           }))
                         }
+                        required
+                        className="w-full p-2 rounded border  focus:bg-white border-gray-300 focus:outline-none focus:border-blue-950 focus:ring-1 focus:ring-blue-950"
                       />
                     </div>
-                  </CardContent>
-                </Card>
+                    <div>
+                      <Label htmlFor="email">Email</Label>
+                      <input
+                        id="email"
+                        type="email"
+                        value={cvData.informations_personnelles.email}
+                        onChange={(e) =>
+                          setCvData((prev) => ({
+                            ...prev,
+                            informations_personnelles: {
+                              ...prev.informations_personnelles,
+                              email: e.target.value,
+                            },
+                          }))
+                        }
+                        required
+                        className="w-full p-2 rounded border  focus:bg-white border-gray-300 focus:outline-none focus:border-blue-950 focus:ring-1 focus:ring-blue-950"
+                      />
+                    </div>
+                  </div>
 
-                {/* Informations personnelles */}
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Informations personnelles</CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <Label htmlFor="username">Nom complet</Label>
-                        <Input
-                          id="username"
-                          value={cvData.informations_personnelles.username}
-                          onChange={(e) =>
-                            setCvData((prev) => ({
-                              ...prev,
-                              informations_personnelles: {
-                                ...prev.informations_personnelles,
-                                username: e.target.value,
-                              },
-                            }))
-                          }
-                        />
-                      </div>
-                    </div>
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <Label htmlFor="email">Email</Label>
-                        <Input
-                          id="email"
-                          type="email"
-                          value={cvData.informations_personnelles.email}
-                          onChange={(e) =>
-                            setCvData((prev) => ({
-                              ...prev,
-                              informations_personnelles: {
-                                ...prev.informations_personnelles,
-                                email: e.target.value,
-                              },
-                            }))
-                          }
-                        />
-                      </div>
-                      <div>
-                        <Label htmlFor="telephone">Téléphone</Label>
-                        <Input
-                          id="telephone"
-                          value={cvData.informations_personnelles.telephone}
-                          onChange={(e) =>
-                            setCvData((prev) => ({
-                              ...prev,
-                              informations_personnelles: {
-                                ...prev.informations_personnelles,
-                                telephone: e.target.value,
-                              },
-                            }))
-                          }
-                        />
-                      </div>
-                    </div>
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                     <div>
                       <Label htmlFor="adresse">Adresse</Label>
-                      <Input
+                      <input
                         id="adresse"
                         value={cvData.informations_personnelles.adresse}
+                        placeholder="Ex: Abidjan, Yopougon"
                         onChange={(e) =>
                           setCvData((prev) => ({
                             ...prev,
@@ -913,11 +847,135 @@ export default function CreateCVPage({ previewTemplate }: CreateCVPageProps) {
                             },
                           }))
                         }
+                        required
+                        className="w-full p-2 rounded border  focus:bg-white border-gray-300 focus:outline-none focus:border-blue-950 focus:ring-1 focus:ring-blue-950"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="telephone">Téléphone</Label>
+                      <input
+                        id="telephone"
+                        type="tel"
+                        maxLength={14}
+                        value={cvData.informations_personnelles.telephone}
+                        placeholder="Ex: +225 07 07 07 07"
+                        onChange={(e) =>
+                          setCvData((prev) => ({
+                            ...prev,
+                            informations_personnelles: {
+                              ...prev.informations_personnelles,
+                              telephone: e.target.value,
+                            },
+                          }))
+                        }
+                        required
+                        className="w-full p-2 rounded border  focus:bg-white border-gray-300 focus:outline-none focus:border-blue-950 focus:ring-1 focus:ring-blue-950"
+                      />
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                    <div>
+                      <div>
+                        <Label htmlFor="date_naissance">
+                          Date de naissance
+                        </Label>
+                        <input
+                          id="date_naissance"
+                          type="date"
+                          value={
+                            cvData.informations_personnelles.date_naissance
+                          }
+                          onChange={(e) =>
+                            setCvData((prev) => ({
+                              ...prev,
+                              informations_personnelles: {
+                                ...prev.informations_personnelles,
+                                date_naissance: e.target.value,
+                              },
+                            }))
+                          }
+                          required
+                          className="w-full p-2 rounded border  focus:bg-white border-gray-300 focus:outline-none focus:border-blue-950 focus:ring-1 focus:ring-blue-950"
+                        />
+                      </div>
+                    </div>
+                    <div>
+                      <Label htmlFor="situation_familiale">
+                        Situation familiale
+                      </Label>
+                      <Select
+                        value={
+                          cvData.informations_personnelles.situation_familiale
+                        }
+                        onValueChange={(value) =>
+                          setCvData((prev) => ({
+                            ...prev,
+                            informations_personnelles: {
+                              ...prev.informations_personnelles,
+                              situation_familiale: value,
+                            },
+                          }))
+                        }
+                        required
+                      >
+                        <SelectTrigger id="situation_familiale">
+                          <SelectValue placeholder="Sélectionner votre situation familiale" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="Célibataire">
+                            Célibataire
+                          </SelectItem>
+                          <SelectItem value="Marié(e)">Marié(e)</SelectItem>
+                          <SelectItem value="Divorcé(e)">Divorcé(e)</SelectItem>
+                          <SelectItem value="Veuf/Veuve">Veuf/Veuve</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div>
+                      <Label htmlFor="nbre_enfants">Nombre d'enfants</Label>
+                      <input
+                        type="number"
+                        maxLength={2}
+                        value={cvData.informations_personnelles.nbre_enfants}
+                        placeholder="Ex: 1"
+                        onChange={(e) =>
+                          setCvData((prev) => ({
+                            ...prev,
+                            informations_personnelles: {
+                              ...prev.informations_personnelles,
+                              nbre_enfants: e.target.value, // garde en string
+                            },
+                          }))
+                        }
+                        className="w-full p-2 rounded border  focus:bg-white border-gray-300 focus:outline-none focus:border-blue-950 focus:ring-1 focus:ring-blue-950"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor="permis_conduire">
+                        Permis de conduire
+                      </Label>
+                      <input
+                        value={cvData.informations_personnelles.permis_conduire}
+                        maxLength={5}
+                        placeholder="Ex: ABCDE ou ABCD"
+                        onChange={(e) =>
+                          setCvData((prev) => ({
+                            ...prev,
+                            informations_personnelles: {
+                              ...prev.informations_personnelles,
+                              permis_conduire: e.target.value,
+                            },
+                          }))
+                        }
+                        className="w-full p-2 rounded border  focus:bg-white border-gray-300 focus:outline-none focus:border-blue-950 focus:ring-1 focus:ring-blue-950"
                       />
                     </div>
                     <div>
                       <Label htmlFor="linkedin">LinkedIn</Label>
-                      <Input
+                      <input
                         id="linkedin"
                         placeholder="https://linkedin.com/in/votre-profil"
                         value={cvData.informations_personnelles.linkedin}
@@ -930,216 +988,210 @@ export default function CreateCVPage({ previewTemplate }: CreateCVPageProps) {
                             },
                           }))
                         }
+                        className="w-full p-2 rounded border  focus:bg-white border-gray-300 focus:outline-none focus:border-blue-950 focus:ring-1 focus:ring-blue-950"
                       />
                     </div>
-                    <div>
-                      <PhotoUpload
-  photo={cvData.informations_personnelles.photos} // une string (filename)
-  onPhotoChange={(filename) =>
-    setCvData((prev) => ({
-      ...prev,
-      informations_personnelles: {
-        ...prev.informations_personnelles,
-        photos: filename, // ✅ juste le nom du fichier
-      },
-    }))
-  }
-/>
+                  </div>
+                </CardContent>
+              </Card>
 
+              {/* Sections avec onglets */}
+              <Card className="mt-8 h-full">
+                <CardContent className="space-y-4 p-4">
+                  <div className="w-full">
+                    <Tabs defaultValue="experiences" className="w-full">
+                      <TabsList className="grid grid-cols-1 gap-4 md:grid-cols-5 bg-blue-950 text-white mt-5 md:flex-row card-tabsList card-gray-tabsList w-full border-gray-200">
+                        <TabsTrigger
+                          value="experiences"
+                          className="w-full md:w-auto text-left md:text-center"
+                        >
+                          Expériences
+                        </TabsTrigger>
+                        <TabsTrigger
+                          value="formations"
+                          className="w-full md:w-auto text-left md:text-center"
+                        >
+                          Formations
+                        </TabsTrigger>
+                        <TabsTrigger
+                          value="competences"
+                          className="w-full md:w-auto text-left md:text-center"
+                        >
+                          Compétences
+                        </TabsTrigger>
+                        <TabsTrigger
+                          value="langues"
+                          className="w-full md:w-auto text-left md:text-center"
+                        >
+                          Langues
+                        </TabsTrigger>
+                        <TabsTrigger
+                          value="centres_interet"
+                          className="w-full md:w-auto text-left md:text-center"
+                        >
+                          Centres d'intérêt
+                        </TabsTrigger>
+                      </TabsList>
 
-                    </div>
-                  </CardContent>
-                </Card>
-
-                {/* Sections avec onglets */}
-                <Card>
-                  <CardContent className="space-y-2">
-                    <div className="grid grid-cols-1">
-                      <Tabs defaultValue="experiences" className="w-full">
-                        <TabsList className="flex flex-col mt-5 md:flex-row card-tabsList card-gray-tabsList w-full border-gray-200">
-                          <TabsTrigger
-                            value="experiences"
-                            className="w-full md:w-auto text-left md:text-center"
-                          >
-                            Expériences
-                          </TabsTrigger>
-                          <TabsTrigger
-                            value="formations"
-                            className="w-full md:w-auto text-left md:text-center"
-                          >
-                            Formations
-                          </TabsTrigger>
-                          <TabsTrigger
-                            value="competences"
-                            className="w-full md:w-auto text-left md:text-center"
-                          >
-                            Compétences
-                          </TabsTrigger>
-                          <TabsTrigger
-                            value="langues"
-                            className="w-full md:w-auto text-left md:text-center"
-                          >
-                            Langues
-                          </TabsTrigger>
-                          <TabsTrigger
-                            value="centres_interet"
-                            className="w-full md:w-auto text-left md:text-center"
-                          >
-                            Centres d'intérêt
-                          </TabsTrigger>
-                        </TabsList>
-
-                        <div className="w-full card-tabsList">
-                          {/* Expériences */}
-                          <TabsContent value="experiences">
-                            <Card>
-                              <CardHeader className="flex md:flex-row  items-center justify-between">
-                                <CardTitle>
+                      <div className="w-full card-tabsList">
+                        {/* Expériences */}
+                        <TabsContent value="experiences">
+                          <Card>
+                            <div className="flex md:flex-row flex-col">
+                              <div className="flex-1">
+                                <p className="text-xl font-semibold p-4">
                                   Expériences professionnelles
-                                </CardTitle>
+                                </p>
+                              </div>
+                              <div className="p-4">
                                 <Button
+                                  className="px-4 py-2 bg-blue-950 hover:bg-blue-900 text-white rounded"
                                   type="button"
                                   onClick={addExperience}
                                   size="sm"
                                 >
                                   <Plus className="h-4 w-4 mr-2" />
-                                  Ajouter
+                                  Ajouter une expérience
                                 </Button>
-                              </CardHeader>
-                              <CardContent className="space-y-6">
-                                {cvData.experiences.map((exp) => (
-                                  <div
-                                    key={exp.id}
-                                    className="border rounded-lg p-4 space-y-4"
-                                  >
-                                    <div className="flex justify-between items-start">
-                                      <h4 className="font-medium">
-                                        Expérience #
-                                        {cvData.experiences.indexOf(exp) + 1}
-                                      </h4>
-                                      <Button
-                                        className="px-4 py-2 bg-red-600 text-white rounded"
-                                        onClick={() => removeExperience(exp.id)}
-                                      >
-                                        <Trash2
-                                          className="h-7 w-7"
-                                          color="white"
-                                        />
-                                      </Button>
-                                    </div>
-                                    <div className="grid grid-cols-2 gap-4">
-                                      <div>
-                                        <Label>Titre du poste</Label>
-                                        <Input
-                                          value={exp.titre_poste}
-                                          onChange={(e) =>
-                                            updateExperience(
-                                              exp.id,
-                                              "titre_poste",
-                                              e.target.value
-                                            )
-                                          }
-                                          placeholder="Ex: Développeur Frontend"
-                                        />
-                                      </div>
-                                      <div>
-                                        <Label>Entreprise</Label>
-                                        <Input
-                                          value={exp.nom_entreprise}
-                                          onChange={(e) =>
-                                            updateExperience(
-                                              exp.id,
-                                              "nom_entreprise",
-                                              e.target.value
-                                            )
-                                          }
-                                          placeholder="Ex: Google"
-                                        />
-                                      </div>
-                                    </div>
-                                    <div className="grid grid-cols-2 gap-4">
-                                      <div>
-                                        <Label>Date de début</Label>
-                                        <Input
-                                          type="date"
-                                          value={exp.date_debut}
-                                          onChange={(e) =>
-                                            updateExperience(
-                                              exp.id,
-                                              "date_debut",
-                                              e.target.value
-                                            )
-                                          }
-                                        />
-                                      </div>
-                                      <div>
-                                        <Label>Date de fin</Label>
-                                        <Input
-                                          type="date"
-                                          value={exp.date_fin}
-                                          onChange={(e) =>
-                                            updateExperience(
-                                              exp.id,
-                                              "date_fin",
-                                              e.target.value
-                                            )
-                                          }
-                                        />
-                                      </div>
-                                    </div>
-                                    <div className="space-y-2">
-                                      <Label className="block">
-                                        Vos missions
-                                      </Label>
+                              </div>
+                            </div>
 
-                                      {exp.missions.map((mission, index) => (
-                                        <div
-                                          key={mission.id}
-                                          className="flex items-center gap-2 mb-2"
-                                        >
-                                          <Input
-                                            className="flex-1"
-                                            value={mission.missions_details}
-                                            placeholder={`Mission ${index + 1}`}
-                                            onChange={(e) =>
-                                              updateMission(
-                                                exp.id,
-                                                mission.id,
-                                                e.target.value
-                                              )
-                                            }
-                                          />
-                                          <Button
-                                            className="px-4 py-2 bg-red-600 text-white rounded"
-                                            onClick={() =>
-                                              removeMissionFromExperience(
-                                                exp.id,
-                                                mission.id
-                                              )
-                                            }
-                                          >
-                                            <Trash2
-                                          className="h-7 w-7"
-                                          color="white"
-                                        />
-                                          </Button>
-                                        </div>
-                                      ))}
-
-                                      <button
-                                        type="button"
-                                        className="px-3 py-1 bg-blue-600 text-white rounded"
-                                        onClick={() =>
-                                          addMissionToExperience(exp.id)
+                            <div className="space-y-6">
+                              {cvData.experiences.map((exp) => (
+                                <div key={exp.id} className="p-4 space-y-4">
+                                  <div className="flex justify-between items-start">
+                                    <h4 className="font-medium">
+                                      Expérience #
+                                      {cvData.experiences.indexOf(exp) + 1}
+                                    </h4>
+                                    <Button
+                                      className="px-4 py-2 bg-red-600 text-white rounded"
+                                      onClick={() => removeExperience(exp.id)}
+                                    >
+                                      <Trash2
+                                        className="h-7 w-7"
+                                        color="white"
+                                      />
+                                    </Button>
+                                  </div>
+                                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                      <Label>Titre du poste</Label>
+                                      <input
+                                        value={exp.titre_poste}
+                                        onChange={(e) =>
+                                          updateExperience(
+                                            exp.id,
+                                            "titre_poste",
+                                            e.target.value
+                                          )
                                         }
-                                      >
-                                        Ajouter une mission
-                                      </button>
+                                        placeholder="Ex: Développeur Frontend"
+                                        className="w-full p-2 rounded border  focus:bg-white border-gray-300 focus:outline-none focus:border-blue-950 focus:ring-1 focus:ring-blue-950"
+                                      />
                                     </div>
+                                    <div>
+                                      <Label>Entreprise</Label>
+                                      <input
+                                        value={exp.nom_entreprise}
+                                        onChange={(e) =>
+                                          updateExperience(
+                                            exp.id,
+                                            "nom_entreprise",
+                                            e.target.value
+                                          )
+                                        }
+                                        placeholder="Ex: Google"
+                                        className="w-full p-2 rounded border  focus:bg-white border-gray-300 focus:outline-none focus:border-blue-950 focus:ring-1 focus:ring-blue-950"
+                                      />
+                                    </div>
+                                  </div>
+                                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                      <Label>Date de début</Label>
+                                      <input
+                                        type="date"
+                                        value={exp.date_debut}
+                                        onChange={(e) =>
+                                          updateExperience(
+                                            exp.id,
+                                            "date_debut",
+                                            e.target.value
+                                          )
+                                        }
+                                        className="w-full p-2 rounded border  focus:bg-white border-gray-300 focus:outline-none focus:border-blue-950 focus:ring-1 focus:ring-blue-950"
+                                      />
+                                    </div>
+                                    <div>
+                                      <Label>Date de fin</Label>
+                                      <input
+                                        type="date"
+                                        value={exp.date_fin}
+                                        onChange={(e) =>
+                                          updateExperience(
+                                            exp.id,
+                                            "date_fin",
+                                            e.target.value
+                                          )
+                                        }
+                                        className="w-full p-2 rounded border  focus:bg-white border-gray-300 focus:outline-none focus:border-blue-950 focus:ring-1 focus:ring-blue-950"
+                                      />
+                                    </div>
+                                  </div>
+                                  <div className="space-y-2">
+                                    <Label className="block">
+                                      Vos missions
+                                    </Label>
 
-                                    {/* <div>
+                                    {exp.missions.map((mission, index) => (
+                                      <div
+                                        key={mission.id}
+                                        className="flex items-center gap-2 mb-2"
+                                      >
+                                        <input
+                                          value={mission.missions_details}
+                                          placeholder={`Mission ${index + 1}`}
+                                          onChange={(e) =>
+                                            updateMission(
+                                              exp.id,
+                                              mission.id,
+                                              e.target.value
+                                            )
+                                          }
+                                          required
+                                          className="w-full p-2 rounded border  focus:bg-white border-gray-300 focus:outline-none focus:border-blue-950 focus:ring-1 focus:ring-blue-950"
+                                        />
+                                        <Button
+                                          className="px-4 py-2 bg-red-600 text-white rounded"
+                                          onClick={() =>
+                                            removeMissionFromExperience(
+                                              exp.id,
+                                              mission.id
+                                            )
+                                          }
+                                        >
+                                          <Trash2
+                                            className="h-7 w-7"
+                                            color="white"
+                                          />
+                                        </Button>
+                                      </div>
+                                    ))}
+
+                                    <button
+                                      type="button"
+                                      className="px-3 py-1 bg-blue-950 hover:bg-blue-900 text-white rounded"
+                                      onClick={() =>
+                                        addMissionToExperience(exp.id)
+                                      }
+                                    >
+                                      Ajouter une mission
+                                    </button>
+                                  </div>
+
+                                  {/* <div>
                                       <Label>Vos missions</Label>
-                                      <Input
+                                      <input
                                         value={exp.missions[0]?.missions_details || ""}
                                         placeholder="Décrivez vos diffrérentes missions"
                                         onChange={(e) =>
@@ -1151,116 +1203,124 @@ export default function CreateCVPage({ previewTemplate }: CreateCVPageProps) {
                                         }
                                       />
                                     </div> */}
-                                  </div>
-                                ))}
-                                {cvData.experiences.length === 0 && (
-                                  <div className="text-center py-8 text-gray-500">
-                                    <p>Aucune expérience ajoutée</p>
-                                  </div>
-                                )}
-                              </CardContent>
-                            </Card>
-                          </TabsContent>
+                                </div>
+                              ))}
+                              {cvData.experiences.length === 0 && (
+                                <div className="text-center py-8 text-gray-500">
+                                  <p>Aucune expérience ajoutée</p>
+                                </div>
+                              )}
+                            </div>
+                          </Card>
+                        </TabsContent>
 
-                          {/* Formations */}
-                          <TabsContent value="formations">
-                            <Card>
-                              <CardHeader className="flex flex-row items-center justify-between">
-                                <CardTitle>Formations</CardTitle>
+                        {/* Formations */}
+                        <TabsContent value="formations">
+                          <Card>
+                            <div className="flex md:flex-row flex-col">
+                              <div className="flex-1">
+                                <p className="text-xl font-semibold p-4">
+                                  Formations
+                                </p>
+                              </div>
+                              <div className="p-4">
                                 <Button
+                                  className="px-4 py-2 bg-blue-950 hover:bg-blue-900 text-white rounded"
                                   type="button"
                                   onClick={addFormation}
                                   size="sm"
                                 >
                                   <Plus className="h-4 w-4 mr-2" />
-                                  Ajouter
+                                  Ajouter une formation
                                 </Button>
-                              </CardHeader>
-                              <CardContent className="space-y-6">
-                                {cvData.formations.map((formation) => (
-                                  <div
-                                    key={formation.id}
-                                    className="border rounded-lg p-4 space-y-4"
-                                  >
-                                    <div className="flex justify-between items-start">
-                                      <h4 className="font-medium">
-                                        Formation #
-                                        {cvData.formations.indexOf(formation) +
-                                          1}
-                                      </h4>
-                                      <Button  
-                                        className="px-4 py-2 bg-red-600 text-white rounded"
-                                        onClick={() =>
-                                          removeFormation(formation.id)
+                              </div>
+                            </div>
+
+                            <CardContent className="space-y-6">
+                              {cvData.formations.map((formation) => (
+                                <div key={formation.id} className="space-y-4">
+                                  <div className="flex justify-between items-start">
+                                    <h4 className="font-medium">
+                                      Formation #
+                                      {cvData.formations.indexOf(formation) + 1}
+                                    </h4>
+                                    <Button
+                                      className="px-4 py-2 bg-red-600 text-white rounded"
+                                      onClick={() =>
+                                        removeFormation(formation.id)
+                                      }
+                                    >
+                                      <Trash2
+                                        className="h-7 w-7"
+                                        color="white"
+                                      />
+                                    </Button>
+                                  </div>
+                                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                      <Label>Diplôme</Label>
+                                      <input
+                                        value={formation.diplome}
+                                        onChange={(e) =>
+                                          updateFormation(
+                                            formation.id,
+                                            "diplome",
+                                            e.target.value
+                                          )
                                         }
-                                      >
-                                        <Trash2
-                                          className="h-7 w-7"
-                                          color="white"
-                                        />
-                                      </Button>
+                                        placeholder="Ex: Master en Informatique"
+                                        className="w-full p-2 rounded border  focus:bg-white border-gray-300 focus:outline-none focus:border-blue-950 focus:ring-1 focus:ring-blue-950"
+                                      />
                                     </div>
-                                    <div className="grid grid-cols-2 gap-4">
-                                      <div>
-                                        <Label>Diplôme</Label>
-                                        <Input
-                                          value={formation.diplome}
-                                          onChange={(e) =>
-                                            updateFormation(
-                                              formation.id,
-                                              "diplome",
-                                              e.target.value
-                                            )
-                                          }
-                                          placeholder="Ex: Master en Informatique"
-                                        />
-                                      </div>
-                                      <div>
-                                        <Label>Établissement</Label>
-                                        <Input
-                                          value={formation.nom_etablissement}
-                                          onChange={(e) =>
-                                            updateFormation(
-                                              formation.id,
-                                              "nom_etablissement",
-                                              e.target.value
-                                            )
-                                          }
-                                          placeholder="Ex: Université de Paris"
-                                        />
-                                      </div>
+                                    <div>
+                                      <Label>Établissement</Label>
+                                      <input
+                                        value={formation.nom_etablissement}
+                                        onChange={(e) =>
+                                          updateFormation(
+                                            formation.id,
+                                            "nom_etablissement",
+                                            e.target.value
+                                          )
+                                        }
+                                        placeholder="Ex: Université de Paris"
+                                        className="w-full p-2 rounded border  focus:bg-white border-gray-300 focus:outline-none focus:border-blue-950 focus:ring-1 focus:ring-blue-950"
+                                      />
                                     </div>
-                                    <div className="grid grid-cols-2 gap-4">
-                                      <div>
-                                        <Label>Date de début</Label>
-                                        <Input
-                                          type="date"
-                                          value={formation.date_debut}
-                                          onChange={(e) =>
-                                            updateFormation(
-                                              formation.id,
-                                              "date_debut",
-                                              e.target.value
-                                            )
-                                          }
-                                        />
-                                      </div>
-                                      <div>
-                                        <Label>Date de fin</Label>
-                                        <Input
-                                          type="date"
-                                          value={formation.date_fin}
-                                          onChange={(e) =>
-                                            updateFormation(
-                                              formation.id,
-                                              "date_fin",
-                                              e.target.value
-                                            )
-                                          }
-                                        />
-                                      </div>
+                                  </div>
+                                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                      <Label>Date de début</Label>
+                                      <input
+                                        type="date"
+                                        value={formation.date_debut}
+                                        onChange={(e) =>
+                                          updateFormation(
+                                            formation.id,
+                                            "date_debut",
+                                            e.target.value
+                                          )
+                                        }
+                                        className="w-full p-2 rounded border  focus:bg-white border-gray-300 focus:outline-none focus:border-blue-950 focus:ring-1 focus:ring-blue-950"
+                                      />
                                     </div>
-                                    {/* <div>
+                                    <div>
+                                      <Label>Date de fin</Label>
+                                      <input
+                                        type="date"
+                                        value={formation.date_fin}
+                                        onChange={(e) =>
+                                          updateFormation(
+                                            formation.id,
+                                            "date_fin",
+                                            e.target.value
+                                          )
+                                        }
+                                        className="w-full p-2 rounded border  focus:bg-white border-gray-300 focus:outline-none focus:border-blue-950 focus:ring-1 focus:ring-blue-950"
+                                      />
+                                    </div>
+                                  </div>
+                                  {/* <div>
                                   <Label>Description</Label>
                                   <Textarea
                                     value={formation.description}
@@ -1274,52 +1334,60 @@ export default function CreateCVPage({ previewTemplate }: CreateCVPageProps) {
                                     placeholder="Décrivez votre formation..."
                                   />
                                 </div> */}
-                                  </div>
-                                ))}
-                                {cvData.formations.length === 0 && (
-                                  <div className="text-center py-8 text-gray-500">
-                                    <p>Aucune formation ajoutée</p>
-                                  </div>
-                                )}
-                              </CardContent>
-                            </Card>
-                          </TabsContent>
+                                </div>
+                              ))}
+                              {cvData.formations.length === 0 && (
+                                <div className="text-center py-8 text-gray-500">
+                                  <p>Aucune formation ajoutée</p>
+                                </div>
+                              )}
+                            </CardContent>
+                          </Card>
+                        </TabsContent>
 
-                          {/* Compétences */}
-                          <TabsContent value="competences">
-                            <Card>
-                              <CardHeader className="flex flex-row items-center justify-between">
-                                <CardTitle>Compétences</CardTitle>
+                        {/* Compétences */}
+                        <TabsContent value="competences">
+                          <Card>
+                            <div className="flex flex-row items-center justify-between">
+                              <div className="flex-1">
+                                <p className="text-xl font-semibold p-4">
+                                  Compétences
+                                </p>
+                              </div>
+                              <div className="p-4">
                                 <Button
+                                  className="px-4 py-2 bg-blue-950 hover:bg-blue-900 text-white rounded"
                                   type="button"
                                   onClick={addCompetence}
                                   size="sm"
                                 >
                                   <Plus className="h-4 w-4 mr-2" />
-                                  Ajouter
+                                  Ajouter une compétence
                                 </Button>
-                              </CardHeader>
-                              <CardContent className="space-y-4">
-                                <div className="grid gap-4">
-                                  {cvData.competences.map((comp) => (
-                                    <div
-                                      key={comp.id}
-                                      className="flex items-center gap-4 p-3 border rounded-lg"
-                                    >
-                                      <div className="flex-1">
-                                        <Input
-                                          value={comp.nom_competence}
-                                          onChange={(e) =>
-                                            updateCompetence(
-                                              comp.id,
-                                              "nom_competence",
-                                              e.target.value
-                                            )
-                                          }
-                                          placeholder="Ex: JavaScript, React, Node.js"
-                                        />
-                                      </div>
-                                      <div className="w-32">
+                              </div>
+                            </div>
+                            <div className="space-y-4">
+                              <div className="grid gap-4">
+                                {cvData.competences.map((comp) => (
+                                  <div
+                                    key={comp.id}
+                                    className="flex items-center gap-2 p-3"
+                                  >
+                                    <div className="flex-1">
+                                      <input
+                                        value={comp.nom_competence}
+                                        onChange={(e) =>
+                                          updateCompetence(
+                                            comp.id,
+                                            "nom_competence",
+                                            e.target.value
+                                          )
+                                        }
+                                        placeholder="Ex: JavaScript, React, Node.js"
+                                        className="w-full p-2 rounded border  focus:bg-white border-gray-300 focus:outline-none focus:border-blue-950 focus:ring-1 focus:ring-blue-950"
+                                      />
+                                    </div>
+                                    {/* <div className="w-32">
                                         <Select
                                           value={comp.niveau}
                                           onValueChange={(value) =>
@@ -1348,194 +1416,206 @@ export default function CreateCVPage({ previewTemplate }: CreateCVPageProps) {
                                             </SelectItem>
                                           </SelectContent>
                                         </Select>
-                                      </div>
-                                      <Button
-                                        type="button"
-                                        className="px-4 py-2 bg-red-600 text-white rounded"
-                                        onClick={() =>
-                                          removeCompetence(comp.id)
-                                        }
-                                      >
-                                        <Trash2
-                                          className="h-7 w-7"
-                                          color="white"
-                                        />
-                                      </Button>
-                                    </div>
-                                  ))}
-                                </div>
-                                {cvData.competences.length === 0 && (
-                                  <div className="text-center py-8 text-gray-500">
-                                    <p>Aucune compétence ajoutée</p>
+                                    </div> */}
+                                    <Button
+                                      type="button"
+                                      className="px-4 py-2 bg-red-600 text-white rounded"
+                                      onClick={() => removeCompetence(comp.id)}
+                                    >
+                                      <Trash2
+                                        className="h-7 w-7"
+                                        color="white"
+                                      />
+                                    </Button>
                                   </div>
-                                )}
-                              </CardContent>
-                            </Card>
-                          </TabsContent>
+                                ))}
+                              </div>
+                              {cvData.competences.length === 0 && (
+                                <div className="text-center py-8 text-gray-500">
+                                  <p>Aucune compétence ajoutée</p>
+                                </div>
+                              )}
+                            </div>
+                          </Card>
+                        </TabsContent>
 
-                          {/* Langues */}
-                          <TabsContent value="langues">
-                            <Card>
-                              <CardHeader className="flex flex-row items-center justify-between">
-                                <CardTitle>Langues</CardTitle>
+                        {/* Langues */}
+                        <TabsContent value="langues">
+                          <Card>
+                            <div className="flex flex-row items-center justify-between">
+                              <div className="flex-1">
+                                <p className="text-xl font-semibold p-4">
+                                  Langues
+                                </p>
+                              </div>
+                              <div className="p-4">
                                 <Button
+                                  className="px-4 py-2 bg-blue-950 hover:bg-blue-900 text-white rounded"
                                   type="button"
                                   onClick={addLangue}
                                   size="sm"
                                 >
                                   <Plus className="h-4 w-4 mr-2" />
-                                  Ajouter
+                                  Ajouter une langue
                                 </Button>
-                              </CardHeader>
-                              <CardContent className="space-y-4">
-                                <div className="grid gap-4">
-                                  {cvData.langues.map((langue) => (
-                                    <div
-                                      key={langue.id}
-                                      className="flex items-center gap-4 p-3 border rounded-lg"
-                                    >
-                                      <div className="flex-1">
-                                        <Input
-                                          value={langue.nom_langue}
-                                          onChange={(e) =>
-                                            updateLangue(
-                                              langue.id,
-                                              "nom_langue",
-                                              e.target.value
-                                            )
-                                          }
-                                          placeholder="Ex: Français, Anglais, Espagnol"
-                                        />
-                                      </div>
-                                      <div className="w-32">
-                                        <Select
-                                          value={langue.niveau}
-                                          onValueChange={(value) =>
-                                            updateLangue(
-                                              langue.id,
-                                              "niveau",
-                                              value
-                                            )
-                                          }
-                                        >
-                                          <SelectTrigger>
-                                            <SelectValue />
-                                          </SelectTrigger>
-                                          <SelectContent>
-                                            <SelectItem value="Débutant">
-                                              Débutant
-                                            </SelectItem>
-                                            <SelectItem value="Intermédiaire">
-                                              Intermédiaire
-                                            </SelectItem>
-                                            <SelectItem value="Avancé">
-                                              Avancé
-                                            </SelectItem>
-                                            <SelectItem value="Natif">
-                                              Natif
-                                            </SelectItem>
-                                          </SelectContent>
-                                        </Select>
-                                      </div>
-                                      <Button
-                                        className="px-4 py-2 bg-red-600 text-white rounded"
-                                        onClick={() => removeLangue(langue.id)}
-                                      >
-                                        <Trash2
-                                          className="h-7 w-7"
-                                          color="white"
-                                        />
-                                      </Button>
-                                    </div>
-                                  ))}
-                                </div>
-                                {cvData.langues.length === 0 && (
-                                  <div className="text-center py-8 text-gray-500">
-                                    <p>Aucune langue ajoutée</p>
-                                  </div>
-                                )}
-                              </CardContent>
-                            </Card>
-                          </TabsContent>
+                              </div>
+                            </div>
 
-                          {/* Centred d'interet */}
-                          <TabsContent value="centres_interet">
-                            <Card>
-                              <CardHeader className="flex flex-row items-center justify-between">
-                                <CardTitle>Centres d'intérêt</CardTitle>
+                            <div className="space-y-4">
+                              <div className="grid gap-4">
+                                {cvData.langues.map((langue) => (
+                                  <div
+                                    key={langue.id}
+                                    className="flex items-center gap-4 p-4"
+                                  >
+                                    <div className="flex-1">
+                                      <input
+                                        value={langue.nom_langue}
+                                        onChange={(e) =>
+                                          updateLangue(
+                                            langue.id,
+                                            "nom_langue",
+                                            e.target.value
+                                          )
+                                        }
+                                        placeholder="Ex: Français, Anglais, Espagnol"
+                                        className="w-full p-2 rounded border  focus:bg-white border-gray-300 focus:outline-none focus:border-blue-950 focus:ring-1 focus:ring-blue-950"
+                                      />
+                                    </div>
+                                    {/* <div className="w-32">
+                                      <Select
+                                        value={langue.niveau}
+                                        onValueChange={(value) =>
+                                          updateLangue(
+                                            langue.id,
+                                            "niveau",
+                                            value
+                                          )
+                                        }
+                                      >
+                                        <SelectTrigger>
+                                          <SelectValue />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                          <SelectItem value="Débutant">
+                                            Débutant
+                                          </SelectItem>
+                                          <SelectItem value="Intermédiaire">
+                                            Intermédiaire
+                                          </SelectItem>
+                                          <SelectItem value="Avancé">
+                                            Avancé
+                                          </SelectItem>
+                                          <SelectItem value="Natif">
+                                            Natif
+                                          </SelectItem>
+                                        </SelectContent>
+                                      </Select>
+                                    </div> */}
+                                    <Button
+                                      className="px-4 py-2 bg-red-600 text-white rounded"
+                                      onClick={() => removeLangue(langue.id)}
+                                    >
+                                      <Trash2
+                                        className="h-7 w-7"
+                                        color="white"
+                                      />
+                                    </Button>
+                                  </div>
+                                ))}
+                              </div>
+                              {cvData.langues.length === 0 && (
+                                <div className="text-center py-8 text-gray-500">
+                                  <p>Aucune langue ajoutée</p>
+                                </div>
+                              )}
+                            </div>
+                          </Card>
+                        </TabsContent>
+
+                        {/* Centred d'interet */}
+                        <TabsContent value="centres_interet">
+                          <Card>
+                            <div className="flex flex-row items-center justify-between">
+                              <div className="flex-1">
+                                <p className="text-xl font-semibold p-4">
+                                  Centres d'intérêt
+                                </p>
+                              </div>
+                              
+                              <div className="p-4">
                                 <Button
+                                  className="px-4 py-2 bg-blue-950 hover:bg-blue-900 text-white rounded"
                                   type="button"
                                   onClick={addCentreInteret}
                                   size="sm"
                                 >
                                   <Plus className="h-4 w-4 mr-2" />
-                                  Ajouter
+                                  Ajouter un centre d'intérêt
                                 </Button>
-                              </CardHeader>
-                              <CardContent className="space-y-4">
-                                <div className="grid gap-4">
-                                  {cvData.centres_interet.map((centre) => (
-                                    <div
-                                      key={centre.id}
-                                      className="flex items-center gap-4 p-3 border rounded-lg"
-                                    >
-                                      <div className="flex-1">
-                                        <Input
-                                          value={centre.nom_centre_interet}
-                                          onChange={(e) =>
-                                            updateCentreInteret(
-                                              centre.id,
-                                              "nom_centre_interet",
-                                              e.target.value
-                                            )
-                                          }
-                                          placeholder="Ex: Voyages, Lecture, Natation"
-                                        />
-                                      </div>
+                              </div>
+                            </div>
 
-                                      <Button
-                                        className="px-4 py-2 bg-red-600 text-white rounded"
-                                        onClick={() =>
-                                          removeCentreInteret(centre.id)
+                            <div className="space-y-4">
+                              <div className="grid gap-4">
+                                {cvData.centres_interet.map((centre) => (
+                                  <div
+                                    key={centre.id}
+                                    className="flex items-center gap-4 p-3"
+                                  >
+                                    <div className="flex-1">
+                                      <input
+                                        value={centre.nom_centre_interet}
+                                        onChange={(e) =>
+                                          updateCentreInteret(
+                                            centre.id,
+                                            "nom_centre_interet",
+                                            e.target.value
+                                          )
                                         }
-                                      >
-                                        <Trash2
-                                          className="h-7 w-7"
-                                          color="white"
-                                        />
-                                      </Button>
+                                        placeholder="Ex: Voyages, Lecture, Natation"
+                                         className="w-full p-2 rounded border  focus:bg-white border-gray-300 focus:outline-none focus:border-blue-950 focus:ring-1 focus:ring-blue-950"
+                                      />
                                     </div>
-                                  ))}
-                                </div>
-                                {cvData.centres_interet.length === 0 && (
-                                  <div className="text-center py-8 text-gray-500">
-                                    <p>Aucun centre d'intérêt ajoutée</p>
-                                  </div>
-                                )}
-                              </CardContent>
-                            </Card>
-                          </TabsContent>
-                        </div>
-                      </Tabs>
-                    </div>
-                    <Button
-                      type="submit"
-                      className="w-full bg-blue-600 hover:bg-blue-700"
-                    >
-                      Enregistrer
-                    </Button>
-                  </CardContent>
-                </Card>
-              </div>
-            </form>
-          </div>
 
-          {/* Prévisualisation */}
-          {showPreview && (
-            <div className="lg:sticky lg:top-24 lg:h-fit">
-              {renderCVTemplate()}
+                                    <Button
+                                      className="px-4 py-2 bg-red-600 text-white rounded"
+                                      onClick={() =>
+                                        removeCentreInteret(centre.id)
+                                      }
+                                    >
+                                      <Trash2
+                                        className="h-7 w-7"
+                                        color="white"
+                                      />
+                                    </Button>
+                                  </div>
+                                ))}
+                              </div>
+                              {cvData.centres_interet.length === 0 && (
+                                <div className="text-center py-8 text-gray-500">
+                                  <p>Aucun centre d'intérêt ajoutée</p>
+                                </div>
+                              )}
+                            </div>
+                          </Card>
+                        </TabsContent>
+
+                        <div className="mt-6">
+                          <Button
+                            type="submit"
+                            className="w-full px-4 py-2 bg-blue-950 hover:bg-blue-900 text-white rounded"
+                          >
+                            Enregistrer
+                          </Button>
+                        </div>
+                      </div>
+                    </Tabs>
+                  </div>
+                </CardContent>
+              </Card>
             </div>
-          )}
+          </form>
         </div>
       </div>
     </div>

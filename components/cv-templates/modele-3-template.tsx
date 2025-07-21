@@ -8,9 +8,12 @@ import {
   Award,
   Code,
   Globe,
+  Baby,
+  CarFront,
 } from "lucide-react";
 import PhotoCvExemple from "@/app/assets/photo-cv.png";
 import Image from "next/image";
+import { apiImg } from "@/axios.config";
 
 interface CVData {
   titre: string;
@@ -22,6 +25,11 @@ interface CVData {
     adresse: string;
     linkedin: string;
     photos: string; // Add this line
+    date_naissance: string;
+    situation_familiale: string;
+    nbre_enfants: string;
+    nationalite: string;
+    permis_conduire: string;
   };
   experiences: Array<{
     id: string;
@@ -30,9 +38,9 @@ interface CVData {
     date_debut: string;
     date_fin: string;
     missions: Array<{
-      id: string,
+      id: string;
       missions_details: string;
-  }>
+    }>;
   }>;
   formations: Array<{
     id: string;
@@ -98,8 +106,6 @@ export default function ModerneTemplateFirst({
   const accentColor = includeColors ? "text-black-600" : "text-gray-600";
   const gradientBg = includeColors ? "bg-black" : "bg-gray-800";
 
-  const API_URL = "http://192.168.1.2:5000";
-
   return (
     <div
       id="cv-preview"
@@ -112,7 +118,7 @@ export default function ModerneTemplateFirst({
               lineHeight: "1.4",
               color: "#333",
               width: "600px", // A4 width in px
-              height: "1200px", // A4 height in px
+
               padding: "20px",
             }
           : {}
@@ -132,39 +138,37 @@ export default function ModerneTemplateFirst({
 
               <div className="relative z-10 p-2 text-center space-x-2 flex flex-row">
                 {/* Colonne gauche - PHOTO */}
-                <div className="w-50 flex-shrink-0 space-y-2 max-auto w-[30%]">
-                  
-                    <div className="flex justify-center mb-2 mt-2">
-                      <div className="relative">
-                        {info.photos ? (
+                <div className="w-[35%] flex-shrink-0 space-y-2 max-auto">
+                  <div className="flex justify-center mb-2 mt-2">
+                    <div className="relative">
+                      {info.photos ? (
                         <img
-                          src={`${API_URL}/api/cv/get_cv_photo/${info.photos}`}
+                          src={`${process.env.NEXT_PUBLIC_API_URL}/cv/get_cv_photo/${info.photos}`}
                           alt={`${info.username}`}
                           className="w-32 h-32 rounded-full object-cover border-4 border-white/30 shadow-lg"
                         />
-                         ) : (
+                      ) : (
                         <img
                           src="/photo-cv.png"
                           alt="Photo de profil"
                           className="w-32 h-32 rounded-full object-cover border-4 border-white/30 shadow-lg"
-                        />  
-                         )}
-                        <div className="absolute inset-0 rounded-full bg-gradient-to-t from-black/20 to-transparent"></div>
-                      </div>
+                        />
+                      )}
+                      <div className="absolute inset-0 rounded-full bg-gradient-to-t from-black/20 to-transparent"></div>
                     </div>
-                 
+                  </div>
                 </div>
 
                 {/* Colonne droite - INFOS */}
-                <div className="w-full flex flex-col space-y-2 justify-center items-center text-left">
+                <div className="w-[65%] flex flex-col space-y-2 justify-center items-center text-left">
                   <div className="justify-center items-center">
-                    <h1 className="text-[20px] uppercase font-bold text-center tracking-tight">
+                    <h1 className="text-[22px] uppercase font-bold text-center tracking-tight">
                       {info.username}
                     </h1>
 
                     {cvData.titre && (
                       <div className="inline-block w-full justify-center items-center px-4 py-2 rounded-full ">
-                        <p className="text-sm text-center font-medium uppercase">
+                        <p className="text-[16px] text-center font-medium uppercase">
                           {cvData.titre}
                         </p>
                       </div>
@@ -182,43 +186,97 @@ export default function ModerneTemplateFirst({
 
             <div className={`${exportMode ? "mt-[-5%] lg:h-fit" : "lg:h-fit"}`}>
               <div className="flex flex-row gap-x-4">
-                <div className="w-[30%] p-2 lg:h-[290%]">
-                  {/* INFORMATIONS */}
+                <div className="w-[35%] px-2 py-2 lg:h-[100vh]">
+                  {/* CONTACTS */}
                   <h2 className="text-[16px] uppercase font-bold text-gray-900">
-                    INFORMATIONS
+                    CONTACTS
                   </h2>
+                  <div className="border mt-1"></div>
 
                   <div className="flex flex-col justify-center">
                     {info.email && (
-                      <div className="flex items-center text-black-100">
-                        <div className="p-2 bg-white/20 rounded-lg">
+                      <div className="flex items-center text-black-100 mb-1">
+                        <div className="bg-white/20 rounded-lg">
                           <Mail className="h-4 w-4" />
                         </div>
-                        <span className="text-sm">{info.email}</span>
+                        <span className="text-sm ml-1">{info.email}</span>
                       </div>
                     )}
                     {info.telephone && (
-                      <div className="flex items-center text-black-100">
-                        <div className="p-2 bg-white/20 rounded-lg">
+                      <div className="flex items-center text-black-100 mb-1">
+                        <div className=" bg-white/20 rounded-lg">
                           <Phone className="h-4 w-4" />
                         </div>
-                        <span className="text-sm">{info.telephone}</span>
+                        <span className="text-sm ml-1"> {"+255 "}{info.telephone}</span>
+                      </div>
+                    )}
+                    {info.date_naissance && (
+                      <div className="flex items-center text-black-100 mb-1">
+                        <div className="bg-white/20 rounded-lg">
+                          <Calendar className="h-4 w-4" />
+                        </div>
+                        <span className="text-sm ml-1">
+                          {new Date(info.date_naissance).toLocaleDateString(
+                            "fr-FR",
+                            {
+                              day: "numeric",
+                              month: "numeric",
+                              year: "numeric",
+                            }
+                          )}
+                        </span>
+                      </div>
+                    )}
+
+                    {info.situation_familiale && (
+                      <div className="flex items-center text-black-100 mb-1">
+                        <div className="bg-white/20 rounded-lg">
+                          <Baby className="h-4 w-4" />
+                        </div>
+                        <span className="text-sm ml-1">
+                          {info.situation_familiale},{" "}
+                          {info.nbre_enfants === "" || info.nbre_enfants === "0"
+                            ? "Sans enfant"
+                            : `${info.nbre_enfants} enfant${
+                                info.nbre_enfants !== "1" ? "s" : ""
+                              }`}
+                        </span>
+                      </div>
+                    )}
+
+                    {info.nationalite && (
+                      <div className="flex items-center text-black-100 mb-1">
+                        <div className=" bg-white/20 rounded-lg">
+                          <Phone className="h-4 w-4" />
+                        </div>
+                        <span className="text-sm ml-1">{info.nationalite}</span>
+                      </div>
+                    )}
+                    {info.permis_conduire && (
+                      <div className="flex items-center text-black-100 mb-1">
+                        <div className=" bg-white/20 rounded-lg">
+                          <CarFront className="h-4 w-4" />
+                        </div>
+                        {"Permis de conduire : "}
+                        <span className="text-sm ml-1 uppercase">
+                          {info.permis_conduire}
+                        </span>
                       </div>
                     )}
                     {info.adresse && (
-                      <div className="flex items-center text-black-100">
-                        <div className="p-2 bg-white/20 rounded-lg">
+                      <div className="flex items-center text-black-100 mb-1">
+                        <div className=" bg-white/20 rounded-lg">
                           <MapPin className="h-4 w-4" />
                         </div>
-                        <span className="text-sm">{info.adresse}</span>
+                        <span className="text-sm ml-1">{info.adresse}</span>
                       </div>
                     )}
                     {info.linkedin && (
-                      <div className="flex items-center text-black-100">
-                        <div className="p-2 bg-white/20 rounded-lg">
+                      <div className="flex items-center text-black-100 mb-1">
+                        <div className=" bg-white/20 rounded-lg">
                           <Linkedin className="h-4 w-4" />
                         </div>
-                        <div className="text-sm mb-2 truncate max-w-full">
+                        <div className="text-sm ml-1 whitespace-pre-line">
                           {info.linkedin}
                         </div>
                       </div>
@@ -281,7 +339,9 @@ export default function ModerneTemplateFirst({
 
                   {/* Langues */}
                   <div className="mt-4">
-                    <h2 className="text-[16px] uppercase font-bold text-gray-900">Langues</h2>
+                    <h2 className="text-[16px] uppercase font-bold text-gray-900">
+                      Langues
+                    </h2>
                     <div className="border mt-1"></div>
                     {cvData.langues.length > 0 && (
                       <section
@@ -381,7 +441,7 @@ export default function ModerneTemplateFirst({
                     )}
                   </div>
                 </div>
-                <div className="w-[70%] bg-gray-50 h-[290vh]">
+                <div className="w-[65%] bg-gray-50 h-[100vh]">
                   <div className="p-2">
                     <h2 className="text-[16px] uppercase font-bold text-gray-900">
                       Experiences Professionnelles
@@ -429,20 +489,19 @@ export default function ModerneTemplateFirst({
                                       </span>
                                     </div>
                                   )}
-                                  
-                                  <div className="max-w-full">
-                                     <ul className="list-disc list-inside">
-                                    {exp.missions.map((mission) => (
-                                      <li
-                                        key={mission.id}
-                                        className="text-gray-800"
-                                      >
-                                        {mission.missions_details}
-                                      </li>
-                                    ))}
-                                  </ul>
-                                  </div>
 
+                                  <div className="max-w-full">
+                                    <ul className="list-disc list-inside">
+                                      {exp.missions.map((mission) => (
+                                        <li
+                                          key={mission.id}
+                                          className="text-gray-800"
+                                        >
+                                          {mission.missions_details}
+                                        </li>
+                                      ))}
+                                    </ul>
+                                  </div>
                                 </div>
                               </div>
                             </div>
