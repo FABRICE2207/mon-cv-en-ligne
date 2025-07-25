@@ -15,10 +15,6 @@
 // export default nextConfig
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // 🔄 Configuration CORS pour les routes API
-  server: {
-    watch: true // Activé par défaut dans Vite/Next.js
-  },
   async headers() {
     return [
       {

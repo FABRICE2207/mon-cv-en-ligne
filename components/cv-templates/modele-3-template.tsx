@@ -24,7 +24,7 @@ interface CVData {
     telephone: string;
     adresse: string;
     linkedin: string;
-    photos: string; // Add this line
+    photos: string | File; // Add this line
     date_naissance: string;
     situation_familiale: string;
     nbre_enfants: string;
@@ -125,7 +125,7 @@ export default function ModerneTemplateFirst({
       }
     >
       <div
-        className={`${exportMode ? "border-0" : ""} overflow-hidden h-[118vh]`}
+        className={`${exportMode ? "border-0" : "h-screen"} w-full h-screen`}
       >
         {/* Header avec design moderne */}
         {!previewOnly && (
@@ -189,7 +189,7 @@ export default function ModerneTemplateFirst({
                 <div className="w-[35%] px-2 py-2 lg:h-[100vh]">
                   {/* CONTACTS */}
                   <h2 className="text-[16px] uppercase font-bold text-gray-900">
-                    CONTACTS
+                    COORDONNEES
                   </h2>
                   <div className="border mt-1"></div>
 

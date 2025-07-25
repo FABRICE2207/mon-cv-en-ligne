@@ -94,11 +94,11 @@ body {
 }
 
 @media screen and (max-width: 765px) {
-  .card-tabsList{
+  .card-tabsList {
     margin-top: 5vh;
   }
 
-  .card-gray-tabsList{
+  .card-gray-tabsList {
     height: 30%;
     padding: 10px;
   }
@@ -124,7 +124,9 @@ body {
     padding: 0;
   }
 
-  html, body, #cv-preview {
+  html,
+  body,
+  #cv-preview {
     margin: 0 !important;
     padding: 0 !important;
     width: 100% !important;
@@ -134,79 +136,77 @@ body {
   }
 
   /* Corrections Chrome spécifiques */
-/* Corrections Chrome spécifiques avec marges */
-@media print and (-webkit-min-device-pixel-ratio:0) {
-  #cv-preview {
-    width: 210mm !important;
-    min-height: 297mm !important;
-    transform: scale(1) !important;
-    zoom: 1 !important;
-    margin-top: 10mm !important;   /* Marge supérieure personnalisable */
-    margin-left: 15mm !important;  /* Marge gauche personnalisable */
-    margin-right: auto !important;
-    margin-bottom: auto !important;
-    -webkit-print-color-adjust: exact !important;
-    print-color-adjust: exact !important;
-  }
-
-  /* Correction du positionnement absolu dans Chrome */
-  body > #cv-preview {
-    position: relative !important;
-    top: 0 !important;
-    left: 0 !important;
-  }
-
-  /* Reset des marges parasites */
-  @page {
-    margin-top: -2%;
-    margin-left: -2%;
-  }
-}
-
-@-moz-document url-prefix() {
-  @media print {
+  /* Corrections Chrome spécifiques avec marges */
+  @media print and (-webkit-min-device-pixel-ratio: 0) {
     #cv-preview {
       width: 210mm !important;
       min-height: 297mm !important;
-      margin: 0 !important;
-      padding: 10mm 15mm !important; /* Marge intérieure équivalente aux marges Chrome */
-      box-sizing: border-box !important;
-      position: absolute !important;
-      top: 0 !important;
-      left: 0 !important;
-      -moz-print-color-adjust: exact !important;
-    }
-
-    /* Correction spécifique du conteneur parent */
-    body, html {
-      width: 100% !important;
-      height: 100% !important;
-      margin: 0 !important;
-      padding: 0 !important;
-    }
-
-    /* Reset agressif des marges PDF */
-    @page {
-      size: A4;
-      margin: 0 !important;
-      padding: 0 !important;
+      transform: scale(1) !important;
+      zoom: 1 !important;
+      margin-top: 10mm !important; /* Marge supérieure personnalisable */
+      margin-left: 15mm !important; /* Marge gauche personnalisable */
+      margin-right: auto !important;
+      margin-bottom: auto !important;
       -webkit-print-color-adjust: exact !important;
       print-color-adjust: exact !important;
     }
 
-    /* Correction du rendu des bordures */
-    * {
-      -moz-print-border-radius: 0 !important;
+    /* Correction du positionnement absolu dans Chrome */
+    body > #cv-preview {
+      position: relative !important;
+      top: 0 !important;
+      left: 0 !important;
+    }
+
+    /* Reset des marges parasites */
+    @page {
+      margin-top: -2%;
+      margin-left: -2%;
     }
   }
-}
+
+  @-moz-document url-prefix() {
+    @media print {
+      #cv-preview {
+        width: 210mm !important;
+        height: 297mm !important; /* hauteur fixe pour A4 */
+        margin: 0 auto !important; /* centrer horizontalement */
+        padding: 10mm 15mm !important;
+        box-sizing: border-box !important;
+        position: relative !important; /* éviter position absolute qui casse sur mobile */
+        top: auto !important;
+        left: auto !important;
+        page-break-after: avoid !important;
+        page-break-inside: avoid !important;
+        -webkit-print-color-adjust: exact !important; /* Chrome, Safari */
+        print-color-adjust: exact !important; /* Firefox */
+        -moz-print-color-adjust: exact !important; /* Firefox */
+        background: white !important; /* éviter transparence */
+      }
+
+      /* Suppression marges par défaut */
+      @page {
+        margin-right: -10%;
+        margin-left: -10%;
+      }
+
+      body,
+      html {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        width: 100%;
+      }
+    }
+  }
 
   /* Suppression des éléments indésirables (commun) */
-  a[href="#"], 
-  header, 
-  .header, 
-  .cv-header, 
+  a[href="#"],
+  header,
+  .header,
+  .cv-header,
   #choix-modele,
+  #btn-show,
   .no-print {
     display: none !important;
     height: 0 !important;
@@ -224,21 +224,9 @@ body {
     page-break-after: always;
   }
 
-  /* Gestion des sauts de page (cross-browser) */
-  .page-break {
-    page-break-before: always;
-    break-before: page;
-    -webkit-column-break-before: always; /* Chrome */
-  }
-
-  .avoid-break {
-    page-break-inside: avoid;
-    break-inside: avoid;
-    -webkit-column-break-inside: avoid; /* Chrome */
-  }
-
   /* Correction des images et tableaux */
-  img, table {
+  img,
+  table {
     max-width: 100% !important;
     page-break-inside: avoid;
     -webkit-column-break-inside: avoid; /* Chrome */

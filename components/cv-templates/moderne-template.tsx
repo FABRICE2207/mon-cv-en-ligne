@@ -80,8 +80,6 @@ export default function ModerneTemplate({ cvData,
   const accentColor = includeColors ? "text-blue-600" : "text-gray-600"
   const gradientBg = includeColors ? "bg-gradient-to-r from-blue-600 via-blue-700 to-indigo-800" : "bg-gray-800"
 
-  const API_URL = "http://192.168.1.2:5000";
-
   return (
     <div
       id="cv-preview"

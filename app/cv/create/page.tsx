@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { ArrowLeft, ChevronDown, ChevronUp, Plus, Trash2 } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -14,7 +15,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { FileText, Plus, Trash2, ArrowLeft, Eye } from "lucide-react";
 import ExportOptions, {
   type ExportOptions as ExportOptionsType,
 } from "@/components/export-options";
@@ -25,6 +25,7 @@ import { templateComponents } from "@/components/cv-templates/index";
 import Swal from "sweetalert2";
 import { headers } from "next/headers";
 import axios from "axios";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface CVData {
   titre: string;
@@ -97,16 +98,15 @@ interface CreateCVPageProps {
 export default function CreateCVPage({ previewTemplate }: CreateCVPageProps) {
   const router = useRouter();
   const [user, setUser] = useState<any>(null);
-  const [titre, setTitre] = useState<any>(null);
-  const [showPreview, setShowPreview] = useState(false);
-  const [token, setToken] = useState<string | null>(null);
   const [selectedTemplate, setSelectedTemplate] = useState(previewTemplate);
 
-  const [cvInfos, setCvInfos] = useState<any>(null);
+  // const [cvInfos, setCvInfos] = useState<any>(null);
 
   const [getModele, setGetModele] = useState<any>([]);
   const [nomModel, setNomModel] = useState<any>([]);
   const [modelesId, setModelesId] = useState<number>(0);
+
+  const [showCV, setShowCV] = useState(false);
 
   const handleTemplateSelect = (templateId: string, modeleId: number) => {
     setSelectedTemplate(templateId);
@@ -632,8 +632,8 @@ export default function CreateCVPage({ previewTemplate }: CreateCVPageProps) {
       return (
         <div className="flex items-center justify-center h-[100vh]">
           <p className="text-slate-400 text-2xl  p-4 rounded text-center">
-            Aucun modèle sélectionné pour le modèle. <br />
-            Veuillez sélectionner un modèle dans le formulaire.
+            Aucun modèle n’a été détecté. <br /> Veuillez sélectionner un modèle
+            de CV pour poursuivre
           </p>
         </div>
       );
@@ -642,10 +642,30 @@ export default function CreateCVPage({ previewTemplate }: CreateCVPageProps) {
     return <TemplateComponent {...templateProps} />;
   };
 
+  // État pour gérer les sections ouvertes
+  const [openSections, setOpenSections] = useState<Record<string, boolean>>({
+    experiences: true,
+    formations: false,
+    competences: false,
+    langues: false,
+    centres_interet: false,
+    logiciels: false,
+  });
+
+  // Fonction pour basculer l'état d'une section
+  const toggleSection = (section: string) => {
+    setOpenSections((prev) => ({
+      ...Object.keys(prev).reduce((acc, key) => {
+        acc[key] = key === section ? !prev[key] : false;
+        return acc;
+      }, {} as Record<string, boolean>),
+    }));
+  };
+
   if (!user) return null;
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 overflow-hidden h-screen">
       {/* Header */}
       <header className="bg-white border-b sticky top-0 z-40">
         <div className="container grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 gap-6 mx-auto px-4 py-4 items-center">
@@ -678,17 +698,45 @@ export default function CreateCVPage({ previewTemplate }: CreateCVPageProps) {
         </div>
       </header>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mx-auto px-4 py-6">
-        {/* <div
-          className={`grid gap-6 ${
-            showPreview ? "lg:grid-cols-1" : ""
-          }`}
-        > */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mx-auto px-4 py-6 max-h-[calc(100vh-100px)]">
         {/* Prévisualisation */}
-        <div className="lg:sticky lg:top-24 lg:h-fit">{renderCVTemplate()}</div>
+        <div className="overflow-y-auto max-h-[calc(100vh-100px)] p-4 bg-white rounded shadow">
+          {/* Bouton toggle mobile uniquement */}
+          <div className="block lg:hidden mb-4" id="btn-show">
+            <Button
+              onClick={() => setShowCV((prev) => !prev)}
+              className="w-full"
+            >
+              {showCV ? "Masquer le CV" : "Voir le CV"}
+            </Button>
+          </div>
 
-        {/* Formulaire d'édition */}
-        <div className="w-50 gap-6 space-y-4" id="choix-modele">
+          {/* CV visible si showCV est true (mobile), ou toujours visible en desktop */}
+          <AnimatePresence initial={false}>
+            {showCV && (
+              <motion.div
+                key="cv-mobile"
+                initial={{ opacity: 0, y: 50 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 50 }}
+                transition={{ duration: 0.3 }}
+                className="block lg:hidden"
+              >
+                {renderCVTemplate()}
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          {/* Toujours visible sur desktop */}
+          <div className="hidden lg:block">{renderCVTemplate()}</div>
+        </div>
+
+        {/* Colonne Choix modèle / Formulaire */}
+        <div
+          id="choix-modele"
+          className={`overflow-y-auto max-h-[calc(100vh-100px)] p-4 bg-white rounded shadow mb-4
+          ${showCV ? "hidden" : "block"} lg:block`}
+        >
           {/* Informations générales */}
           <Card>
             <CardHeader>
@@ -707,7 +755,7 @@ export default function CreateCVPage({ previewTemplate }: CreateCVPageProps) {
 
           <form onSubmit={handleSubmit}>
             <div>
-              <Card>
+              <Card className="mt-4">
                 <CardHeader>
                   <CardTitle>Informations générales</CardTitle>
                 </CardHeader>
@@ -785,7 +833,7 @@ export default function CreateCVPage({ previewTemplate }: CreateCVPageProps) {
               </Card>
 
               {/* Informations personnelles */}
-              <Card className="mt-8">
+              <Card className="mt-4">
                 <CardHeader>
                   <CardTitle>Informations personnelles</CardTitle>
                 </CardHeader>
@@ -996,77 +1044,132 @@ export default function CreateCVPage({ previewTemplate }: CreateCVPageProps) {
               </Card>
 
               {/* Sections avec onglets */}
-              <Card className="mt-8 h-full">
-                <CardContent className="space-y-4 p-4">
-                  <div className="w-full">
-                    <Tabs defaultValue="experiences" className="w-full">
-                      <TabsList className="grid grid-cols-1 gap-4 md:grid-cols-5 bg-blue-950 text-white mt-5 md:flex-row card-tabsList card-gray-tabsList w-full border-gray-200">
-                        <TabsTrigger
-                          value="experiences"
-                          className="w-full md:w-auto text-left md:text-center"
-                        >
-                          Expériences
-                        </TabsTrigger>
-                        <TabsTrigger
-                          value="formations"
-                          className="w-full md:w-auto text-left md:text-center"
-                        >
-                          Formations
-                        </TabsTrigger>
-                        <TabsTrigger
-                          value="competences"
-                          className="w-full md:w-auto text-left md:text-center"
-                        >
-                          Compétences
-                        </TabsTrigger>
-                        <TabsTrigger
-                          value="langues"
-                          className="w-full md:w-auto text-left md:text-center"
-                        >
-                          Langues
-                        </TabsTrigger>
-                        <TabsTrigger
-                          value="centres_interet"
-                          className="w-full md:w-auto text-left md:text-center"
-                        >
-                          Centres d'intérêt
-                        </TabsTrigger>
-                      </TabsList>
+              <div className="mt-4 h-full">
+                {/* Section Expériences */}
+                <div className="border rounded-lg">
+                  <button
+                    type="button"
+                    className="w-full flex justify-between items-center p-4  text-black"
+                    onClick={() => toggleSection("experiences")}
+                  >
+                    <span className="text-xl font-semibold">Expériences</span>
+                    {openSections.experiences ? <ChevronUp /> : <ChevronDown />}
+                  </button>
 
-                      <div className="w-full card-tabsList">
-                        {/* Expériences */}
-                        <TabsContent value="experiences">
-                          <Card>
-                            <div className="flex md:flex-row flex-col">
-                              <div className="flex-1">
-                                <p className="text-xl font-semibold p-4">
-                                  Expériences professionnelles
-                                </p>
-                              </div>
-                              <div className="p-4">
+                  {openSections.experiences && (
+                    <div className="p-4">
+                      <div className="space-y-4">
+                        {cvData.experiences.map((exp) => (
+                          <div
+                            key={exp.id}
+                            className="p-4 space-y-4 border rounded-lg"
+                          >
+                            <div className="space-y-6">
+                              <div className="flex justify-between items-start">
+                                <h4 className="font-medium">
+                                  Expérience #
+                                  {cvData.experiences.indexOf(exp) + 1}
+                                </h4>
                                 <Button
-                                  className="px-4 py-2 bg-blue-950 hover:bg-blue-900 text-white rounded"
-                                  type="button"
-                                  onClick={addExperience}
-                                  size="sm"
+                                  className="px-4 py-2 bg-red-600 text-white rounded"
+                                  onClick={() => removeExperience(exp.id)}
                                 >
-                                  <Plus className="h-4 w-4 mr-2" />
-                                  Ajouter une expérience
+                                  <Trash2 className="h-7 w-7" color="white" />
                                 </Button>
                               </div>
-                            </div>
+                              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                  <Label>Titre du poste</Label>
+                                  <input
+                                    value={exp.titre_poste}
+                                    onChange={(e) =>
+                                      updateExperience(
+                                        exp.id,
+                                        "titre_poste",
+                                        e.target.value
+                                      )
+                                    }
+                                    placeholder="Ex: Développeur Frontend"
+                                    className="w-full p-2 rounded border  focus:bg-white border-gray-300 focus:outline-none focus:border-blue-950 focus:ring-1 focus:ring-blue-950"
+                                  />
+                                </div>
+                                <div>
+                                  <Label>Entreprise</Label>
+                                  <input
+                                    value={exp.nom_entreprise}
+                                    onChange={(e) =>
+                                      updateExperience(
+                                        exp.id,
+                                        "nom_entreprise",
+                                        e.target.value
+                                      )
+                                    }
+                                    placeholder="Ex: Google"
+                                    className="w-full p-2 rounded border  focus:bg-white border-gray-300 focus:outline-none focus:border-blue-950 focus:ring-1 focus:ring-blue-950"
+                                  />
+                                </div>
+                              </div>
+                              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                  <Label>Date de début</Label>
+                                  <input
+                                    type="date"
+                                    value={exp.date_debut}
+                                    onChange={(e) =>
+                                      updateExperience(
+                                        exp.id,
+                                        "date_debut",
+                                        e.target.value
+                                      )
+                                    }
+                                    className="w-full p-2 rounded border  focus:bg-white border-gray-300 focus:outline-none focus:border-blue-950 focus:ring-1 focus:ring-blue-950"
+                                  />
+                                </div>
+                                <div>
+                                  <Label>Date de fin</Label>
+                                  <input
+                                    type="date"
+                                    value={exp.date_fin}
+                                    onChange={(e) =>
+                                      updateExperience(
+                                        exp.id,
+                                        "date_fin",
+                                        e.target.value
+                                      )
+                                    }
+                                    className="w-full p-2 rounded border  focus:bg-white border-gray-300 focus:outline-none focus:border-blue-950 focus:ring-1 focus:ring-blue-950"
+                                  />
+                                </div>
+                              </div>
+                              <div className="space-y-2">
+                                <Label className="block">Vos missions</Label>
 
-                            <div className="space-y-6">
-                              {cvData.experiences.map((exp) => (
-                                <div key={exp.id} className="p-4 space-y-4">
-                                  <div className="flex justify-between items-start">
-                                    <h4 className="font-medium">
-                                      Expérience #
-                                      {cvData.experiences.indexOf(exp) + 1}
-                                    </h4>
+                                {exp.missions.map((mission, index) => (
+                                  <div
+                                    key={mission.id}
+                                    className="flex items-center gap-2 mb-2"
+                                  >
+                                    <input
+                                      value={mission.missions_details}
+                                      placeholder={`Mission ${index + 1}`}
+                                      onChange={(e) =>
+                                        updateMission(
+                                          exp.id,
+                                          mission.id,
+                                          e.target.value
+                                        )
+                                      }
+                                      required
+                                      className="w-full p-2 rounded border  focus:bg-white border-gray-300 focus:outline-none focus:border-blue-950 focus:ring-1 focus:ring-blue-950"
+                                    />
                                     <Button
                                       className="px-4 py-2 bg-red-600 text-white rounded"
-                                      onClick={() => removeExperience(exp.id)}
+                                      onClick={() =>
+                                        removeMissionFromExperience(
+                                          exp.id,
+                                          mission.id
+                                        )
+                                      }
                                     >
                                       <Trash2
                                         className="h-7 w-7"
@@ -1074,253 +1177,150 @@ export default function CreateCVPage({ previewTemplate }: CreateCVPageProps) {
                                       />
                                     </Button>
                                   </div>
-                                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    <div>
-                                      <Label>Titre du poste</Label>
-                                      <input
-                                        value={exp.titre_poste}
-                                        onChange={(e) =>
-                                          updateExperience(
-                                            exp.id,
-                                            "titre_poste",
-                                            e.target.value
-                                          )
-                                        }
-                                        placeholder="Ex: Développeur Frontend"
-                                        className="w-full p-2 rounded border  focus:bg-white border-gray-300 focus:outline-none focus:border-blue-950 focus:ring-1 focus:ring-blue-950"
-                                      />
-                                    </div>
-                                    <div>
-                                      <Label>Entreprise</Label>
-                                      <input
-                                        value={exp.nom_entreprise}
-                                        onChange={(e) =>
-                                          updateExperience(
-                                            exp.id,
-                                            "nom_entreprise",
-                                            e.target.value
-                                          )
-                                        }
-                                        placeholder="Ex: Google"
-                                        className="w-full p-2 rounded border  focus:bg-white border-gray-300 focus:outline-none focus:border-blue-950 focus:ring-1 focus:ring-blue-950"
-                                      />
-                                    </div>
-                                  </div>
-                                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    <div>
-                                      <Label>Date de début</Label>
-                                      <input
-                                        type="date"
-                                        value={exp.date_debut}
-                                        onChange={(e) =>
-                                          updateExperience(
-                                            exp.id,
-                                            "date_debut",
-                                            e.target.value
-                                          )
-                                        }
-                                        className="w-full p-2 rounded border  focus:bg-white border-gray-300 focus:outline-none focus:border-blue-950 focus:ring-1 focus:ring-blue-950"
-                                      />
-                                    </div>
-                                    <div>
-                                      <Label>Date de fin</Label>
-                                      <input
-                                        type="date"
-                                        value={exp.date_fin}
-                                        onChange={(e) =>
-                                          updateExperience(
-                                            exp.id,
-                                            "date_fin",
-                                            e.target.value
-                                          )
-                                        }
-                                        className="w-full p-2 rounded border  focus:bg-white border-gray-300 focus:outline-none focus:border-blue-950 focus:ring-1 focus:ring-blue-950"
-                                      />
-                                    </div>
-                                  </div>
-                                  <div className="space-y-2">
-                                    <Label className="block">
-                                      Vos missions
-                                    </Label>
+                                ))}
 
-                                    {exp.missions.map((mission, index) => (
-                                      <div
-                                        key={mission.id}
-                                        className="flex items-center gap-2 mb-2"
-                                      >
-                                        <input
-                                          value={mission.missions_details}
-                                          placeholder={`Mission ${index + 1}`}
-                                          onChange={(e) =>
-                                            updateMission(
-                                              exp.id,
-                                              mission.id,
-                                              e.target.value
-                                            )
-                                          }
-                                          required
-                                          className="w-full p-2 rounded border  focus:bg-white border-gray-300 focus:outline-none focus:border-blue-950 focus:ring-1 focus:ring-blue-950"
-                                        />
-                                        <Button
-                                          className="px-4 py-2 bg-red-600 text-white rounded"
-                                          onClick={() =>
-                                            removeMissionFromExperience(
-                                              exp.id,
-                                              mission.id
-                                            )
-                                          }
-                                        >
-                                          <Trash2
-                                            className="h-7 w-7"
-                                            color="white"
-                                          />
-                                        </Button>
-                                      </div>
-                                    ))}
+                                <button
+                                  type="button"
+                                  className="px-3 py-1 bg-blue-950 hover:bg-blue-900 text-white rounded"
+                                  onClick={() => addMissionToExperience(exp.id)}
+                                >
+                                  Ajouter une mission
+                                </button>
+                              </div>
 
-                                    <button
-                                      type="button"
-                                      className="px-3 py-1 bg-blue-950 hover:bg-blue-900 text-white rounded"
-                                      onClick={() =>
-                                        addMissionToExperience(exp.id)
-                                      }
-                                    >
-                                      Ajouter une mission
-                                    </button>
-                                  </div>
+                              {/* <div>
+                                            <Label>Vos missions</Label>
+                                            <input
+                                              value={exp.missions[0]?.missions_details || ""}
+                                              placeholder="Décrivez vos diffrérentes missions"
+                                              onChange={(e) =>
+                                                updateExperience(
+                                                  exp.id,
+                                                  "missions",
+                                                  e.target.value
+                                                )
+                                              }
+                                            />
+                                          </div> */}
 
-                                  {/* <div>
-                                      <Label>Vos missions</Label>
-                                      <input
-                                        value={exp.missions[0]?.missions_details || ""}
-                                        placeholder="Décrivez vos diffrérentes missions"
-                                        onChange={(e) =>
-                                          updateExperience(
-                                            exp.id,
-                                            "missions",
-                                            e.target.value
-                                          )
-                                        }
-                                      />
-                                    </div> */}
-                                </div>
-                              ))}
                               {cvData.experiences.length === 0 && (
                                 <div className="text-center py-8 text-gray-500">
                                   <p>Aucune expérience ajoutée</p>
                                 </div>
                               )}
                             </div>
-                          </Card>
-                        </TabsContent>
+                          </div>
+                        ))}
 
-                        {/* Formations */}
-                        <TabsContent value="formations">
-                          <Card>
-                            <div className="flex md:flex-row flex-col">
-                              <div className="flex-1">
-                                <p className="text-xl font-semibold p-4">
-                                  Formations
-                                </p>
+                        <div className="flex justify-start mb-2">
+                          <Button
+                            className="px-4 py-2 bg-blue-950 hover:bg-blue-900 text-white rounded"
+                            type="button"
+                            onClick={addExperience}
+                            size="sm"
+                          >
+                            <Plus className="h-4 w-4 mr-2" />
+                            Ajouter une expérience
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* Section Formations */}
+                <div className="border rounded-lg overflow-hidden mt-4">
+                  <button
+                    type="button"
+                    className="w-full flex justify-between items-center p-4  text-black"
+                    onClick={() => toggleSection("formations")}
+                  >
+                    <span className="text-xl font-semibold">Formations</span>
+                    {openSections.formations ? <ChevronUp /> : <ChevronDown />}
+                  </button>
+
+                  {openSections.formations && (
+                    <div className="p-4">
+                      <div className="space-y-4">
+                        {cvData.formations.map((formation) => (
+                          <div key={formation.id} className="space-y-4">
+                            <div className="flex justify-between items-start">
+                              <h4 className="font-medium">
+                                Formation #
+                                {cvData.formations.indexOf(formation) + 1}
+                              </h4>
+                              <Button
+                                className="px-4 py-2 bg-red-600 text-white rounded"
+                                onClick={() => removeFormation(formation.id)}
+                              >
+                                <Trash2 className="h-7 w-7" color="white" />
+                              </Button>
+                            </div>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                              <div>
+                                <Label>Diplôme</Label>
+                                <input
+                                  value={formation.diplome}
+                                  onChange={(e) =>
+                                    updateFormation(
+                                      formation.id,
+                                      "diplome",
+                                      e.target.value
+                                    )
+                                  }
+                                  placeholder="Ex: Master en Informatique"
+                                  className="w-full p-2 rounded border  focus:bg-white border-gray-300 focus:outline-none focus:border-blue-950 focus:ring-1 focus:ring-blue-950"
+                                />
                               </div>
-                              <div className="p-4">
-                                <Button
-                                  className="px-4 py-2 bg-blue-950 hover:bg-blue-900 text-white rounded"
-                                  type="button"
-                                  onClick={addFormation}
-                                  size="sm"
-                                >
-                                  <Plus className="h-4 w-4 mr-2" />
-                                  Ajouter une formation
-                                </Button>
+                              <div>
+                                <Label>Établissement</Label>
+                                <input
+                                  value={formation.nom_etablissement}
+                                  onChange={(e) =>
+                                    updateFormation(
+                                      formation.id,
+                                      "nom_etablissement",
+                                      e.target.value
+                                    )
+                                  }
+                                  placeholder="Ex: Université de Paris"
+                                  className="w-full p-2 rounded border  focus:bg-white border-gray-300 focus:outline-none focus:border-blue-950 focus:ring-1 focus:ring-blue-950"
+                                />
                               </div>
                             </div>
-
-                            <CardContent className="space-y-6">
-                              {cvData.formations.map((formation) => (
-                                <div key={formation.id} className="space-y-4">
-                                  <div className="flex justify-between items-start">
-                                    <h4 className="font-medium">
-                                      Formation #
-                                      {cvData.formations.indexOf(formation) + 1}
-                                    </h4>
-                                    <Button
-                                      className="px-4 py-2 bg-red-600 text-white rounded"
-                                      onClick={() =>
-                                        removeFormation(formation.id)
-                                      }
-                                    >
-                                      <Trash2
-                                        className="h-7 w-7"
-                                        color="white"
-                                      />
-                                    </Button>
-                                  </div>
-                                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    <div>
-                                      <Label>Diplôme</Label>
-                                      <input
-                                        value={formation.diplome}
-                                        onChange={(e) =>
-                                          updateFormation(
-                                            formation.id,
-                                            "diplome",
-                                            e.target.value
-                                          )
-                                        }
-                                        placeholder="Ex: Master en Informatique"
-                                        className="w-full p-2 rounded border  focus:bg-white border-gray-300 focus:outline-none focus:border-blue-950 focus:ring-1 focus:ring-blue-950"
-                                      />
-                                    </div>
-                                    <div>
-                                      <Label>Établissement</Label>
-                                      <input
-                                        value={formation.nom_etablissement}
-                                        onChange={(e) =>
-                                          updateFormation(
-                                            formation.id,
-                                            "nom_etablissement",
-                                            e.target.value
-                                          )
-                                        }
-                                        placeholder="Ex: Université de Paris"
-                                        className="w-full p-2 rounded border  focus:bg-white border-gray-300 focus:outline-none focus:border-blue-950 focus:ring-1 focus:ring-blue-950"
-                                      />
-                                    </div>
-                                  </div>
-                                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    <div>
-                                      <Label>Date de début</Label>
-                                      <input
-                                        type="date"
-                                        value={formation.date_debut}
-                                        onChange={(e) =>
-                                          updateFormation(
-                                            formation.id,
-                                            "date_debut",
-                                            e.target.value
-                                          )
-                                        }
-                                        className="w-full p-2 rounded border  focus:bg-white border-gray-300 focus:outline-none focus:border-blue-950 focus:ring-1 focus:ring-blue-950"
-                                      />
-                                    </div>
-                                    <div>
-                                      <Label>Date de fin</Label>
-                                      <input
-                                        type="date"
-                                        value={formation.date_fin}
-                                        onChange={(e) =>
-                                          updateFormation(
-                                            formation.id,
-                                            "date_fin",
-                                            e.target.value
-                                          )
-                                        }
-                                        className="w-full p-2 rounded border  focus:bg-white border-gray-300 focus:outline-none focus:border-blue-950 focus:ring-1 focus:ring-blue-950"
-                                      />
-                                    </div>
-                                  </div>
-                                  {/* <div>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                              <div>
+                                <Label>Date de début</Label>
+                                <input
+                                  type="date"
+                                  value={formation.date_debut}
+                                  onChange={(e) =>
+                                    updateFormation(
+                                      formation.id,
+                                      "date_debut",
+                                      e.target.value
+                                    )
+                                  }
+                                  className="w-full p-2 rounded border  focus:bg-white border-gray-300 focus:outline-none focus:border-blue-950 focus:ring-1 focus:ring-blue-950"
+                                />
+                              </div>
+                              <div>
+                                <Label>Date de fin</Label>
+                                <input
+                                  type="date"
+                                  value={formation.date_fin}
+                                  onChange={(e) =>
+                                    updateFormation(
+                                      formation.id,
+                                      "date_fin",
+                                      e.target.value
+                                    )
+                                  }
+                                  className="w-full p-2 rounded border  focus:bg-white border-gray-300 focus:outline-none focus:border-blue-950 focus:ring-1 focus:ring-blue-950"
+                                />
+                              </div>
+                            </div>
+                            {/* <div>
                                   <Label>Description</Label>
                                   <Textarea
                                     value={formation.description}
@@ -1334,286 +1334,277 @@ export default function CreateCVPage({ previewTemplate }: CreateCVPageProps) {
                                     placeholder="Décrivez votre formation..."
                                   />
                                 </div> */}
-                                </div>
-                              ))}
-                              {cvData.formations.length === 0 && (
-                                <div className="text-center py-8 text-gray-500">
-                                  <p>Aucune formation ajoutée</p>
-                                </div>
-                              )}
-                            </CardContent>
-                          </Card>
-                        </TabsContent>
+                          </div>
+                        ))}
+                        {/* {cvData.formations.length === 0 && (
+                              <div className="text-center py-8 text-gray-500">
+                                <p>Aucune formation ajoutée</p>
+                              </div>
+                            )} */}
 
-                        {/* Compétences */}
-                        <TabsContent value="competences">
-                          <Card>
-                            <div className="flex flex-row items-center justify-between">
-                              <div className="flex-1">
-                                <p className="text-xl font-semibold p-4">
-                                  Compétences
-                                </p>
-                              </div>
-                              <div className="p-4">
-                                <Button
-                                  className="px-4 py-2 bg-blue-950 hover:bg-blue-900 text-white rounded"
-                                  type="button"
-                                  onClick={addCompetence}
-                                  size="sm"
-                                >
-                                  <Plus className="h-4 w-4 mr-2" />
-                                  Ajouter une compétence
-                                </Button>
-                              </div>
-                            </div>
-                            <div className="space-y-4">
-                              <div className="grid gap-4">
-                                {cvData.competences.map((comp) => (
-                                  <div
-                                    key={comp.id}
-                                    className="flex items-center gap-2 p-3"
-                                  >
-                                    <div className="flex-1">
-                                      <input
-                                        value={comp.nom_competence}
-                                        onChange={(e) =>
-                                          updateCompetence(
-                                            comp.id,
-                                            "nom_competence",
-                                            e.target.value
-                                          )
-                                        }
-                                        placeholder="Ex: JavaScript, React, Node.js"
-                                        className="w-full p-2 rounded border  focus:bg-white border-gray-300 focus:outline-none focus:border-blue-950 focus:ring-1 focus:ring-blue-950"
-                                      />
-                                    </div>
-                                    {/* <div className="w-32">
-                                        <Select
-                                          value={comp.niveau}
-                                          onValueChange={(value) =>
-                                            updateCompetence(
-                                              comp.id,
-                                              "niveau",
-                                              value
-                                            )
-                                          }
-                                        >
-                                          <SelectTrigger>
-                                            <SelectValue />
-                                          </SelectTrigger>
-                                          <SelectContent>
-                                            <SelectItem value="Débutant">
-                                              Débutant
-                                            </SelectItem>
-                                            <SelectItem value="Intermédiaire">
-                                              Intermédiaire
-                                            </SelectItem>
-                                            <SelectItem value="Avancé">
-                                              Avancé
-                                            </SelectItem>
-                                            <SelectItem value="Expert">
-                                              Expert
-                                            </SelectItem>
-                                          </SelectContent>
-                                        </Select>
-                                    </div> */}
-                                    <Button
-                                      type="button"
-                                      className="px-4 py-2 bg-red-600 text-white rounded"
-                                      onClick={() => removeCompetence(comp.id)}
-                                    >
-                                      <Trash2
-                                        className="h-7 w-7"
-                                        color="white"
-                                      />
-                                    </Button>
-                                  </div>
-                                ))}
-                              </div>
-                              {cvData.competences.length === 0 && (
-                                <div className="text-center py-8 text-gray-500">
-                                  <p>Aucune compétence ajoutée</p>
-                                </div>
-                              )}
-                            </div>
-                          </Card>
-                        </TabsContent>
-
-                        {/* Langues */}
-                        <TabsContent value="langues">
-                          <Card>
-                            <div className="flex flex-row items-center justify-between">
-                              <div className="flex-1">
-                                <p className="text-xl font-semibold p-4">
-                                  Langues
-                                </p>
-                              </div>
-                              <div className="p-4">
-                                <Button
-                                  className="px-4 py-2 bg-blue-950 hover:bg-blue-900 text-white rounded"
-                                  type="button"
-                                  onClick={addLangue}
-                                  size="sm"
-                                >
-                                  <Plus className="h-4 w-4 mr-2" />
-                                  Ajouter une langue
-                                </Button>
-                              </div>
-                            </div>
-
-                            <div className="space-y-4">
-                              <div className="grid gap-4">
-                                {cvData.langues.map((langue) => (
-                                  <div
-                                    key={langue.id}
-                                    className="flex items-center gap-4 p-4"
-                                  >
-                                    <div className="flex-1">
-                                      <input
-                                        value={langue.nom_langue}
-                                        onChange={(e) =>
-                                          updateLangue(
-                                            langue.id,
-                                            "nom_langue",
-                                            e.target.value
-                                          )
-                                        }
-                                        placeholder="Ex: Français, Anglais, Espagnol"
-                                        className="w-full p-2 rounded border  focus:bg-white border-gray-300 focus:outline-none focus:border-blue-950 focus:ring-1 focus:ring-blue-950"
-                                      />
-                                    </div>
-                                    {/* <div className="w-32">
-                                      <Select
-                                        value={langue.niveau}
-                                        onValueChange={(value) =>
-                                          updateLangue(
-                                            langue.id,
-                                            "niveau",
-                                            value
-                                          )
-                                        }
-                                      >
-                                        <SelectTrigger>
-                                          <SelectValue />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                          <SelectItem value="Débutant">
-                                            Débutant
-                                          </SelectItem>
-                                          <SelectItem value="Intermédiaire">
-                                            Intermédiaire
-                                          </SelectItem>
-                                          <SelectItem value="Avancé">
-                                            Avancé
-                                          </SelectItem>
-                                          <SelectItem value="Natif">
-                                            Natif
-                                          </SelectItem>
-                                        </SelectContent>
-                                      </Select>
-                                    </div> */}
-                                    <Button
-                                      className="px-4 py-2 bg-red-600 text-white rounded"
-                                      onClick={() => removeLangue(langue.id)}
-                                    >
-                                      <Trash2
-                                        className="h-7 w-7"
-                                        color="white"
-                                      />
-                                    </Button>
-                                  </div>
-                                ))}
-                              </div>
-                              {cvData.langues.length === 0 && (
-                                <div className="text-center py-8 text-gray-500">
-                                  <p>Aucune langue ajoutée</p>
-                                </div>
-                              )}
-                            </div>
-                          </Card>
-                        </TabsContent>
-
-                        {/* Centred d'interet */}
-                        <TabsContent value="centres_interet">
-                          <Card>
-                            <div className="flex flex-row items-center justify-between">
-                              <div className="flex-1">
-                                <p className="text-xl font-semibold p-4">
-                                  Centres d'intérêt
-                                </p>
-                              </div>
-                              
-                              <div className="p-4">
-                                <Button
-                                  className="px-4 py-2 bg-blue-950 hover:bg-blue-900 text-white rounded"
-                                  type="button"
-                                  onClick={addCentreInteret}
-                                  size="sm"
-                                >
-                                  <Plus className="h-4 w-4 mr-2" />
-                                  Ajouter un centre d'intérêt
-                                </Button>
-                              </div>
-                            </div>
-
-                            <div className="space-y-4">
-                              <div className="grid gap-4">
-                                {cvData.centres_interet.map((centre) => (
-                                  <div
-                                    key={centre.id}
-                                    className="flex items-center gap-4 p-3"
-                                  >
-                                    <div className="flex-1">
-                                      <input
-                                        value={centre.nom_centre_interet}
-                                        onChange={(e) =>
-                                          updateCentreInteret(
-                                            centre.id,
-                                            "nom_centre_interet",
-                                            e.target.value
-                                          )
-                                        }
-                                        placeholder="Ex: Voyages, Lecture, Natation"
-                                         className="w-full p-2 rounded border  focus:bg-white border-gray-300 focus:outline-none focus:border-blue-950 focus:ring-1 focus:ring-blue-950"
-                                      />
-                                    </div>
-
-                                    <Button
-                                      className="px-4 py-2 bg-red-600 text-white rounded"
-                                      onClick={() =>
-                                        removeCentreInteret(centre.id)
-                                      }
-                                    >
-                                      <Trash2
-                                        className="h-7 w-7"
-                                        color="white"
-                                      />
-                                    </Button>
-                                  </div>
-                                ))}
-                              </div>
-                              {cvData.centres_interet.length === 0 && (
-                                <div className="text-center py-8 text-gray-500">
-                                  <p>Aucun centre d'intérêt ajoutée</p>
-                                </div>
-                              )}
-                            </div>
-                          </Card>
-                        </TabsContent>
-
-                        <div className="mt-6">
+                        <div className="flex justify-start mb-4">
                           <Button
-                            type="submit"
-                            className="w-full px-4 py-2 bg-blue-950 hover:bg-blue-900 text-white rounded"
+                            className="px-4 py-2 bg-blue-950 hover:bg-blue-900 text-white rounded"
+                            type="button"
+                            onClick={addFormation}
+                            size="sm"
                           >
-                            Enregistrer
+                            <Plus className="h-4 w-4 mr-2" />
+                            Ajouter une formation
                           </Button>
                         </div>
                       </div>
-                    </Tabs>
-                  </div>
-                </CardContent>
-              </Card>
+                    </div>
+                  )}
+                </div>
+
+                {/* Section Compétences */}
+                <div className="border rounded-lg overflow-hidden mt-4">
+                  <button
+                    type="button"
+                    className="w-full flex justify-between items-center p-4 text-black"
+                    onClick={() => toggleSection("competences")}
+                  >
+                    <span className="text-xl font-semibold">Compétences</span>
+                    {openSections.competences ? <ChevronUp /> : <ChevronDown />}
+                  </button>
+
+                  {openSections.competences && (
+                    <div className="p-4 space-y-4">
+                      {cvData.competences.map((comp) => (
+                        <div
+                          key={comp.id}
+                          className="flex items-center gap-2 rounded-lg"
+                        >
+                          <input
+                            value={comp.nom_competence}
+                            onChange={(e) =>
+                              updateCompetence(
+                                comp.id,
+                                "nom_competence",
+                                e.target.value
+                              )
+                            }
+                            placeholder="Ex: JavaScript, React, Node.js"
+                            className="flex-1 p-2 rounded border focus:bg-white border-gray-300 focus:outline-none focus:border-blue-950 focus:ring-1 focus:ring-blue-950"
+                          />
+
+                          {/* Niveau (optionnel) */}
+                          {/* <div className="w-32">
+            <Select
+              value={comp.niveau}
+              onValueChange={(value) =>
+                updateCompetence(comp.id, "niveau", value)
+              }
+            >
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="Débutant">Débutant</SelectItem>
+                <SelectItem value="Intermédiaire">Intermédiaire</SelectItem>
+                <SelectItem value="Avancé">Avancé</SelectItem>
+                <SelectItem value="Expert">Expert</SelectItem>
+              </SelectContent>
+            </Select>
+          </div> */}
+
+                          <Button
+                            type="button"
+                            className="px-4 py-2 bg-red-600 text-white rounded"
+                            onClick={() => removeCompetence(comp.id)}
+                          >
+                            <Trash2 className="h-5 w-5" />
+                          </Button>
+                        </div>
+                      ))}
+
+                      <div className="flex justify-start mb-4 mt-4">
+                        <Button
+                          className="px-4 py-2 rounded bg-blue-950 hover:bg-blue-900 text-white"
+                          type="button"
+                          onClick={addCompetence}
+                          size="sm"
+                        >
+                          <Plus className="h-4 w-4 mr-2" />
+                          Ajouter une compétence
+                        </Button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* Section Langues */}
+                <div className="border rounded-lg overflow-hidden mt-4">
+                  <button
+                    type="button"
+                    className="w-full flex justify-between items-center p-4 text-black"
+                    onClick={() => toggleSection("langues")}
+                  >
+                    <span className="text-lg font-semibold">Langues</span>
+                    {openSections.langues ? <ChevronUp /> : <ChevronDown />}
+                  </button>
+
+                  {openSections.langues && (
+                    <div className="p-4 space-y-4">
+                      {cvData.langues.map((langue, index) => (
+                        <div
+                          key={langue.id}
+                          className="flex items-center gap-2 rounded-lg"
+                        >
+                          <div className="flex flex-wrap gap-2 items-start w-full">
+                            <div className="flex-1 w-full">
+                              <Label>Langue {index + 1}</Label>
+                              <input
+                                value={langue.nom_langue}
+                                onChange={(e) =>
+                                  updateLangue(
+                                    langue.id,
+                                    "nom_langue",
+                                    e.target.value
+                                  )
+                                }
+                                placeholder={`Langue ${index + 1}`}
+                                className="w-full p-2 rounded border focus:bg-white border-gray-300 focus:outline-none focus:border-blue-950 focus:ring-1 focus:ring-blue-950"
+                              />
+                            </div>
+
+                            <div className="w-32 min-w-[130px]">
+                              <Label>Niveau</Label>
+                              <Select
+                                value={langue.niveau}
+                                onValueChange={(value) =>
+                                  updateLangue(langue.id, "niveau", value)
+                                }
+                              >
+                                <SelectTrigger>
+                                  <SelectValue placeholder="Niveau" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="Débutant">
+                                    Débutant
+                                  </SelectItem>
+                                  <SelectItem value="Intermédiaire">
+                                    Intermédiaire
+                                  </SelectItem>
+                                  <SelectItem value="Avancé">Avancé</SelectItem>
+                                  <SelectItem value="Expert">Expert</SelectItem>
+                                </SelectContent>
+                              </Select>
+                            </div>
+
+                            <div className="mt-6">
+                              <Button
+                              className="px-4 py-2 bg-red-600 text-white rounded"
+                              onClick={() => removeLangue(langue.id)}
+                            >
+                              <Trash2 className="h-7 w-7" color="white" />
+                            </Button>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+
+                      {/* {cvData.langues.length === 0 && (
+                          <div className="text-center py-8 text-gray-500">
+                            <p>Aucune langue ajoutée</p>
+                          </div>
+                        )} */}
+
+                      <div className="flex justify-start mb-4">
+                        <Button
+                          className="px-4 py-2 bg-blue-950 hover:bg-blue-900 text-white rounded"
+                          type="button"
+                          onClick={addLangue}
+                          size="sm"
+                        >
+                          <Plus className="h-4 w-4 mr-2" />
+                          Ajouter une langue
+                        </Button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* Section Centres d'intérêt */}
+                <div className="border rounded-lg overflow-hidden mt-4">
+                  <button
+                    type="button"
+                    className="w-full flex justify-between items-center p-4 text-block"
+                    onClick={() => toggleSection("centres_interet")}
+                  >
+                    <span className="text-xl font-semibold">
+                      Centres d'intérêt
+                    </span>
+                    {openSections.centres_interet ? (
+                      <ChevronUp />
+                    ) : (
+                      <ChevronDown />
+                    )}
+                  </button>
+
+                  {openSections.centres_interet && (
+                    <div className="p-4 space-y-4">
+                      {cvData.centres_interet.map((centre) => (
+                        <div
+                          key={centre.id}
+                          className="flex items-center gap-2"
+                        >
+                          <div className="flex-1">
+                            <input
+                              value={centre.nom_centre_interet}
+                              onChange={(e) =>
+                                updateCentreInteret(
+                                  centre.id,
+                                  "nom_centre_interet",
+                                  e.target.value
+                                )
+                              }
+                              placeholder="Ex: Voyages, Lecture, Natation"
+                              className="w-full p-2 rounded border  focus:bg-white border-gray-300 focus:outline-none focus:border-blue-950 focus:ring-1 focus:ring-blue-950"
+                            />
+                          </div>
+
+                          <Button
+                            className="px-4 py-2 bg-red-600 text-white rounded"
+                            onClick={() => removeCentreInteret(centre.id)}
+                          >
+                            <Trash2 className="h-7 w-7" color="white" />
+                          </Button>
+                        </div>
+                      ))}
+
+                      {/* {cvData.centres_interet.length === 0 && (
+                        <div className="text-center py-8 text-gray-500">
+                          <p>Aucun centre d'intérêt ajoutée</p>
+                        </div>
+                      )} */}
+
+                      <div className="flex justify-start mb-4">
+                        <Button
+                          className="px-4 py-2 bg-blue-950 hover:bg-blue-900 text-white rounded"
+                          type="button"
+                          onClick={addCentreInteret}
+                          size="sm"
+                        >
+                          <Plus className="h-4 w-4 mr-2" />
+                          Ajouter un centre d'intérêt
+                        </Button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                <div className="mt-6">
+                  <Button
+                    type="submit"
+                    className="w-full px-4 py-2 bg-blue-950 hover:bg-blue-900 text-white rounded"
+                  >
+                    Enregistrer
+                  </Button>
+                </div>
+              </div>
+
             </div>
           </form>
         </div>

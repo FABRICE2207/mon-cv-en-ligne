@@ -10,7 +10,7 @@ interface CVData {
     telephone: string
     adresse: string
     linkedin: string
-    photos: string // Add this line
+    photos: string | File // Add this line
   }
   experiences: Array<{
     id: string

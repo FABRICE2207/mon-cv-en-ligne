@@ -61,7 +61,7 @@ export default function DashboardPage() {
       telephone: string;
       adresse: string;
       linkedin: string;
-      photo: string;
+      photos: string;
     };
     experiences: Array<{
       id: string;
@@ -175,7 +175,7 @@ export default function DashboardPage() {
       telephone: "",
       adresse: "",
       linkedin: "",
-      photo: "",
+      photos: "",
       nom: "",
       prenom: "",
       github: "",
@@ -216,7 +216,7 @@ export default function DashboardPage() {
       telephone: "",
       adresse: "",
       linkedin: "",
-      photo: "",
+      photos: "",
     },
     experiences: [],
     formations: [],

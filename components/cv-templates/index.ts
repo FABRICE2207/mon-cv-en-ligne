@@ -12,7 +12,7 @@ interface CVData {
     telephone: string
     adresse: string
     linkedin: string
-    photos: string
+    photos: string | File,
     date_naissance: string;
     situation_familiale: string;
     nbre_enfants: string; // Change to number or string

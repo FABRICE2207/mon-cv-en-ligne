@@ -9,9 +9,10 @@ import { Label } from "@/components/ui/label"
 import { Upload, X, Camera, User } from "lucide-react"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { apiImg } from "@/axios.config"
+import Swal from "sweetalert2"
 
 interface PhotoUploadProps {
-  photo:  string;
+  photo:  string | File;
   onPhotoChange: (filename: string) => void;
 }
 
@@ -23,62 +24,24 @@ export default function PhotoUpload({ photo, onPhotoChange }: PhotoUploadProps) 
 
   const [preview, setPreview] = useState<string | null>(null) 
 
-const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-  const files = e.target.files;
-  if (files && files.length > 0) {
-    const file = files[0];
-    setPhotos(file);
-
-    // Aperçu immédiat
-    const previewUrl = URL.createObjectURL(file);
-    setPreview(previewUrl); // pour affichage immédiat dans le template (state `preview` à définir)
-
-    console.log("📸 Nom de l'image sélectionnée :", file.name);
-
-    // Upload vers API Flask
-    const formData = new FormData();
-    formData.append("photos", file);
-
-    try {
-      const res = await apiImg.post("/cv/photo_user_cv", formData);
-
-      if (res.data?.filename) {
-        // Stocke seulement le nom du fichier dans le cvData
-        onPhotoChange(res.data.filename); // tu mets à jour cvData.informations_personnelles.photos
-      }
-    } catch (error) {
-      console.error("Erreur d'upload :", error);
-    }
-  }
-};
-
-  // const handleDrop = (e: React.DragEvent) => {
-  //   e.preventDefault()
-  //   setIsDragging(false)
-
-  //   const files = Array.from(e.dataTransfer.files)
-  //   if (files.length > 0) {
-  //     handleFileSelect(files[0])
-  //   }
-  // }
-
-//   const handleFileInputChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+// const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
 //   const files = e.target.files;
 //   if (files && files.length > 0) {
 //     const file = files[0];
+//     setPhotos(file);
 
 //     // Aperçu immédiat
 //     const previewUrl = URL.createObjectURL(file);
 //     setPreview(previewUrl); // pour affichage immédiat dans le template (state `preview` à définir)
 
+//     console.log("📸 Nom de l'image sélectionnée :", file.name);
+
 //     // Upload vers API Flask
 //     const formData = new FormData();
-//     formData.append("photo", file);
+//     formData.append("photos", file);
 
 //     try {
-//       const res = await api.post(
-//         "http://localhost:5000/api/upload_photo",
-//         formData);
+//       const res = await apiImg.post("/cv/photo_user_cv", formData);
 
 //       if (res.data?.filename) {
 //         // Stocke seulement le nom du fichier dans le cvData
@@ -89,6 +52,88 @@ const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
 //     }
 //   }
 // };
+
+const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const files = e.target.files;
+  if (files && files.length > 0) {
+    const file = files[0];
+
+    const imageURL = URL.createObjectURL(file);
+    const img = new Image();
+    img.src = imageURL;
+
+    img.onload = async () => {
+      // ✅ Vérifie la taille minimale exigée
+      if (img.width < 1280 || img.height < 1280) {
+        Swal.fire({
+          icon: "warning",
+          title: "Image trop petite ou grande",
+          text: "L'image doit avoir une taille minimale de 1280x1280 pixels.",
+          confirmButtonColor: "#3085d6",
+        });
+        return;
+      }
+
+      // ✅ Si tout est bon, continue
+      setPhotos(file);
+      setPreview(imageURL);
+      console.log("📸 Image sélectionnée :", file.name, `(${img.width}x${img.height})`);
+
+      const resizedFile = await resizeImage(file, 1280, 1280);
+      const formData = new FormData();
+      formData.append("photos", resizedFile);
+
+      try {
+        const res = await apiImg.post("/cv/photo_user_cv", formData);
+        if (res.data?.filename) {
+          onPhotoChange(res.data.filename);
+        }
+      } catch (error) {
+        console.error("Erreur d'upload :", error);
+      }
+    };
+
+    img.onerror = () => {
+      Swal.fire({
+        icon: "error",
+        title: "Erreur",
+        text: "Erreur lors du chargement de l'image. Veuillez réessayer.",
+        confirmButtonColor: "#3085d6",
+      });
+    };
+  }
+};
+
+// Fonction de redimensionnement via canvas
+const resizeImage = (file: File, width: number, height: number): Promise<File> => {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.src = URL.createObjectURL(file);
+
+    img.onload = () => {
+      const canvas = document.createElement("canvas");
+      canvas.width = width;
+      canvas.height = height;
+
+      const ctx = canvas.getContext("2d");
+      if (!ctx) return reject("Contexte canvas non disponible");
+
+      // Redimensionne l'image pour remplir exactement 1280x1280 (peut être déformée)
+      ctx.drawImage(img, 0, 0, width, height);
+
+      canvas.toBlob((blob) => {
+        if (blob) {
+          const resizedFile = new File([blob], file.name, { type: file.type });
+          resolve(resizedFile);
+        } else {
+          reject("Impossible de convertir en blob");
+        }
+      }, file.type);
+    };
+
+    img.onerror = (err) => reject("Erreur de chargement de l'image");
+  });
+};
 
 
   const handleDragOver = (e: React.DragEvent) => {
@@ -196,7 +241,10 @@ const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
                   Choisir une image
                 </Button>
               </div>
-              <p className="text-xs text-gray-500">JEPG, JPG, PNG jusqu'à 5MB</p>
+              <p className="text-xs text-gray-500">
+                La photo doit être de format JPEG, JPG, PNG de taille 1280x1280
+                pixels.
+              </p>
             </div>
           </CardContent>
         </Card>
