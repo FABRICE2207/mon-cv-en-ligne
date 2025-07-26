@@ -99,7 +99,7 @@ export default function CvListDisplay() {
                       (e.currentTarget.src = "/default-template.png")
                     }
                   />
-                  <h3 className="text-xl font-semibold uppercase">
+                  <h3 className="text-[14px] font-semibold uppercase">
                     {cv.cvData?.titre || "Sans titre"}
                   </h3>
                   <p className="text-gray-500 text-sm mb-2">

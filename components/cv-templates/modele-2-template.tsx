@@ -119,7 +119,6 @@ export default function ModerneTemplateFirst({
               lineHeight: "1.4",
               color: "#333",
               width: "600px", // A4 width in px
-              height: "800px",
               padding: "20px",
             }
           : {}
@@ -129,7 +128,7 @@ export default function ModerneTemplateFirst({
         {!previewOnly && (
           <div className="flex flex-row">
             {/* Colonne gauche (35%) - Informations personnelles */}
-            <div className="w-[35%] lg:w-[35%] bg-blue-900 h-[116.9vh]">
+            <div className="w-[35%] lg:w-[35%] bg-blue-900 lg:h-[116.5vh]">
               {/* Photo de profil */}
               <div className="flex justify-center p-3">
                 <img
@@ -266,7 +265,7 @@ export default function ModerneTemplateFirst({
                 <h2 className="text-lg uppercase font-bold mb-1">LANGUES</h2>
                 <div className="border-b border-white/20 mb-4"></div>
 
-                <div className="space-y-4">
+                <div className="space-y-2">
                   {cvData.langues.map((langue) => (
                     <div key={langue.id} className="space-y-1">
                       <div className="flex justify-between">
@@ -296,7 +295,6 @@ export default function ModerneTemplateFirst({
                 </h2>
                 <div className="border-b border-white/20 mb-4"></div>
 
-                <div className="space-y-4">
                   {cvData.centres_interet.map((centre) => (
                     <div key={centre.id} className="space-y-1">
                       <div className="flex justify-between">
@@ -316,12 +314,11 @@ export default function ModerneTemplateFirst({
                       </div> */}
                     </div>
                   ))}
-                </div>
               </div>
             </div>
 
             {/* Colonne droite (65%) - Contenu principal */}
-            <div className="w-[65%] lg:w-[65%] bg-gray-50 h-[116.9vh] p-5">
+            <div className="w-[65%] lg:w-[65%] bg-gray-50 h-[116.5vh] p-5">
               {/* En-tête */}
               <div className="mb-8">
                 <h1 className="text-3xl text-center font-bold uppercase tracking-tight text-gray-900">
@@ -353,11 +350,12 @@ export default function ModerneTemplateFirst({
                         <h4 className="text-[16px] font-semibold text-gray-800">
                           {exp.titre_poste}
                         </h4>
-                      </div>
-                      <span className="text-gray-500">
+                        <span className="text-blue-900">
                         {formatDate(exp.date_debut)} -{" "}
                         {exp.date_fin ? formatDate(exp.date_fin) : "Présent"}
                       </span>
+                      </div>
+                      
                       <p className="font-medium text-blue-900">
                         {exp.nom_entreprise}
                       </p>
@@ -385,10 +383,10 @@ export default function ModerneTemplateFirst({
                   {cvData.formations.map((formation) => (
                     <div key={formation.id} className="space-y-1">
                       <div className="flex justify-between flex-col sm:flex-row">
-                        <h3 className="text-xl font-semibold text-gray-800">
+                        <h3 className="text-[16px] font-semibold text-gray-800">
                           {formation.diplome}
                         </h3>
-                        <span className="text-gray-500">
+                        <span className="text-blue-900">
                           {formatDate(formation.date_debut)} -{" "}
                           {formatDate(formation.date_fin)}
                         </span>

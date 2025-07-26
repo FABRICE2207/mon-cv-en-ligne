@@ -1,57 +1,96 @@
 "use client"
 
-import type React from "react"
-
-import { useState, useRef } from "react"
+import React, { useState, useRef, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
 import { Upload, X, Camera, User } from "lucide-react"
 import { Alert, AlertDescription } from "@/components/ui/alert"
-import { apiImg } from "@/axios.config"
+import { api, apiImg } from "@/axios.config"
 import Swal from "sweetalert2"
+import { useRouter } from "next/navigation"
+
+interface InformationsPersonnelles {
+  photos: string;
+}
+
+interface CVData {
+  informations_personnelles: InformationsPersonnelles;
+}
 
 interface PhotoUploadProps {
   photo:  string | File;
   onPhotoChange: (filename: string) => void;
+  id : string;
 }
 
-export default function PhotoUpload({ photo, onPhotoChange }: PhotoUploadProps) {
+export default function PhotoUpload({ photo, onPhotoChange, id }: PhotoUploadProps) {
   const [isDragging, setIsDragging] = useState(false)
   const [error, setError] = useState("")
   const [photos, setPhotos] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null)
 
-  const [preview, setPreview] = useState<string | null>(null) 
+  const [preview, setPreview] = useState<string | null>(null)
+  const router = useRouter();
 
-// const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-//   const files = e.target.files;
-//   if (files && files.length > 0) {
-//     const file = files[0];
-//     setPhotos(file);
 
-//     // Aperçu immédiat
-//     const previewUrl = URL.createObjectURL(file);
-//     setPreview(previewUrl); // pour affichage immédiat dans le template (state `preview` à définir)
+  const [cvData, setCvData] = useState<CVData | null>(null);
+  const [loading, setLoading] = useState(true);
 
-//     console.log("📸 Nom de l'image sélectionnée :", file.name);
 
-//     // Upload vers API Flask
-//     const formData = new FormData();
-//     formData.append("photos", file);
+useEffect(() => {
+  const fetchCV = async () => {
+    try {
+      const response = await api.get(`/cv/get_cv_id/${id}`);
+      setCvData(response.data.cvData);
+      console.log("CV Data:", response.data.cvData);
+    } catch (error) {
+      console.error("Erreur lors du chargement du CV:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-//     try {
-//       const res = await apiImg.post("/cv/photo_user_cv", formData);
+  if (id) {
+    fetchCV();
+  }
+}, [id]);
 
-//       if (res.data?.filename) {
-//         // Stocke seulement le nom du fichier dans le cvData
-//         onPhotoChange(res.data.filename); // tu mets à jour cvData.informations_personnelles.photos
-//       }
-//     } catch (error) {
-//       console.error("Erreur d'upload :", error);
-//     }
-//   }
-// };
+
+  //   useEffect(() => {
+  //   const fetchUserData = async () => {
+  //     const storedToken = localStorage.getItem("token");
+  //     if (!storedToken) {
+  //       router.push("/login");
+  //       return;
+  //     }
+
+  //     try {
+  //       const response = await apitoken.get("/tokens/users", {
+  //         headers: { Authorization: `Bearer ${storedToken}` },
+  //       });
+
+  //       const userData = response.data;
+  //       console.log("Info user :", userData);
+      
+  //       setCvData((prev) => ({
+  //         ...prev,
+  //         informations_personnelles: {
+  //           ...prev.informations_personnelles,
+  //           email: userData.email,
+  //           username: userData.username,
+  //         },
+  //       }));
+  //     } catch (error) {
+  //       console.error("Token invalide ou expiré :", error);
+  //       localStorage.removeItem("token");
+  //       router.push("/login");
+  //     }
+  //   };
+
+  //   fetchUserData();
+  // }, [router]);
+
 
 const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
   const files = e.target.files;
@@ -77,7 +116,6 @@ const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
       // ✅ Si tout est bon, continue
       setPhotos(file);
       setPreview(imageURL);
-      console.log("📸 Image sélectionnée :", file.name, `(${img.width}x${img.height})`);
 
       const resizedFile = await resizeImage(file, 1280, 1280);
       const formData = new FormData();
@@ -178,7 +216,12 @@ const resizeImage = (file: File, width: number, height: number): Promise<File> =
             <div className="grid grid-cols-2 mt-2 justify-center items-center">
               <div className="relative mt-3">
                 <img
-                  src={preview || "/placeholder.svg"}
+                  src={
+                    preview ||
+                    (cvData?.informations_personnelles?.photos
+                      ? `${process.env.NEXT_PUBLIC_API_URL}/cv/get_cv_photo/${cvData.informations_personnelles.photos}`
+                      : "/placeholder.svg")
+                  }
                   alt="Photo de profil"
                   className="w-24 h-24 rounded-full object-cover border-2 border-gray-200"
                 />

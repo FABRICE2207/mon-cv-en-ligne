@@ -26,6 +26,7 @@ import Swal from "sweetalert2";
 import { headers } from "next/headers";
 import axios from "axios";
 import { motion, AnimatePresence } from "framer-motion";
+import { useParams } from "next/navigation";
 
 interface CVData {
   titre: string;
@@ -107,6 +108,8 @@ export default function CreateCVPage({ previewTemplate }: CreateCVPageProps) {
   const [modelesId, setModelesId] = useState<number>(0);
 
   const [showCV, setShowCV] = useState(false);
+  const params = useParams();
+  const id = params.id as string;
 
   const handleTemplateSelect = (templateId: string, modeleId: number) => {
     setSelectedTemplate(templateId);
@@ -559,12 +562,7 @@ export default function CreateCVPage({ previewTemplate }: CreateCVPageProps) {
         printFrame.onload = () => resolve();
       });
 
-      // // Génération du nom de fichier
-      // const timestamp = new Date().toISOString().split("T")[0];
-      // const username = cvData.informations_personnelles.username || "Export";
-      // const fileName = options.filename || `CV_${username}_${timestamp}.pdf`;
-
-      console.log("Nom du fichier :", fileName);
+      // console.log("Nom du fichier :", fileName);
 
       // Démarrer l'impression
       printFrame.contentWindow?.focus();
@@ -789,6 +787,7 @@ export default function CreateCVPage({ previewTemplate }: CreateCVPageProps) {
                             },
                           }))
                         }
+                        id={id}
                       />
                     </div>
 
