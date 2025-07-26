@@ -115,7 +115,7 @@ export default function CvListDisplay() {
                   </p>
 
                   <Link href={`/cv/${cv.id}`}>
-                    <Button className="w-full mt-4 bg-blue-600 hover:bg-blue-700 text-lg px-8 py-6 shadow-lg hover:shadow-blue-500/40 transition-all">Voir CV</Button>
+                    <Button className="w-full mt-4 bg-blue-950 hover:bg-blue-900 text-lg px-8 py-6 shadow-lg hover:shadow-blue-500/40 transition-all">Voir CV</Button>
                   </Link>
                 </CardContent>
               </Card>

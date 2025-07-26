@@ -14,6 +14,7 @@ import {
   Users,
   Zap,
   ChevronRight,
+  ChevronLeft,
   Check,
   Star,
   MessageSquare,
@@ -30,10 +31,22 @@ import {
 import { motion } from "framer-motion";
 import { Input } from "@/components/ui/input";
 import { useState, useEffect } from "react";
+import { api } from "@/axios.config";
+import { useRef } from "react";
+
+
+interface Template {
+  id: string;
+  libelle: string;
+  images: string;
+}
 
 export default function HomePage() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [templates, setTemplates] = useState<Template[]>([]);
+
+  const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -42,6 +55,33 @@ export default function HomePage() {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+
+    const scroll = (direction: "left" | "right") => {
+    if (scrollRef.current) {
+      const amount = direction === "left" ? -250 : 250;
+      scrollRef.current.scrollBy({ left: amount, behavior: "smooth" });
+    }
+  };
+
+    // Affiche la liste des modèles de cv
+    useEffect(() => {
+      const fetchModelCv = async () => {
+        try {
+          const response = await api.get("/models/liste_model_cv_actives");
+          const model_actives = response.data;
+  
+          setTemplates(model_actives); //
+          console.log("Model", model_actives);
+        } catch (error) {
+          console.error(
+            "Erreur lors de la récupération des modèles de CV :",
+            error
+          );
+        }
+      };
+      fetchModelCv();
+    }, []);
 
   const navLinks = [
     { name: "Modèles", href: "/templates" },
@@ -405,7 +445,7 @@ export default function HomePage() {
 
       {/* Section modèle de CV avec animation */}
       <section className="py-20 bg-gray-50">
-        <div className="container mx-auto px-4">
+        <div className="mx-auto px-4">
           <motion.div
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
@@ -422,60 +462,50 @@ export default function HomePage() {
             </p>
           </motion.div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
-            {[
-              {
-                name: "Classique",
-                description: "Adapté aux secteurs traditionnels",
-                bestFor: "Banque, Assurance, Administration",
-                color: "bg-blue-100 text-blue-800",
-              },
-              {
-                name: "Moderne",
-                description: "Adapté aux secteurs technologiques",
-                bestFor: "IT, Digital, Télécoms",
-                color: "bg-green-100 text-green-800",
-              },
-              {
-                name: "Créatif",
-                description: "Adapté aux secteurs créatifs",
-                bestFor: "Design, Marketing, Communication",
-                color: "bg-purple-100 text-purple-800",
-              },
-            ].map((style, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                whileHover={{ y: -10 }}
-                transition={{ duration: 0.3, delay: index * 0.1 }}
-                viewport={{ once: true }}
-              >
-                <Card className="overflow-hidden border-0 shadow-sm hover:shadow-md transition-all h-full flex flex-col">
-                  <div className="relative pt-[120%] overflow-hidden">
-                    <img
-                      src={`/cv-template-${index + 1}.jpg`}
-                      alt={`Modèle ${style.name}`}
-                      className="absolute top-0 left-0 w-full h-full object-cover hover:scale-105 transition-transform duration-500"
-                    />
-                  </div>
-                  <CardHeader>
-                    <div className="flex justify-between items-start">
-                      <div>
-                        <CardTitle>{style.name}</CardTitle>
-                        <CardDescription>{style.description}</CardDescription>
-                      </div>
-                      <span
-                        className={`text-xs px-2 py-1 rounded-full ${style.color}`}
-                      >
-                        {style.bestFor}
-                      </span>
-                    </div>
-                  </CardHeader>
-                </Card>
-              </motion.div>
-            ))}
-          </div>
+          <div className="relative w-95">
+      {/* Boutons gauche/droite */}
+      <div className="flex justify-end gap-2 mb-4">
+ <button
+            onClick={() => scroll("left")}
+            className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-blue-950 hover:bg-blue-900 rounded-full shadow p-2"
+          >
+            <ChevronLeft className="w-5 h-5" color="white" />
+          </button>
+
+          <button
+            onClick={() => scroll("right")}
+            className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-blue-950 hover:bg-blue-900 rounded-full shadow p-2"
+          >
+            <ChevronRight className="w-5 h-5" color="white" />
+          </button>
+      </div>
+
+      {/* Contenu scrollable horizontalement */}
+      <div
+            ref={scrollRef}
+            className="flex gap-2 overflow-x-auto scrollbar-hide"
+          >
+        {templates.length > 0 ? (
+          templates.map((template) => (
+            <div
+              key={template.id}
+              className="min-w-[150px] max-w-[250px] lg:max-w-[450px] flex-shrink-0 p-2 transition"
+            >
+              <img
+                src={`${process.env.NEXT_PUBLIC_API_URL}/models/modele_cv/${template.images}`}
+                alt={template.libelle}
+                className="w-full object-cover rounded-lg mb-4"
+              />
+              <h3 className="text-lg font-semibold text-center text-gray-800">
+                {template.libelle}
+              </h3>
+            </div>
+          ))
+        ) : (
+          <p className="text-gray-500">Aucun modèle disponible.</p>
+        )}
+      </div>
+    </div>
 
           <div className="text-center">
             <Link href="/templates">

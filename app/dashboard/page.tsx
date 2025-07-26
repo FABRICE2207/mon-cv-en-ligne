@@ -42,6 +42,7 @@ import  TemplateSelectAdmin from "@/components/cv-templates/template-selector-ad
 import DashbaordAdmin from "@/components/admin/dashboard";
 import CvListDisplay from "@/components/cv/MesCVPage";
 import Swal from "sweetalert2";
+import Header from "@/components/header/header";
 
 export default function DashboardPage() {
   const [token, setToken] = useState<string | null>(null);
@@ -126,10 +127,8 @@ export default function DashboardPage() {
       });
 
       const userId = response.data.id;
-      console.log("UserId :", userId);
       setToken(storedToken);
 
-      
       const cvResponse = await api.get(`/cv/liste_cv/user/${userId}`);
       setNbreCv(cvResponse.data);      
 
@@ -142,28 +141,6 @@ export default function DashboardPage() {
 
   fetchUserAndCVs();
 }, []);
-
-
-  const handleLogout = async () => {
-  localStorage.removeItem("token");
-
-  await Swal.fire({
-    title: "Succès",
-    text: "Déconnexion réussie.",
-    icon: "success",
-    timer: 1500,
-    showConfirmButton: false,
-  });
-
-  // Empêche le retour arrière
-  if (window.history) {
-    window.history.replaceState(null, "", "/login");
-  }
-
-  // Redirection
-  window.location.href = "/login";
-};
-
 
   // Example default cvData, replace with actual data as needed
   const defaultCVData = {
@@ -516,28 +493,7 @@ export default function DashboardPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <header className="bg-white border-b">
-        <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-          <div className="flex items-center space-x-2">
-            
-            <h1 className="text-2xl font-bold text-blue-950">
-              Mon cv en ligne
-            </h1>
-          </div>
-          <div className="flex items-center space-x-4">
-            <div className="flex items-center space-x-2">
-              <User className="h-5 w-5 text-gray-600" />
-              {/* <span className="text-gray-700">{user.name}</span> */}
-            </div>
-            <Button 
-            className="bg-blue-950"
-            onClick={handleLogout}>
-              <LogOut className="h-4 w-4 mr-2" />
-              Déconnexion
-            </Button>
-          </div>
-        </div>
-      </header>
+      <Header />
 
       <main className="container mx-auto px-4 py-4">
         <div className="mb-2">

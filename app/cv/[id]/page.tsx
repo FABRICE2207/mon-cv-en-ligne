@@ -833,12 +833,12 @@ const CVForm = ({ params, previewTemplate }: Props) => {
       <header className="bg-white border-b sticky top-0 z-40">
         <div className="container grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 gap-6 mx-auto px-4 py-4 items-center">
           <div className="flex items-center space-x-4">
-            <Button variant="ghost" onClick={() => router.push("/dashboard")}>
+            <Button className="text-white bg-blue-950 hover:bg-blue-900" onClick={() => router.push("/dashboard")}>
               <ArrowLeft className="h-4 w-4 mr-2" />
               Retour
             </Button>
             <div className="flex items-center space-x-2 w-full">
-              {/* <FileText className="h-6 w-6 text-blue-600" /> */}
+              
               <h1 className="text-xl font-bold text-gray-900">
                 Mon CV en ligne
               </h1>
@@ -867,8 +867,8 @@ const CVForm = ({ params, previewTemplate }: Props) => {
           {/* Bouton toggle mobile uniquement */}
           <div className="block lg:hidden mb-4" id="btn-show">
             <Button
+              className="text-white bg-blue-950 hover:bg-blue-900"
               onClick={() => setShowCV((prev) => !prev)}
-              className="w-full"
             >
               {showCV ? "Masquer le CV" : "Voir le CV"}
             </Button>

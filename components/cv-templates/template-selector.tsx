@@ -110,50 +110,6 @@ export default function TemplateSelector({
               const TemplateComponent = templateComponents[templateKey];
 
               return (
-                // <div
-                //   key={template.id}
-                //   className={`min-w-[160px] max-w-[160px] cursor-pointer transition-all duration-200 ${
-                //     selectedTemplate === String(template.id)
-                //       ? "ring-2 ring-blue-500 my-[-10px]"
-                //       : ""
-                //   }`}
-                //   onClick={() => {
-                //     onTemplateSelect(String(template.id), Number(template.id));
-                //     setPreviewTemplate(templateKey);
-                //     setSelectedTemplate(String(template.id));
-                //     console.log("Selected:", selectedTemplate, "Current:", template.id);
-
-                //   }}
-                // >
-                //   <div className="border rounded-md p-2">
-                //     <div className="flex items-center justify-between">
-                //       <p className="font-bold">{template.libelle}</p>
-
-                //       {selectedTemplate === template.id && (
-                //         <div className="bg-blue-500 rounded-full flex items-center justify-center">
-                //           <Check className="w-4 h-4 text-white" />
-                //         </div>
-                //       )}
-                //     </div>
-
-                //     <div className="relative w-52">
-
-                //       {loading && (
-                //         <div className="absolute inset-0 flex items-center justify-center bg-white/50 z-10">
-                //           <Loader2 className="animate-spin w-6 h-6 text-gray-500" />
-                //         </div>
-                //       )}
-                //       <img
-                //         src={`${process.env.NEXT_PUBLIC_API_URL}/models/modele_cv/${template.images}`}
-                //         alt={`${template.libelle}`}
-                //         className="w-36 object-cover rounded-md"
-                //         onLoad={() => setLoading(false)}
-                //         onError={() => setLoading(false)}
-                //       />
-
-                //     </div>
-                //   </div>
-                // </div>
                 <div
                   key={template.id}
                   className={`min-w-[160px] max-w-[160px] cursor-pointer transition-all duration-200 relative ${
