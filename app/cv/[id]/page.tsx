@@ -819,13 +819,13 @@ const CVForm = ({ params, previewTemplate }: Props) => {
     }));
   };
 
-  if (loading) {
-    return (
-      <div className="flex justify-center items-center h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
-      </div>
-    );
-  }
+  // if (loading) {
+  //   return (
+  //     <div className="flex justify-center items-center h-screen">
+  //       <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+  //     </div>
+  //   );
+  // }
 
   return (
     <div className="min-h-screen bg-gray-50 overflow-hidden h-screen">
@@ -962,11 +962,12 @@ const CVForm = ({ params, previewTemplate }: Props) => {
                         <div>
                           <Label>Profil</Label>
                           <input
-                            id="titre"
+                            type="text"
+                            name="titre"
                             value={cvData.titre}
                             onChange={handleInputChange}
-                            required
                             className="w-full p-2 rounded border  focus:bg-white border-gray-300 focus:outline-none focus:border-blue-950 focus:ring-1 focus:ring-blue-950"
+                            required
                           />
                         </div>
                         <div>
@@ -977,6 +978,7 @@ const CVForm = ({ params, previewTemplate }: Props) => {
                             value={cvData.description}
                             onChange={handleInputChange}
                             required
+                            rows={3}
                             className="w-full p-2 rounded border  focus:bg-white border-gray-300 focus:outline-none focus:border-blue-950 focus:ring-1 focus:ring-blue-950"
                           />
                         </div>
@@ -985,37 +987,6 @@ const CVForm = ({ params, previewTemplate }: Props) => {
                   </div>
                 </CardContent>
               </Card>
-            </div>
-
-            <div className="bg-white p-6 rounded-lg shadow">
-              <h2 className="text-xl font-bold mb-4">Informations de base</h2>
-
-              <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700">
-                  Titre du CV
-                </label>
-                <input
-                  type="text"
-                  name="titre"
-                  value={cvData.titre}
-                  onChange={handleInputChange}
-                  className="w-full p-2 rounded border  focus:bg-white border-gray-300 focus:outline-none focus:border-blue-950 focus:ring-1 focus:ring-blue-950"
-                  required
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700">
-                  Description
-                </label>
-                <textarea
-                  name="description"
-                  value={cvData.description}
-                  onChange={handleInputChange}
-                  rows={3}
-                  className="w-full p-2 rounded border  focus:bg-white border-gray-300 focus:outline-none focus:border-blue-950 focus:ring-1 focus:ring-blue-950"
-                />
-              </div>
             </div>
 
             {/* Section Informations personnelles */}
