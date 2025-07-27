@@ -103,15 +103,15 @@ const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
 
     img.onload = async () => {
       // ✅ Vérifie la taille minimale exigée
-      if (img.width < 1280 || img.height < 1280) {
-        Swal.fire({
-          icon: "warning",
-          title: "Image trop petite ou grande",
-          text: "L'image doit avoir une taille minimale de 1280x1280 pixels.",
-          confirmButtonColor: "#3085d6",
-        });
-        return;
-      }
+      // if (img.width < 1280 || img.height < 1280) {
+      //   Swal.fire({
+      //     icon: "warning",
+      //     title: "Image trop petite ou grande",
+      //     text: "L'image doit avoir une taille minimale de 1280x1280 pixels.",
+      //     confirmButtonColor: "#3085d6",
+      //   });
+      //   return;
+      // }
 
       // ✅ Si tout est bon, continue
       setPhotos(file);

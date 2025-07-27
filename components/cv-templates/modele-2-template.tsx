@@ -128,7 +128,7 @@ export default function ModerneTemplateFirst({
         {!previewOnly && (
           <div className="flex flex-row">
             {/* Colonne gauche (35%) - Informations personnelles */}
-            <div className="w-[35%] lg:w-[35%] bg-blue-900 lg:h-[116.5vh]">
+            <div className="w-[35%] lg:w-[35%] bg-blue-900 lg:h-[116.9vh]">
               {/* Photo de profil */}
               <div className="flex justify-center p-3">
                 <img
@@ -318,7 +318,7 @@ export default function ModerneTemplateFirst({
             </div>
 
             {/* Colonne droite (65%) - Contenu principal */}
-            <div className="w-[65%] lg:w-[65%] bg-gray-50 h-[116.5vh] p-5">
+            <div className="w-[65%] lg:w-[65%] bg-gray-50 h-[116.9vh] p-5">
               {/* En-tête */}
               <div className="mb-8">
                 <h1 className="text-3xl text-center font-bold uppercase tracking-tight text-gray-900">

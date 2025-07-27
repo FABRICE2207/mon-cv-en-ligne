@@ -1,41 +1,69 @@
-import { Card, CardContent, CardHeader } from "@/components/ui/card"
-import { Mail, Phone, MapPin, Linkedin, Calendar, Award, Code, Globe, UserCircle } from "lucide-react"
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import {
+  Mail,
+  Phone,
+  MapPin,
+  Linkedin,
+  Calendar,
+  Award,
+  Code,
+  Globe,
+  Baby,
+  CarFront,
+} from "lucide-react";
+import PhotoCvExemple from "@/app/assets/photo-cv.png";
+import Image from "next/image";
+import { apiImg } from "@/axios.config";
+import { useState } from "react";
 
 interface CVData {
-  titre: string
-  description: string
+  titre: string;
+  description: string;
   informations_personnelles: {
-    username: string
-    email: string
-    telephone: string
-    adresse: string
-    linkedin: string
-    photos: string | File // Add this line
-  }
+    username: string;
+    email: string;
+    telephone: string;
+    adresse: string;
+    linkedin: string;
+    photos: string | File; // Add this line
+    date_naissance: string;
+    situation_familiale: string;
+    nbre_enfants: string;
+    nationalite: string;
+    permis_conduire: string;
+  };
   experiences: Array<{
-    id: string
-    titre_poste: string
-    nom_entreprise: string
-    date_debut: string
-    date_fin: string
-  }>
+    id: string;
+    titre_poste: string;
+    nom_entreprise: string;
+    date_debut: string;
+    date_fin: string;
+    missions: Array<{
+      id: string;
+      missions_details: string;
+    }>;
+  }>;
   formations: Array<{
-    id: string
-    diplome: string
-    nom_etablissement: string
-    date_debut: string
-    date_fin: string
-  }>
+    id: string;
+    diplome: string;
+    nom_etablissement: string;
+    date_debut: string;
+    date_fin: string;
+  }>;
   competences: Array<{
-    id: string
-    nom_competence: string
-    niveau: string
-  }>
+    id: string;
+    nom_competence: string;
+    niveau: string;
+  }>;
   langues: Array<{
-    id: string
-    nom_langue: string
-    niveau: string
-  }>
+    id: string;
+    nom_langue: string;
+    niveau: string;
+  }>;
+  centres_interet: Array<{
+    id: string;
+    nom_centre_interet: string;
+  }>;
 }
 
 interface ModerneTemplateProps {
@@ -46,384 +74,336 @@ interface ModerneTemplateProps {
 }
 
 const formatDate = (dateString: string) => {
-  if (!dateString) return ""
-  const date = new Date(dateString)
-  return date.toLocaleDateString("fr-FR", { month: "short", year: "numeric" })
-}
+  if (!dateString) return "";
+  const date = new Date(dateString);
+  return date.toLocaleDateString("fr-FR", { month: "short", year: "numeric" });
+};
 
 const getNiveauWidth = (niveau: string) => {
   switch (niveau.toLowerCase()) {
     case "débutant":
-      return "w-1/4"
+      return "w-1/4";
     case "intermédiaire":
-      return "w-2/4"
+      return "w-2/4";
     case "avancé":
-      return "w-3/4"
+      return "w-3/4";
     case "expert":
     case "natif":
-      return "w-full"
+      return "w-full";
     default:
-      return "w-1/4"
+      return "w-1/4";
   }
-}
+};
 
-export default function ModerneTemplateFirst({ cvData,
+export default function ModerneTemplateFirst({
+  cvData,
   exportMode = false,
   includeColors = true,
-  previewOnly = false}: ModerneTemplateProps) {
-  const { informations_personnelles: info } = cvData
+  previewOnly = false,
+}: ModerneTemplateProps) {
+  const { informations_personnelles: info } = cvData;
 
-  const primaryColor = includeColors ? "bg-orange-600" : "bg-gray-800"
-  const accentColor = includeColors ? "text-white-600" : "text-gray-600"
-  const gradientBg = includeColors ? "bg-orange-600" : "bg-gray-800"
+  const primaryColor = includeColors ? "bg-blue-900" : "bg-gray-800";
+  const accentColor = includeColors ? "bg-[#3d3d3d]" : "text-[#3d3d3d]";
+  const gradientBg = includeColors ? "" : "bg-gray-800";
 
   return (
     <div
       id="cv-preview"
-      className={`w-full max-w-4xl mx-auto bg-white ${
-        exportMode ? "print-optimized" : ""
-      }`}
+      className="bg-white mx-auto"
       style={
         exportMode
           ? {
-              fontFamily: "Arial, sans-serif",
+              fontFamily: "Monserrat, medium",
               fontSize: "14px",
               lineHeight: "1.4",
               color: "#333",
+              width: "600px", // A4 width in px
+              padding: "20px",
             }
           : {}
       }
     >
-      <Card
-        className={`${
-          exportMode ? "border-0 shadow-none" : "shadow-xl"
-        } overflow-hidden`}
-      >
-        {/* Header avec design moderne */}
+      <div className={`${exportMode ? "border-0" : "h-screen"} w-full`}>
         {!previewOnly && (
-          <div>
-            <CardHeader
-              className={`${gradientBg} text-white relative overflow-hidden`}
-            >
-              <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-16 translate-x-16"></div>
-              <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/5 rounded-full translate-y-12 -translate-x-12"></div>
-
-              <div className="relative z-10 text-center space-x-4 flex flex-row gap-4">
-                <div className="space-y-2">
-                  {/* Add this section after the title div and before the description */}
-                  {info.photos ? (
-                    <div className="flex justify-center mb-4">
-                      <div className="relative">
-                        <img
-                          src={info.photos || "/placeholder.svg"}
-                          alt={`${info.username}`}
-                          className="w-60 h-40 rounded-full object-cover border-4 border-white/30 shadow-lg"
-                        />
-                        <div className="absolute inset-0 rounded-full bg-gradient-to-t from-black/20 to-transparent"></div>
-                      </div>
-                    </div>
-                  ) : 
-                  (
-                    <div className="flex justify-center mb-4">
-                      <div className="relative">
-                        <UserCircle />
-                        <div className="absolute inset-0 rounded-full bg-gradient-to-t from-black/20 to-transparent"></div>
-                      </div>
-                    </div>
-                  )
-                  
+          <div className="flex flex-row">
+            {/* Colonne gauche (35%) - Informations personnelles */}
+            <div className="w-[35%] lg:w-[35%] lg:h-[116.5vh] bg-gray-50">
+              {/* Photo de profil */}
+              <div className="flex justify-center p-3">
+                <img
+                  src={
+                    info.photos
+                      ? `${process.env.NEXT_PUBLIC_API_URL}/cv/get_cv_photo/${info.photos}`
+                      : "/photo-cv.png"
                   }
-                </div>
+                  alt={info.username || "Photo de profil"}
+                  className="w-36 h-36  object-cover border-white"
+                />
+              </div>
 
-                <div className="flex flex-col space-y-2">
-                  <div>
-                    <h1 className="text-4xl font-bold tracking-tight">
-                      {info.username}
-                    </h1>
-                    {cvData.titre && (
-                      <div className="inline-block px-4 py-2 bg-white/20 rounded-full">
-                        <p className="text-lg font-medium uppercase">
-                          {cvData.titre}
-                        </p>
-                      </div>
-                    )}
-                    {cvData.description && (
-                      <p className="text-white justify-start max-w-2xl mx-auto leading-relaxed">
-                        {cvData.description}
-                      </p>
-                    )}
-                  </div>
+              <div className="bg-[#3d3d3d] h-[99.4vh] rounded-tr-[30px]">
+                {/* Section Contacts */}
+                <div className="p-2">
+                  <h2 className="text-lg uppercase font-bold text-white mb-1">
+                    COORDONNEES
+                  </h2>
+                  <div className="border-b border-white/20 mb-4"></div>
 
-                  {/* Contact moderne */}
-                  <div className="flex flex-wrap justify-center gap-6 pt-4">
+                  <div className="space-y-3 text-white">
                     {info.email && (
-                      <div className="flex items-center gap-2 text-white-100">
-                        <div className="p-2 bg-white/20 rounded-lg">
-                          <Mail className="h-4 w-4" />
-                        </div>
+                      <div className="flex items-center gap-2">
+                        <Mail className="h-4 w-4 text-white/80" />
                         <span className="text-sm">{info.email}</span>
                       </div>
                     )}
                     {info.telephone && (
-                      <div className="flex items-center gap-2 text-white-100">
-                        <div className="p-2 bg-white/20 rounded-lg">
-                          <Phone className="h-4 w-4" />
-                        </div>
-                        <span className="text-sm">{info.telephone}</span>
+                      <div className="flex items-center text-black-100 mb-1">
+                        <Phone className="h-4 w-4" />
+
+                        <span className="text-sm ml-1">
+                          {" "}
+                          {"+255 "}
+                          {info.telephone}
+                        </span>
+                      </div>
+                    )}
+                    {info.date_naissance && (
+                      <div className="flex items-center text-black-100 mb-1">
+                        <Calendar className="h-4 w-4" />
+
+                        <span className="text-sm ml-1">
+                          {new Date(info.date_naissance).toLocaleDateString(
+                            "fr-FR",
+                            {
+                              day: "numeric",
+                              month: "numeric",
+                              year: "numeric",
+                            }
+                          )}
+                        </span>
+                      </div>
+                    )}
+
+                    {info.situation_familiale && (
+                      <div className="flex items-center text-black-100 mb-1">
+                        <Baby className="h-4 w-4" />
+
+                        <span className="text-sm ml-1">
+                          {info.situation_familiale},{" "}
+                          {info.nbre_enfants === "" || info.nbre_enfants === "0"
+                            ? "Sans enfant"
+                            : `${info.nbre_enfants} enfant${
+                                info.nbre_enfants !== "1" ? "s" : ""
+                              }`}
+                        </span>
+                      </div>
+                    )}
+
+                    {info.nationalite && (
+                      <div className="flex items-center text-black-100 mb-1">
+                        <Phone className="h-4 w-4" />
+
+                        <span className="text-sm ml-1">{info.nationalite}</span>
+                      </div>
+                    )}
+                    {info.permis_conduire && (
+                      <div className="flex items-center text-black-100 mb-1">
+                        <CarFront className="h-4 w-4" />
+                        {"Permis de conduire : "}
+                        <span className="text-sm ml-1 uppercase">
+                          {info.permis_conduire}
+                        </span>
                       </div>
                     )}
                     {info.adresse && (
-                      <div className="flex items-center gap-2 text-white-100">
-                        <div className="p-2 bg-white/20 rounded-lg">
-                          <MapPin className="h-4 w-4" />
-                        </div>
-                        <span className="text-sm">{info.adresse}</span>
+                      <div className="flex items-center text-black-100 mb-1">
+                        <MapPin className="h-4 w-4" />
+                        <span className="text-sm ml-1">{info.adresse}</span>
                       </div>
                     )}
                     {info.linkedin && (
-                      <div className="flex items-center gap-2 text-white-100">
-                        <div className="p-2 bg-white/20 rounded-lg">
-                          <Linkedin className="h-4 w-4" />
-                        </div>
-                        <span className="text-sm truncate max-w-32">
+                      <div className="flex items-center text-black-100 mb-1">
+                        <Linkedin className="h-4 w-4" />
+                        <div className="text-sm ml-1 whitespace-pre-line">
                           {info.linkedin}
-                        </span>
+                        </div>
                       </div>
                     )}
                   </div>
                 </div>
-              </div>
-            </CardHeader>
 
-            <CardContent
-              className={`space-y-8 ${exportMode ? "p-6 space-y-6" : "p-8"}`}
-            >
-              {/* Expériences avec design moderne */}
-              {cvData.experiences.length > 0 && (
-                <section className={exportMode ? "break-inside-avoid" : ""}>
-                  <div className="flex items-center gap-3 mb-6">
-                    <div className={`p-2 ${primaryColor} rounded-lg`}>
-                      <Award className="h-5 w-5 text-white" />
+                {/* Section Compétences */}
+                <div className="p-2">
+                  <h2 className="text-lg uppercase font-bold mb-1 text-white">
+                    COMPETENCES
+                  </h2>
+                  <div className="border-b border-white/20 mb-4"></div>
+
+                  {cvData.competences.map((comp) => (
+                    <div key={comp.id} className="space-y-1">
+                      <div className="flex justify-between">
+                        <span className="text-sm text-white">
+                          {comp.nom_competence}
+                        </span>
+                        {/* <span className="text-xs text-white/70">
+                          {comp.niveau}
+                        </span> */}
+                      </div>
+                      {/* <div className="w-full bg-white/20 rounded-full h-1.5">
+                        <div
+                          className={`h-1.5 rounded-full bg-white ${getNiveauWidth(
+                            comp.niveau
+                          )}`}
+                        ></div>
+                      </div> */}
                     </div>
-                    <h2 className="text-2xl font-bold text-gray-900">
-                      Expériences Professionnelles
-                    </h2>
-                  </div>
+                  ))}
+                </div>
 
-                  <div className="space-y-6">
-                    {cvData.experiences.map((exp, index) => (
-                      <div
-                        key={exp.id}
-                        className={`relative pl-8 ${
-                          exportMode && index > 0 ? "break-inside-avoid" : ""
-                        }`}
-                      >
-                        <div
-                          className={`absolute left-0 top-2 w-4 h-4 ${primaryColor} rounded-full`}
-                        ></div>
-                        <div
-                          className={`absolute left-2 top-6 w-0.5 h-full ${
-                            includeColors ? "bg-orange-200" : "bg-gray-200"
-                          }`}
-                        ></div>
+                {/* Sections Langues */}
+                <div className="p-2 text-white">
+                  <h2 className="text-lg uppercase font-bold mb-1">LANGUES</h2>
+                  <div className="border-b border-white/20 mb-4"></div>
 
-                        <div className="bg-gray-50 rounded-xl p-6 space-y-3">
-                          <div className="flex justify-between items-start flex-wrap gap-2">
-                            <div>
-                              <h3 className="text-xl font-bold text-gray-900">
-                                {exp.titre_poste}
-                              </h3>
-                              <p
-                                className={`text-lg font-semibold ${accentColor}`}
-                              >
-                                {exp.nom_entreprise}
-                              </p>
-                            </div>
-                            {(exp.date_debut || exp.date_fin) && (
-                              <div
-                                className={`flex items-center gap-2 px-3 py-1 ${
-                                  includeColors
-                                    ? "bg-orange/50 text-white"
-                                    : "bg-gray-200 text-gray-800"
-                                } rounded-full text-sm font-medium`}
-                              >
-                                <Calendar className="h-4 w-4" />
-                                <span>
-                                  {formatDate(exp.date_debut)} -{" "}
-                                  {exp.date_fin
-                                    ? formatDate(exp.date_fin)
-                                    : "Présent"}
-                                </span>
-                              </div>
-                            )}
-                          </div>
+                  <div className="space-y-2">
+                    {cvData.langues.map((langue) => (
+                      <div key={langue.id} className="space-y-1">
+                        <div className="flex justify-between">
+                          <span className="text-sm text-white uppercase">
+                            {langue.nom_langue}
+                          </span>
+                          <span className="text-xs text-white/70">
+                            {langue.niveau}
+                          </span>
+                        </div>
+                        <div className="w-full bg-white/20 rounded-full h-1.5">
+                          <div
+                            className={`h-1.5 rounded-full bg-white ${getNiveauWidth(
+                              langue.niveau
+                            )}`}
+                          ></div>
                         </div>
                       </div>
                     ))}
                   </div>
-                </section>
-              )}
+                </div>
 
-              {/* Formations avec design moderne */}
-              {cvData.formations.length > 0 && (
-                <section className={exportMode ? "break-inside-avoid" : ""}>
-                  <div className="flex items-center gap-3 mb-6">
-                    <div
-                      className={`p-2 ${
-                        includeColors ? "bg-orange" : "bg-gray-600"
-                      } rounded-lg`}
-                    >
-                      <Award className="h-5 w-5 text-white" />
-                    </div>
-                    <h2 className="text-2xl font-bold text-gray-900">
-                      Formation
-                    </h2>
-                  </div>
+                {/* Sections Centre d'interets */}
+                <div className="p-2 text-white">
+                  <h2 className="text-lg uppercase font-bold mb-1">
+                    CENTRES D'INTERETS
+                  </h2>
+                  <div className="border-b border-white/20 mb-4"></div>
 
-                  <div className="grid gap-4">
-                    {cvData.formations.map((formation) => (
-                      <div
-                        key={formation.id}
-                        className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl p-6"
-                      >
-                        <div className="flex justify-between items-start flex-wrap gap-2">
-                          <div>
-                            <h3 className="text-lg font-bold text-gray-900">
-                              {formation.diplome}
-                            </h3>
-                            <p
-                              className={`font-semibold ${
-                                includeColors
-                                  ? "text-white/100"
-                                  : "text-gray-600"
-                              }`}
-                            >
-                              {formation.nom_etablissement}
-                            </p>
-                          </div>
-                          {(formation.date_debut || formation.date_fin) && (
-                            <div
-                              className={`flex items-center gap-2 px-3 py-1 ${
-                                includeColors
-                                  ? "bg-green-100 text-green-800"
-                                  : "bg-gray-200 text-gray-800"
-                              } rounded-full text-sm font-medium`}
-                            >
-                              <Calendar className="h-4 w-4" />
-                              <span>
-                                {formatDate(formation.date_debut)} -{" "}
-                                {formatDate(formation.date_fin)}
-                              </span>
-                            </div>
-                          )}
-                        </div>
+                  {cvData.centres_interet.map((centre) => (
+                    <div key={centre.id} className="space-y-1">
+                      <div className="flex justify-between">
+                        <span className="text-sm text-white">
+                          {centre.nom_centre_interet}
+                        </span>
+                        {/* <span className="text-xs text-white/70">
+                          {langue.niveau}
+                        </span> */}
                       </div>
-                    ))}
-                  </div>
-                </section>
-              )}
-
-              {/* Compétences et Langues avec design moderne */}
-              <div className="grid md:grid-cols-2 gap-8">
-                {/* Compétences */}
-                {cvData.competences.length > 0 && (
-                  <section className={exportMode ? "break-inside-avoid" : ""}>
-                    <div className="flex items-center gap-3 mb-6">
-                      <div
-                        className={`p-2 ${
-                          includeColors ? "bg-purple-600" : "bg-gray-600"
-                        } rounded-lg`}
-                      >
-                        <Code className="h-5 w-5 text-white" />
-                      </div>
-                      <h2 className="text-xl font-bold text-gray-900">
-                        Compétences
-                      </h2>
+                      {/* <div className="w-full bg-white/20 rounded-full h-1.5">
+                        <div
+                          className={`h-1.5 rounded-full bg-white ${getNiveauWidth(
+                            langue.niveau
+                          )}`}
+                        ></div>
+                      </div> */}
                     </div>
+                  ))}
+                </div>
+              </div>
+            </div>
 
-                    <div className="space-y-4">
-                      {cvData.competences.map((comp) => (
-                        <div key={comp.id} className="space-y-2">
-                          <div className="flex justify-between items-center">
-                            <span className="font-semibold text-gray-900">
-                              {comp.nom_competence}
-                            </span>
-                            <span className="text-sm text-gray-600">
-                              {comp.niveau}
-                            </span>
-                          </div>
-                          <div className="w-full bg-gray-200 rounded-full h-2">
-                            <div
-                              className={`h-2 rounded-full ${
-                                includeColors ? "bg-purple-600" : "bg-gray-600"
-                              } ${getNiveauWidth(comp.niveau)}`}
-                            ></div>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </section>
+            {/* Colonne droite (65%) - Contenu principal */}
+            <div className="w-[65%] lg:w-[65%] bg-gray-50 h-[116.5vh] p-5">
+              {/* En-tête */}
+              <div className="mb-8">
+                <h1 className="text-3xl text-center font-bold uppercase tracking-tight text-[#3d3d3d]">
+                  {info.username}
+                </h1>
+                {cvData.titre && (
+                  <p className="text-lg font-medium text-center uppercase mt-2">
+                    {cvData.titre}
+                  </p>
                 )}
-
-                {/* Langues */}
-                {cvData.langues.length > 0 && (
-                  <section className={exportMode ? "break-inside-avoid" : ""}>
-                    <div className="flex items-center gap-3 mb-6">
-                      <div
-                        className={`p-2 ${
-                          includeColors ? "bg-orange-600" : "bg-gray-600"
-                        } rounded-lg`}
-                      >
-                        <Globe className="h-5 w-5 text-white" />
-                      </div>
-                      <h2 className="text-xl font-bold text-gray-900">
-                        Langues
-                      </h2>
-                    </div>
-
-                    <div className="space-y-4">
-                      {cvData.langues.map((langue) => (
-                        <div key={langue.id} className="space-y-2">
-                          <div className="flex justify-between items-center">
-                            <span className="font-semibold text-gray-900">
-                              {langue.nom_langue}
-                            </span>
-                            <span className="text-sm text-gray-600">
-                              {langue.niveau}
-                            </span>
-                          </div>
-                          <div className="w-full bg-gray-200 rounded-full h-2">
-                            <div
-                              className={`h-2 rounded-full ${
-                                includeColors ? "bg-orange-600" : "bg-gray-600"
-                              } ${getNiveauWidth(langue.niveau)}`}
-                            ></div>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </section>
+                {cvData.description && (
+                  <p className="text-[#3d3d3d] mt-4 max-w-2xl mx-auto">
+                    {cvData.description}
+                  </p>
                 )}
               </div>
 
-              {/* Message si CV vide */}
-              {!info.username &&
-                cvData.experiences.length === 0 &&
-                cvData.formations.length === 0 &&
-                !exportMode && (
-                  <div className="text-center py-12 text-gray-500">
-                    <p className="text-lg">
-                      Votre CV apparaîtra ici en temps réel
-                    </p>
-                    <p className="text-sm">
-                      Commencez par remplir vos informations personnelles
-                    </p>
-                  </div>
-                )}
-            </CardContent>
+              {/* Section Expériences */}
+              <div className="mb-8">
+                <h2 className="text-lg uppercase font-bold bg-[#3d3d3d] text-white">
+                  EXPERIENCES PROFESSIONNELLES
+                </h2>
+                <div className="border-b border-gray-300 mb-1"></div>
+
+                <div className="space-y-6">
+                  {cvData.experiences.map((exp) => (
+                    <div key={exp.id} className="space-y-2">
+                      <div className="flex justify-between flex-col sm:flex-row">
+                        <h4 className="text-[16px] font-semibold text-gray-800">
+                          {exp.titre_poste}
+                        </h4>
+                        <span className="">
+                          {formatDate(exp.date_debut)} -{" "}
+                          {exp.date_fin ? formatDate(exp.date_fin) : "Présent"}
+                        </span>
+                      </div>
+
+                      <p className="font-medium uppercase">
+                        {exp.nom_entreprise}
+                      </p>
+
+                      <ul className="list-disc list-inside space-y-1 ml-4">
+                        {exp.missions.map((mission) => (
+                          <li key={mission.id} className="text-gray-700 whitespace-normal">
+                            {mission.missions_details}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Section Formations */}
+              <div>
+                <h2 className="text-lg uppercase font-bold bg-[#3d3d3d] text-white mb-1">
+                  FORMATIONS
+                </h2>
+                <div className="border-b border-gray-300 mb-1"></div>
+
+                <div className="space-y-5">
+                  {cvData.formations.map((formation) => (
+                    <div key={formation.id} className="space-y-1">
+                      <div className="flex justify-between flex-col sm:flex-row">
+                        <h3 className="text-[16px] font-semibold text-gray-800">
+                          {formation.diplome}
+                        </h3>
+                        <span className="">
+                          {formatDate(formation.date_debut)} -{" "}
+                          {formatDate(formation.date_fin)}
+                        </span>
+                      </div>
+                      <p className="text-[#3d3d3d]">
+                        {formation.nom_etablissement}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
           </div>
         )}
-      </Card>
+      </div>
     </div>
   );
 }

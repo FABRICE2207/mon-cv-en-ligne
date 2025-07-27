@@ -124,21 +124,16 @@ export default function TemplateSelector({
                   }}
                 >
                   <div className="border rounded-md p-2 h-full flex flex-col">
-                    {/* Header avec titre et badge */}
-                    <div className="flex items-center justify-between mb-2 min-h-[28px]">
-                      <p className="font-bold text-sm truncate flex-1 mr-2">
-                        {template.libelle}
-                      </p>
-
-                      {selectedTemplate === String(template.id) && (
-                        <div className="bg-blue-950 rounded-full p-1 flex-shrink-0">
-                          <Check className="w-3 h-3 text-white" />
-                        </div>
-                      )}
-                    </div>
-
+                    
                     {/* Image avec loader */}
                     <div className="relative flex-1">
+                      {selectedTemplate === String(template.id) && (
+                        <div className="w-full">
+                          <div className="absolute bg-blue-950 rounded-full p-1 flex-shrink-0">
+                            <Check className="w-3 h-3 text-white" />
+                          </div>
+                        </div>
+                      )}
                       {loading && (
                         <div className="absolute inset-0 flex items-center justify-center bg-white/80 z-10 rounded">
                           <Loader2 className="animate-spin w-6 h-6 text-gray-500" />

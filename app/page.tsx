@@ -489,7 +489,7 @@ export default function HomePage() {
           templates.map((template) => (
             <div
               key={template.id}
-              className="min-w-[150px] max-w-[250px] lg:max-w-[450px] flex-shrink-0 p-2 transition"
+              className="min-w-[150px] max-w-[250px] lg:max-w-[350px] flex-shrink-0 p-2 transition"
             >
               <img
                 src={`${process.env.NEXT_PUBLIC_API_URL}/models/modele_cv/${template.images}`}
