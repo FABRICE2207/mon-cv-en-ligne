@@ -226,7 +226,7 @@ const CVForm = ({ params, previewTemplate }: Props) => {
               nbre_enfants:
                 data.cvData.informations_personnelles?.nbre_enfants || "",
               linkedin: data.cvData.informations_personnelles?.linkedin || "",
-              photos: data.cvData.informations_personnelles?.photos || null,
+              photos: data.cvData.informations_personnelles?.photos || "",
             },
             experiences: data.cvData.experiences || [],
             formations: data.cvData.formations || [],
@@ -236,6 +236,9 @@ const CVForm = ({ params, previewTemplate }: Props) => {
           };
 
           setCvData(transformedData);
+
+          console.log();
+          
 
           if (transformedData.informations_personnelles.photos) {
             setSelectedImage(
@@ -276,7 +279,10 @@ const CVForm = ({ params, previewTemplate }: Props) => {
       // Add other object parents here if needed
     } else {
       // Only allow direct properties that aren't objects
-      if (name === "titre" || name === "description") {
+      if (
+        name === "titre" ||
+        name === "description"
+      ) {
         setCvData((prev) => ({
           ...prev,
           [name]: value,
@@ -393,59 +399,90 @@ const CVForm = ({ params, previewTemplate }: Props) => {
     e.preventDefault();
     setIsSubmitting(true);
 
+    const token = localStorage.getItem("token");
+
     try {
       const formData = new FormData();
 
-      // Ajout des champs simples
+      // Champs simples
       formData.append("titre", cvData.titre);
       formData.append("description", cvData.description);
+      formData.append("images", cvData.images); // peut être un string ou file selon ton usage
+      formData.append("users_id", cvData.users_id.toString());
+      formData.append("models_cv_id", cvData.models_cv_id.toString());
 
-      // Ajout des informations personnelles (sauf la photo)
-      const { photos, ...personalInfo } = cvData.informations_personnelles;
+      // Informations personnelles
+      const { photos, ...infosSansPhoto } = cvData.informations_personnelles;
       formData.append(
         "informations_personnelles",
-        JSON.stringify(personalInfo)
+        JSON.stringify(infosSansPhoto)
       );
 
-      // Ajout de la photo si elle a été modifiée
       if (cvData.informations_personnelles.photos instanceof File) {
-        formData.append("photo", cvData.informations_personnelles.photos);
+        formData.append("photo", cvData.informations_personnelles.photos); // upload fichier
       }
 
-      // Ajout des autres sections
+      // Sections multiples
       formData.append("experiences", JSON.stringify(cvData.experiences));
       formData.append("formations", JSON.stringify(cvData.formations));
       formData.append("competences", JSON.stringify(cvData.competences));
       formData.append("langues", JSON.stringify(cvData.langues));
+      // formData.append("projets", JSON.stringify(cvData.projets));
+      // formData.append("certifications", JSON.stringify(cvData.certifications));
       formData.append(
         "centres_interet",
         JSON.stringify(cvData.centres_interet)
       );
 
-      // // Envoi des données
-      // const url = id ? `/cv/update/${id}` : "/cv/create";
-      // const method = id ? "PUT" : "POST";
+      const cvDataUpd = formData; // Emballe formData dans la clé "cvData"
+      console.log("Payload JSON.stringify(formData):", formData);
 
-      // const response = await api({
-      //   method,
-      //   url,
-      //   data: formData,
-      //   headers: {
-      //     "Content-Type": "multipart/form-data",
-      //   },
-      // });
+      const jsonPayload = {
+        titre: cvData.titre,
+        description: cvData.description,
+        images: cvData.images,
+        users_id: cvData.users_id,
+        models_cv_id: cvData.models_cv_id,
+        informations_personnelles: {...cvData.informations_personnelles,
+           // ou gérer différemment si c’est un fichier
+        },
+        experiences: cvData.experiences,
+        formations: cvData.formations,
+        competences: cvData.competences,
+        langues: cvData.langues,
+        centres_interet: cvData.centres_interet,
+      };
 
-      // if (response.status === 200 || response.status === 201) {
-      //   alert("CV sauvegardé avec succès!");
-      //   if (!id) {
-      //     // router.push('/mes-cv');
-      //   }
-      // } else {
-      //   throw new Error("Erreur lors de la sauvegarde");
-      // }
+      console.log(jsonPayload);
+
+      //Envoi à l'API Flask
+      const response = await axios.put(
+        `http://localhost:5000/api/cv/cvs_update/${id}`, // corrigé ici
+        {
+          cvData: jsonPayload,
+          models_cv_id: cvData.models_cv_id, // attention à bien stringifier
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      console.log("Informations envoyées à l'API :", response.data);
+
+      Swal.fire({
+        icon: "success",
+        title: "Votre cv a été mis à jour avec succès !",
+        showConfirmButton: false,
+        timer: 2000,
+      }).then(() => {
+        window.location.href = "/dashboard";
+      });
     } catch (error) {
-      console.error("Erreur:", error);
-      alert("Une erreur est survenue lors de la sauvegarde");
+      console.error("Erreur de mise à jour :", error);
+      alert("Une erreur est survenue");
     } finally {
       setIsSubmitting(false);
     }
@@ -733,7 +770,6 @@ const CVForm = ({ params, previewTemplate }: Props) => {
         printFrame.onload = () => resolve();
       });
 
-    
       // Démarrer l'impression
       printFrame.contentWindow?.focus();
       printFrame.contentWindow?.print();
@@ -783,6 +819,9 @@ const CVForm = ({ params, previewTemplate }: Props) => {
       },
       images: getModele.images,
     };
+    
+    console.log("Photo", cvData.informations_personnelles.photos);
+
 
     const templateProps = {
       cvData: correctedCVData,
@@ -833,12 +872,14 @@ const CVForm = ({ params, previewTemplate }: Props) => {
       <header className="bg-white border-b sticky top-0 z-40">
         <div className="container grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 gap-6 mx-auto px-4 py-4 items-center">
           <div className="flex items-center space-x-4">
-            <Button className="text-white bg-blue-950 hover:bg-blue-900" onClick={() => router.push("/dashboard")}>
+            <Button
+              className="text-white bg-blue-950 hover:bg-blue-900"
+              onClick={() => router.push("/dashboard")}
+            >
               <ArrowLeft className="h-4 w-4 mr-2" />
               Retour
             </Button>
             <div className="flex items-center space-x-2 w-full">
-              
               <h1 className="text-xl font-bold text-gray-900">
                 Mon CV en ligne
               </h1>
@@ -1001,10 +1042,12 @@ const CVForm = ({ params, previewTemplate }: Props) => {
                     <input
                       id="username"
                       value={cvData.informations_personnelles.username}
+                      name="informations_personnelles.username"
                       placeholder="Ex: KOUAKOU KAN JEAN-MARIE"
                       onChange={handleInputChange}
                       required
-                      className="w-full p-2 rounded border  focus:bg-white border-gray-300 focus:outline-none focus:border-blue-950 focus:ring-1 focus:ring-blue-950"
+                      disabled
+                      className="w-full p-2 rounded border bg-gray-200 focus:bg-white border-gray-300 focus:outline-none focus:border-blue-950 focus:ring-1 focus:ring-blue-950"
                     />
                   </div>
                   <div>
@@ -1012,10 +1055,12 @@ const CVForm = ({ params, previewTemplate }: Props) => {
                     <input
                       id="email"
                       type="email"
+                      name="informations_personnelles.email"
                       value={cvData.informations_personnelles.email}
                       onChange={handleInputChange}
                       required
-                      className="w-full p-2 rounded border  focus:bg-white border-gray-300 focus:outline-none focus:border-blue-950 focus:ring-1 focus:ring-blue-950"
+                      disabled
+                      className="w-full p-2 rounded border bg-gray-200 focus:bg-white border-gray-300 focus:outline-none focus:border-blue-950 focus:ring-1 focus:ring-blue-950"
                     />
                   </div>
                 </div>
@@ -1025,6 +1070,7 @@ const CVForm = ({ params, previewTemplate }: Props) => {
                     <Label htmlFor="adresse">Adresse</Label>
                     <input
                       id="adresse"
+                      name="informations_personnelles.adresse"
                       value={cvData.informations_personnelles.adresse}
                       onChange={handleInputChange}
                       required
@@ -1036,6 +1082,7 @@ const CVForm = ({ params, previewTemplate }: Props) => {
                     <input
                       id="telephone"
                       type="tel"
+                      name="informations_personnelles.telephone"
                       maxLength={14}
                       value={cvData.informations_personnelles.telephone}
                       onChange={handleInputChange}
@@ -1051,6 +1098,7 @@ const CVForm = ({ params, previewTemplate }: Props) => {
                       <input
                         id="date_naissance"
                         type="date"
+                        name="informations_personnelles.date_naissance"
                         value={cvData.informations_personnelles.date_naissance}
                         onChange={handleInputChange}
                         required
@@ -1063,6 +1111,7 @@ const CVForm = ({ params, previewTemplate }: Props) => {
                       Situation familiale
                     </Label>
                     <Select
+                      name="informations_personnelles.situation_familiale"
                       value={
                         cvData.informations_personnelles.situation_familiale
                       }
@@ -1094,6 +1143,7 @@ const CVForm = ({ params, previewTemplate }: Props) => {
                       type="number"
                       maxLength={2}
                       value={cvData.informations_personnelles.nbre_enfants}
+                      name="informations_personnelles.nbre_enfants"
                       placeholder="Ex: 1"
                       onChange={handleInputChange}
                       className="w-full p-2 rounded border  focus:bg-white border-gray-300 focus:outline-none focus:border-blue-950 focus:ring-1 focus:ring-blue-950"
@@ -1107,6 +1157,7 @@ const CVForm = ({ params, previewTemplate }: Props) => {
                     <input
                       value={cvData.informations_personnelles.permis_conduire}
                       maxLength={5}
+                      name="informations_personnelles.permis_conduire"
                       placeholder="Ex: ABCDE ou ABCD"
                       onChange={handleInputChange}
                       className="w-full p-2 rounded border  focus:bg-white border-gray-300 focus:outline-none focus:border-blue-950 focus:ring-1 focus:ring-blue-950"
@@ -1330,7 +1381,6 @@ const CVForm = ({ params, previewTemplate }: Props) => {
                               Formation #{index + 1}
                             </h4>
                             <Button
-                              
                               className="px-4 py-2 bg-red-600 text-white rounded"
                               onClick={() => removeFormation(index)}
                             >
@@ -1661,7 +1711,7 @@ const CVForm = ({ params, previewTemplate }: Props) => {
                   type="submit"
                   className="w-full px-4 py-2 bg-blue-950 hover:bg-blue-900 text-white rounded"
                 >
-                  Enregistrer
+                  Modifier
                 </Button>
               </div>
             </div>

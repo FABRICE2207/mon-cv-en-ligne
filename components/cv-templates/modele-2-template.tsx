@@ -209,7 +209,7 @@ export default function ModerneTemplateFirst({
                   {info.permis_conduire && (
                     <div className="flex items-center text-black-100 mb-1">
                       <CarFront className="h-4 w-4" />
-                      {"Permis de conduire : "}
+                      {"Permis : "}
                       <span className="text-sm ml-1 uppercase">
                         {info.permis_conduire}
                       </span>

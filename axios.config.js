@@ -14,6 +14,7 @@ const apiImg = axios.create({
   }
 });
 
+
 // Intercepteur pour les requêtes
 api.interceptors.request.use(config => {
   if (process.env.NODE_ENV === 'development') {

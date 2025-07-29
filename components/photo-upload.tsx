@@ -101,6 +101,8 @@ const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const img = new Image();
     img.src = imageURL;
 
+    console.log("Image loaded:", file);
+    
     img.onload = async () => {
       // ✅ Vérifie la taille minimale exigée
       // if (img.width < 1280 || img.height < 1280) {
