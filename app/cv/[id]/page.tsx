@@ -456,8 +456,7 @@ const CVForm = ({ params, previewTemplate }: Props) => {
       console.log(jsonPayload);
 
       //Envoi à l'API Flask
-      const response = await axios.put(
-        `http://localhost:5000/api/cv/cvs_update/${id}`, // corrigé ici
+      const response = await axios.put(`/cv/cvs_update/${id}`, // corrigé ici
         {
           cvData: jsonPayload,
           models_cv_id: cvData.models_cv_id, // attention à bien stringifier
