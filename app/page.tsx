@@ -278,9 +278,11 @@ export default function HomePage() {
               viewport={{ once: true }}
             >
               <img
-                src="/cv-importance.jpg"
+                src="/exemple_cv.png"
                 alt="Importance d'un bon CV"
-                className="rounded-xl shadow-2xl border border-gray-200 w-full"
+                width={500}
+                height={200}
+                className="rounded-xl shadow-2xl border border-gray-200"
               />
             </motion.div>
 
@@ -662,9 +664,9 @@ export default function HomePage() {
               >
                 <div className="absolute -top-6 -left-6 w-64 h-64 bg-blue-100 rounded-full mix-blend-multiply filter blur-2xl opacity-30 animate-blob"></div>
                 <img
-                  src="/cv-editor-screenshot.jpg"
+                  src="/ordinateur.png"
                   alt="Éditeur de CV"
-                  className="relative rounded-xl shadow-xl border border-gray-200"
+                  className="relative"
                 />
               </motion.div>
             </div>
@@ -926,7 +928,7 @@ export default function HomePage() {
                 <Button
                   variant="outline"
                   size="lg"
-                  className="text-white border-white hover:bg-white/10 px-8 py-6 text-lg"
+                  className="text-white bg-transparent px-8 py-6 text-lg"
                 >
                   Voir les modèles
                 </Button>
