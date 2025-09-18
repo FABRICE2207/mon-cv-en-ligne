@@ -945,7 +945,7 @@ export default function HomePage() {
             <div className="lg:col-span-2">
               <div className="flex items-center space-x-2 mb-4">
                 <FileText className="h-8 w-8 text-blue-400" />
-                <span className="text-xl font-bold">CVPro CI</span>
+                <span className="text-xl font-bold">Mon CV en ligne</span>
               </div>
               <p className="text-gray-400 mb-6">
                 La solution de création de CV la plus utilisée en Côte d'Ivoire
