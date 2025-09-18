@@ -1,18 +1,23 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api",
+  baseURL: process.env.NEXT_PUBLIC_API_URL || process.env.NEXT_PUBLIC_API_URL_TWO || "http://localhost:5000/api",
   headers: {
     'Content-Type': 'application/json',
   }
 });
 
 const apiImg = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL,
+  baseURL: process.env.NEXT_PUBLIC_API_URL || process.env.NEXT_PUBLIC_API_URL_TWO,
   headers: {
     'Content-Type': 'multipart/form-data'
   }
 });
+
+const apitoken = axios.create({
+  baseURL: process.env.NEXT_PUBLIC_API_URL || process.env.NEXT_PUBLIC_API_URL_TWO,
+});
+
 
 
 // Intercepteur pour les requêtes
@@ -38,9 +43,5 @@ api.interceptors.response.use(
     return Promise.reject(error);
   }
 );
-
-const apitoken = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL,
-});
 
 export { api, apitoken, apiImg };
