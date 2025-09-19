@@ -311,24 +311,22 @@ export default function ModerneTemplateFirst({
                         </h2>
                       </div> */}
 
-                          <div className="space-y-4 mt-2">
+                          <div className="mt-2">
                             {cvData.competences.map((comp) => (
                               <div key={comp.id} className="space-y-2">
                                 <div className="flex justify-between items-center">
                                   <span className="font-sm text-gray-900">
                                     {comp.nom_competence}
                                   </span>
-                                  <span className="text-sm text-gray-600">
-                                    {comp.niveau}
-                                  </span>
+                                  
                                 </div>
-                                <div className="w-full bg-gray-200 rounded-full h-2">
+                                {/* <div className="w-full bg-gray-200 rounded-full h-2">
                                   <div
                                     className={`h-2 rounded-full ${
                                       includeColors ? "bg-black" : "bg-gray-600"
                                     } ${getNiveauWidth(comp.niveau)}`}
                                   ></div>
-                                </div>
+                                </div> */}
                               </div>
                             ))}
                           </div>
