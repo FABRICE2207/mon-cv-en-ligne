@@ -34,7 +34,6 @@ import { useState, useEffect } from "react";
 import { api } from "@/axios.config";
 import { useRef } from "react";
 
-
 interface Template {
   id: string;
   libelle: string;
@@ -56,34 +55,34 @@ export default function HomePage() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-
-    const scroll = (direction: "left" | "right") => {
+  const scroll = (direction: "left" | "right") => {
     if (scrollRef.current) {
       const amount = direction === "left" ? -250 : 250;
       scrollRef.current.scrollBy({ left: amount, behavior: "smooth" });
     }
   };
 
-    // Affiche la liste des modèles de cv
-    useEffect(() => {
-      const fetchModelCv = async () => {
-        try {
-          const response = await api.get("/models/liste_model_cv_actives");
-          const model_actives = response.data;
-  
-          setTemplates(model_actives); //
-          console.log("Model", model_actives);
-        } catch (error) {
-          console.error(
-            "Erreur lors de la récupération des modèles de CV :",
-            error
-          );
-        }
-      };
-      fetchModelCv();
-    }, []);
+  // Affiche la liste des modèles de cv
+  useEffect(() => {
+    const fetchModelCv = async () => {
+      try {
+        const response = await api.get("/models/liste_model_cv_actives");
+        const model_actives = response.data;
+
+        setTemplates(model_actives); //
+        console.log("Model", model_actives);
+      } catch (error) {
+        console.error(
+          "Erreur lors de la récupération des modèles de CV :",
+          error
+        );
+      }
+    };
+    fetchModelCv();
+  }, []);
 
   const navLinks = [
+    { name: "Accueil", href: "/" },
     { name: "Modèles", href: "/templates" },
     { name: "Exemples", href: "/examples" },
     { name: "Conseils", href: "/blog" },
@@ -424,7 +423,7 @@ export default function HomePage() {
                 viewport={{ once: true }}
                 whileHover={{ y: -5 }}
               >
-                <Card className="h-full border-0 shadow-sm hover:shadow-md transition-all group">
+                <Card className="h-full border-t-4 border-t-[#1d1375] shadow-sm hover:shadow-md transition-all group ">
                   <CardHeader>
                     <div
                       className={`${feature.color} p-3 rounded-full w-12 h-12 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}
@@ -465,53 +464,57 @@ export default function HomePage() {
           </motion.div>
 
           <div className="relative w-95">
-      {/* Boutons gauche/droite */}
-      <div className="flex justify-end gap-2 mb-4">
- <button
-            onClick={() => scroll("left")}
-            className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-blue-950 hover:bg-blue-900 rounded-full shadow p-2"
-          >
-            <ChevronLeft className="w-5 h-5" color="white" />
-          </button>
+            {/* Boutons gauche/droite */}
+            <div className="flex justify-end gap-2 mb-4">
+              <button
+                onClick={() => scroll("left")}
+                className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-blue-950 hover:bg-blue-900 rounded-full shadow p-2"
+              >
+                <ChevronLeft className="w-5 h-5" color="white" />
+              </button>
 
-          <button
-            onClick={() => scroll("right")}
-            className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-blue-950 hover:bg-blue-900 rounded-full shadow p-2"
-          >
-            <ChevronRight className="w-5 h-5" color="white" />
-          </button>
-      </div>
-
-      {/* Contenu scrollable horizontalement */}
-      <div
-            ref={scrollRef}
-            className="flex gap-2 overflow-x-auto scrollbar-hide"
-          >
-        {templates.length > 0 ? (
-          templates.map((template) => (
-            <div
-              key={template.id}
-              className="min-w-[150px] max-w-[250px] lg:max-w-[350px] flex-shrink-0 p-2 transition"
-            >
-              <img
-                src={`${process.env.NEXT_PUBLIC_API_URL}/models/modele_cv/${template.images}`}
-                alt={template.libelle}
-                className="w-full object-cover rounded-lg mb-4"
-              />
-              <h3 className="text-lg font-semibold text-center text-gray-800">
-                {template.libelle}
-              </h3>
+              <button
+                onClick={() => scroll("right")}
+                className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-blue-950 hover:bg-blue-900 rounded-full shadow p-2"
+              >
+                <ChevronRight className="w-5 h-5" color="white" />
+              </button>
             </div>
-          ))
-        ) : (
-          <p className="text-gray-500">Aucun modèle disponible.</p>
-        )}
-      </div>
-    </div>
+
+            {/* Contenu scrollable horizontalement */}
+            <div
+              ref={scrollRef}
+              className="flex gap-2 overflow-x-auto scrollbar-hide"
+            >
+              {templates.length > 0 ? (
+                templates.map((template) => (
+                  <div
+                    key={template.id}
+                    className="min-w-[300px] max-w-[300px] lg:max-w-[300px] flex-shrink-0 p-2 transition"
+                  >
+                    <h3 className="text-lg font-semibold text-center text-gray-800">
+                      {template.libelle}
+                    </h3>
+                    <img
+                      src={`${process.env.NEXT_PUBLIC_API_URL}/models/modele_cv/${template.images}`}
+                      alt={template.libelle}
+                      className="w-full object-cover rounded-lg mb-4"
+                    />
+                  </div>
+                ))
+              ) : (
+                <p className="text-gray-500">Aucun modèle disponible.</p>
+              )}
+            </div>
+          </div>
 
           <div className="text-center">
             <Link href="/templates">
-              <Button variant="outline" size="lg" className="text-lg group">
+              <Button
+                variant="outline"
+                size="lg"
+                className="text-lg text-white hover:text-white group bg-blue-950 hover:bg-blue-900"
+              >
                 Voir tous les modèles
                 <ChevronRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
               </Button>

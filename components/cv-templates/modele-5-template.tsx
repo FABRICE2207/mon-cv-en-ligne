@@ -130,7 +130,7 @@ export default function ModerneTemplateFirst({
             {/* Colonne gauche (35%) - Informations personnelles */}
             <div className="w-[35%] lg:w-[35%]">
               {/* Photo de profil */}
-              <div className="flex justify-center p-3">
+              <div className="flex justify-center h-20 bg-[#1991f3] rounded-b-[140%] p-3 mb-20">
                 <img
                   src={
                     info.photos
@@ -138,22 +138,22 @@ export default function ModerneTemplateFirst({
                       : "/photo-cv.png"
                   }
                   alt={info.username || "Photo de profil"}
-                  className="w-36 h-36  object-cover border-white"
+                  className="w-36 h-36  object-cover border-white border-4 rounded-full"
                 />
               </div>
 
-              <div className="bg-[#3d3d3d] rounded-tr-[30px] h-[116.5vh]">
+              <div className="rounded-tr-[30px] h-[116.5vh]">
                 {/* Section Contacts */}
                 <div className="p-2">
-                  <h2 className="text-lg uppercase font-bold text-white mb-1">
+                  <h2 className="text-lg uppercase font-bold bg-[#1991f3] text-white mb-1">
                     COORDONNEES
                   </h2>
                   <div className="border-b border-white/20 mb-4"></div>
 
-                  <div className="space-y-3 text-white">
+                  <div className="space-y-3 text-black">
                     {info.email && (
                       <div className="flex items-center gap-2">
-                        <Mail className="h-4 w-4 text-white/80" />
+                        <Mail className="h-4 w-4 text-black/80" />
                         <span className="text-sm">{info.email}</span>
                       </div>
                     )}
@@ -235,7 +235,7 @@ export default function ModerneTemplateFirst({
 
                 {/* Section Compétences */}
                 <div className="p-2">
-                  <h2 className="text-lg uppercase font-bold mb-1 text-white">
+                  <h2 className="text-lg uppercase font-bold mb-1bg-[#1991f3] bg-[#1991f3] text-white">
                     COMPETENCES
                   </h2>
                   <div className="border-b border-white/20 mb-4"></div>
@@ -243,10 +243,10 @@ export default function ModerneTemplateFirst({
                   {cvData.competences.map((comp) => (
                     <div key={comp.id} className="space-y-1">
                       <div className="flex justify-between">
-                        <span className="text-sm text-white">
+                        <span className="text-sm text-black">
                           {comp.nom_competence}
                         </span>
-                        {/* <span className="text-xs text-white/70">
+                        {/* <span className="text-xs text-black/70">
                           {comp.niveau}
                         </span> */}
                       </div>
@@ -262,18 +262,18 @@ export default function ModerneTemplateFirst({
                 </div>
 
                 {/* Sections Langues */}
-                <div className="p-2 text-white">
-                  <h2 className="text-lg uppercase font-bold mb-1">LANGUES</h2>
+                <div className="p-2 text-black">
+                  <h2 className="text-lg uppercase font-bold mb-1 bg-[#1991f3] text-white">LANGUES</h2>
                   <div className="border-b border-white/20 mb-4"></div>
 
                   <div className="space-y-2">
                     {cvData.langues.map((langue) => (
                       <div key={langue.id} className="space-y-1">
                         <div className="flex justify-between">
-                          <span className="text-sm text-white uppercase">
+                          <span className="text-sm text-black uppercase">
                             {langue.nom_langue}
                           </span>
-                          <span className="text-xs text-white/70">
+                          <span className="text-xs text-black/70">
                             {langue.niveau}
                           </span>
                         </div>
@@ -290,8 +290,8 @@ export default function ModerneTemplateFirst({
                 </div>
 
                 {/* Sections Centre d'interets */}
-                <div className="p-2 text-white">
-                  <h2 className="text-lg uppercase font-bold mb-1">
+                <div className="p-2 text-black">
+                  <h2 className="text-lg uppercase font-bold mb-1 bg-[#1991f3] text-white">
                     CENTRES D'INTERETS
                   </h2>
                   <div className="border-b border-white/20 mb-4"></div>
@@ -299,10 +299,10 @@ export default function ModerneTemplateFirst({
                   {cvData.centres_interet.map((centre) => (
                     <div key={centre.id} className="space-y-1">
                       <div className="flex justify-between">
-                        <span className="text-sm text-white">
+                        <span className="text-sm text-black">
                           {centre.nom_centre_interet}
                         </span>
-                        {/* <span className="text-xs text-white/70">
+                        {/* <span className="text-xs text-black/70">
                           {langue.niveau}
                         </span> */}
                       </div>
@@ -320,10 +320,10 @@ export default function ModerneTemplateFirst({
             </div>
 
             {/* Colonne droite (65%) - Contenu principal */}
-            <div className="w-[65%] lg:w-[65%] bg-gray-50 p-5">
+            <div className="w-[65%] lg:w-[65%] bg-gray-50 p-5 text-black">
               {/* En-tête */}
-              <div className="mb-8">
-                <h1 className="text-3xl text-center font-bold uppercase tracking-tight text-[#3d3d3d]">
+              <div className="mb-8 ">
+                <h1 className="text-3xl text-center font-bold uppercase tracking-tight">
                   {info.username}
                 </h1>
                 {cvData.titre && (
@@ -340,7 +340,7 @@ export default function ModerneTemplateFirst({
 
               {/* Section Expériences */}
               <div className="mb-8">
-                <h2 className="text-lg uppercase font-bold bg-[#3d3d3d] text-white">
+                <h2 className="text-lg uppercase font-bold bg-[#1991f3] text-white">
                   EXPERIENCES PROFESSIONNELLES
                 </h2>
                 <div className="border-b border-gray-300 mb-1"></div>
@@ -352,12 +352,11 @@ export default function ModerneTemplateFirst({
                         <h4 className="text-[16px] font-semibold text-gray-800">
                           {exp.titre_poste}
                         </h4>
-                        <span className="">
+                      </div>
+                       <span className="">
                           {formatDate(exp.date_debut)} -{" "}
                           {exp.date_fin ? formatDate(exp.date_fin) : "Présent"}
                         </span>
-                      </div>
-
                       <p className="font-medium uppercase">
                         {exp.nom_entreprise}
                       </p>
@@ -376,7 +375,7 @@ export default function ModerneTemplateFirst({
 
               {/* Section Formations */}
               <div>
-                <h2 className="text-lg uppercase font-bold bg-[#3d3d3d] text-white mb-1">
+                <h2 className="text-lg uppercase font-bold bg-[#1991f3] text-white mb-1">
                   FORMATIONS
                 </h2>
                 <div className="border-b border-gray-300 mb-1"></div>
@@ -388,11 +387,12 @@ export default function ModerneTemplateFirst({
                         <h3 className="text-[16px] font-semibold text-gray-800">
                           {formation.diplome}
                         </h3>
-                        <span className="">
+                        
+                      </div>
+                      <span className="">
                           {formatDate(formation.date_debut)} -{" "}
                           {formatDate(formation.date_fin)}
                         </span>
-                      </div>
                       <p className="text-[#3d3d3d]">
                         {formation.nom_etablissement}
                       </p>

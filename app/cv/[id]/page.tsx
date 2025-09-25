@@ -1045,8 +1045,8 @@ const CVForm = ({ params, previewTemplate }: Props) => {
                       placeholder="Ex: KOUAKOU KAN JEAN-MARIE"
                       onChange={handleInputChange}
                       required
-                      disabled
-                      className="w-full p-2 rounded border bg-gray-200 focus:bg-white border-gray-300 focus:outline-none focus:border-blue-950 focus:ring-1 focus:ring-blue-950"
+                      
+                      className="w-full p-2 rounded border focus:bg-white border-gray-300 focus:outline-none focus:border-blue-950 focus:ring-1 focus:ring-blue-950"
                     />
                   </div>
                   <div>
@@ -1058,8 +1058,7 @@ const CVForm = ({ params, previewTemplate }: Props) => {
                       value={cvData.informations_personnelles.email}
                       onChange={handleInputChange}
                       required
-                      disabled
-                      className="w-full p-2 rounded border bg-gray-200 focus:bg-white border-gray-300 focus:outline-none focus:border-blue-950 focus:ring-1 focus:ring-blue-950"
+                      className="w-full p-2 rounded border focus:bg-white border-gray-300 focus:outline-none focus:border-blue-950 focus:ring-1 focus:ring-blue-950"
                     />
                   </div>
                 </div>

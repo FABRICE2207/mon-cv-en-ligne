@@ -1,6 +1,9 @@
 import Modele1Template from "./modele-1-template"
 import Modele2Template from "./modele-2-template"
 import Modele3Template from "./modele-3-template"
+import Modele4Template from "./modele-4-template"
+import Modele5Template from "./modele-5-template"
+import Modele6Template from "./modele-6-template"
 
 interface CVData {
   titre: string
@@ -65,4 +68,7 @@ export const templateComponents: Record<string, React.ComponentType<TemplateProp
   modele_1: Modele1Template,
   modele_2: Modele2Template,
   modele_3: Modele3Template,
+  modele_4: Modele4Template,
+  modele_5: Modele5Template,
+  modele_6: Modele6Template,
 }

@@ -102,9 +102,7 @@ export default function ModerneTemplateFirst({
 }: ModerneTemplateProps) {
   const { informations_personnelles: info } = cvData;
 
-  const primaryColor = includeColors ? "bg-black-600" : "bg-gray-800";
-  const accentColor = includeColors ? "text-black-600" : "text-gray-600";
-  const gradientBg = includeColors ? "bg-black" : "bg-gray-800";
+  const accentColor = includeColors ? "bg-orange-60" : "text-gray-600";
 
   return (
     <div
@@ -131,7 +129,7 @@ export default function ModerneTemplateFirst({
         {!previewOnly && (
           <div>
             <div
-              className={`${gradientBg} text-white relative overflow-hidden`}
+              className="bg-orange-600 text-white relative overflow-hidden"
             >
               {/* <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-16 translate-x-16"></div>
               <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/5 rounded-full translate-y-12 -translate-x-12"></div> */}
@@ -376,7 +374,7 @@ export default function ModerneTemplateFirst({
                               <div className="w-full bg-gray-200 rounded-full h-2">
                                 <div
                                   className={`h-2 rounded-full ${
-                                    includeColors ? "bg-black" : "bg-gray-600"
+                                    includeColors ? "bg-orange-600" : "bg-gray-600"
                                   } ${getNiveauWidth(langue.niveau)}`}
                                 ></div>
                               </div>

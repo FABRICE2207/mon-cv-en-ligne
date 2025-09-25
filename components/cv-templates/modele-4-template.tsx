@@ -104,7 +104,7 @@ export default function ModerneTemplateFirst({
   const { informations_personnelles: info } = cvData;
 
   const primaryColor = includeColors ? "bg-blue-900" : "bg-gray-800";
-  const accentColor = includeColors ? "bg-[#3d3d3d]" : "text-[#3d3d3d]";
+  const accentColor = includeColors ? "bg-[#320E3B]" : "text-[#320E3B]";
   const gradientBg = includeColors ? "" : "bg-gray-800";
 
   return (
@@ -127,22 +127,23 @@ export default function ModerneTemplateFirst({
       <div className={`${exportMode ? "border-0" : "min-h-screen"} w-full`}>
         {!previewOnly && (
           <div className="flex flex-row">
+            <div className="w-[5%] bg-[#320E3B]">
+            </div>
             {/* Colonne gauche (35%) - Informations personnelles */}
-            <div className="w-[35%] lg:w-[35%]">
-              {/* Photo de profil */}
-              <div className="flex justify-center p-3">
-                <img
-                  src={
-                    info.photos
-                      ? `${process.env.NEXT_PUBLIC_API_URL}/cv/get_cv_photo/${info.photos}`
-                      : "/photo-cv.png"
-                  }
-                  alt={info.username || "Photo de profil"}
-                  className="w-36 h-36  object-cover border-white"
-                />
-              </div>
+            <div className="w-[35%] lg:w-[35%] bg-[#320e3bd0]">
+                {/* Photo de profil */}
+                <div className="flex justify-center p-3">
+                  <img
+                    src={
+                      info.photos
+                        ? `${process.env.NEXT_PUBLIC_API_URL}/cv/get_cv_photo/${info.photos}`
+                        : "/photo-cv.png"
+                    }
+                    alt={info.username || "Photo de profil"}
+                    className="w-36 h-36  object-cover border-white"
+                  />
+                </div>
 
-              <div className="bg-[#3d3d3d] rounded-tr-[30px] h-[116.5vh]">
                 {/* Section Contacts */}
                 <div className="p-2">
                   <h2 className="text-lg uppercase font-bold text-white mb-1">
@@ -210,7 +211,7 @@ export default function ModerneTemplateFirst({
                     {info.permis_conduire && (
                       <div className="flex items-center text-black-100 mb-1">
                         <CarFront className="h-4 w-4" />
-                        {"Permis de conduire : "}
+                        <span className="text-sm ml-1">Permis de conduire :</span>
                         <span className="text-sm ml-1 uppercase">
                           {info.permis_conduire}
                         </span>
@@ -316,14 +317,14 @@ export default function ModerneTemplateFirst({
                     </div>
                   ))}
                 </div>
-              </div>
+              
             </div>
 
             {/* Colonne droite (65%) - Contenu principal */}
-            <div className="w-[65%] lg:w-[65%] bg-gray-50 p-5">
+            <div className="w-[65%] lg:w-[65%] bg-gray-50 h-[116.5vh] p-5">
               {/* En-tête */}
               <div className="mb-8">
-                <h1 className="text-3xl text-center font-bold uppercase tracking-tight text-[#3d3d3d]">
+                <h1 className="text-3xl text-center font-bold uppercase tracking-tight text-[#320E3B]">
                   {info.username}
                 </h1>
                 {cvData.titre && (
@@ -332,7 +333,7 @@ export default function ModerneTemplateFirst({
                   </p>
                 )}
                 {cvData.description && (
-                  <p className="text-[#3d3d3d] mt-4 max-w-2xl mx-auto">
+                  <p className="text-[#320E3B] mt-4 max-w-2xl mx-auto">
                     {cvData.description}
                   </p>
                 )}
@@ -340,11 +341,11 @@ export default function ModerneTemplateFirst({
 
               {/* Section Expériences */}
               <div className="mb-8">
-                <h2 className="text-lg uppercase font-bold bg-[#3d3d3d] text-white">
+                <div className="border-b border-gray-300 mb-1"></div>
+                <h2 className="text-lg uppercase font-bold text-[#320E3B]">
                   EXPERIENCES PROFESSIONNELLES
                 </h2>
-                <div className="border-b border-gray-300 mb-1"></div>
-
+                
                 <div className="space-y-6">
                   {cvData.experiences.map((exp) => (
                     <div key={exp.id} className="space-y-2">
@@ -376,10 +377,11 @@ export default function ModerneTemplateFirst({
 
               {/* Section Formations */}
               <div>
-                <h2 className="text-lg uppercase font-bold bg-[#3d3d3d] text-white mb-1">
+                <div className="border-b border-gray-300 mb-1"></div>
+                <h2 className="text-lg uppercase font-bold  text-[#320E3B] mb-1">
                   FORMATIONS
                 </h2>
-                <div className="border-b border-gray-300 mb-1"></div>
+                
 
                 <div className="space-y-5">
                   {cvData.formations.map((formation) => (
@@ -393,7 +395,7 @@ export default function ModerneTemplateFirst({
                           {formatDate(formation.date_fin)}
                         </span>
                       </div>
-                      <p className="text-[#3d3d3d]">
+                      <p className="text-[#320E3B]">
                         {formation.nom_etablissement}
                       </p>
                     </div>

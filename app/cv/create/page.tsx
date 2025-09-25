@@ -255,7 +255,7 @@ export default function CreateCVPage({ previewTemplate }: CreateCVPageProps) {
       });
 
       // Optionnel : redirection après ajout
-      // router.push("/dashboard");
+      router.push("/dashboard");
     } catch (error) {
       console.error("Erreur lors de la création du CV :", error);
 
@@ -696,7 +696,7 @@ export default function CreateCVPage({ previewTemplate }: CreateCVPageProps) {
         </div>
       </header>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mx-auto px-4 py-6 max-h-[calc(100vh-100px)]">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mx-auto px-4 py-6 max-h-[calc(120vh-120px)]">
         {/* Prévisualisation */}
         <div className="overflow-y-auto max-h-[calc(100vh-100px)] p-4 bg-white rounded shadow">
           {/* Bouton toggle mobile uniquement */}

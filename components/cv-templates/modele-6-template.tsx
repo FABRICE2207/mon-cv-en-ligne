@@ -104,7 +104,7 @@ export default function ModerneTemplateFirst({
   const { informations_personnelles: info } = cvData;
 
   const primaryColor = includeColors ? "bg-blue-900" : "bg-gray-800";
-  const accentColor = includeColors ? "text-blue-900" : "text-gray-600";
+  const accentColor = includeColors ? "bg-[#320E3B]" : "text-[#320E3B]";
   const gradientBg = includeColors ? "" : "bg-gray-800";
 
   return (
@@ -126,9 +126,9 @@ export default function ModerneTemplateFirst({
     >
       <div className={`${exportMode ? "border-0" : "min-h-screen"} w-full`}>
         {!previewOnly && (
-          <div className="flex flex-row bg-gray-50">
+          <div className="flex flex-row">
             {/* Colonne gauche (35%) - Informations personnelles */}
-            <div className="w-[35%] lg:w-[35%] bg-blue-900">
+            <div className="w-[35%] lg:w-[35%] bg-[#035e26e5]">
               {/* Photo de profil */}
               <div className="flex justify-center p-3">
                 <img
@@ -138,16 +138,20 @@ export default function ModerneTemplateFirst({
                       : "/photo-cv.png"
                   }
                   alt={info.username || "Photo de profil"}
-                  className="w-36 h-36 rounded-full object-cover border-4 border-white"
+                  className="w-36 h-36  object-cover border-white border-4 rounded-full"
                 />
               </div>
 
               {/* Section Contacts */}
               <div className="p-2">
-                <h2 className="text-lg uppercase font-bold text-white mb-1">
-                  COORDONNEES
-                </h2>
-                <div className="border-b border-white/20 mb-4"></div>
+                <div className="flex gap-2 mb-2">
+                  <div className="bg-white w-[2%]"></div>
+                  <div>
+                    <h2 className="text-lg uppercase font-bold text-white mb-1">
+                      COORDONNEES
+                    </h2>
+                  </div>
+                </div>
 
                 <div className="space-y-3 text-white">
                   {info.email && (
@@ -209,7 +213,7 @@ export default function ModerneTemplateFirst({
                   {info.permis_conduire && (
                     <div className="flex items-center text-black-100 mb-1">
                       <CarFront className="h-4 w-4" />
-                      {"Permis : "}
+                      <span className="text-sm ml-1">Permis de conduire :</span>
                       <span className="text-sm ml-1 uppercase">
                         {info.permis_conduire}
                       </span>
@@ -234,10 +238,14 @@ export default function ModerneTemplateFirst({
 
               {/* Section Compétences */}
               <div className="p-2">
-                <h2 className="text-lg uppercase font-bold mb-1 text-white">
-                  COMPETENCES
-                </h2>
-                <div className="border-b border-white/20 mb-4"></div>
+                <div className="flex gap-2 mb-2">
+                  <div className="bg-white w-[2%]"></div>
+                  <div>
+                    <h2 className="text-lg uppercase font-bold text-white mb-1">
+                      COMPETENCES
+                    </h2>
+                  </div>
+                </div>
 
                 {cvData.competences.map((comp) => (
                   <div key={comp.id} className="space-y-1">
@@ -262,8 +270,14 @@ export default function ModerneTemplateFirst({
 
               {/* Sections Langues */}
               <div className="p-2 text-white">
-                <h2 className="text-lg uppercase font-bold mb-1">LANGUES</h2>
-                <div className="border-b border-white/20 mb-4"></div>
+                <div className="flex gap-2 mb-2">
+                  <div className="bg-white w-[2%]"></div>
+                  <div>
+                    <h2 className="text-lg uppercase font-bold text-white mb-1">
+                      LANGUES
+                    </h2>
+                  </div>
+                </div>
 
                 <div className="space-y-2">
                   {cvData.langues.map((langue) => (
@@ -290,47 +304,51 @@ export default function ModerneTemplateFirst({
 
               {/* Sections Centre d'interets */}
               <div className="p-2 text-white">
-                <h2 className="text-lg uppercase font-bold mb-1">
-                  CENTRES D'INTERETS
-                </h2>
-                <div className="border-b border-white/20 mb-4"></div>
+                <div className="flex gap-2 mb-2">
+                  <div className="bg-white w-[2%]"></div>
+                  <div>
+                    <h2 className="text-lg uppercase font-bold text-white mb-1">
+                      CENTRES D'INTERETS
+                    </h2>
+                  </div>
+                </div>
 
-                  {cvData.centres_interet.map((centre) => (
-                    <div key={centre.id} className="space-y-1">
-                      <div className="flex justify-between">
-                        <span className="text-sm text-white">
-                          {centre.nom_centre_interet}
-                        </span>
-                        {/* <span className="text-xs text-white/70">
+                {cvData.centres_interet.map((centre) => (
+                  <div key={centre.id} className="space-y-1">
+                    <div className="flex justify-between">
+                      <span className="text-sm text-white">
+                        {centre.nom_centre_interet}
+                      </span>
+                      {/* <span className="text-xs text-white/70">
                           {langue.niveau}
                         </span> */}
-                      </div>
-                      {/* <div className="w-full bg-white/20 rounded-full h-1.5">
+                    </div>
+                    {/* <div className="w-full bg-white/20 rounded-full h-1.5">
                         <div
                           className={`h-1.5 rounded-full bg-white ${getNiveauWidth(
                             langue.niveau
                           )}`}
                         ></div>
                       </div> */}
-                    </div>
-                  ))}
+                  </div>
+                ))}
               </div>
             </div>
 
             {/* Colonne droite (65%) - Contenu principal */}
-            <div className="w-[65%] lg:w-[65%] h-[116.5vh] p-5">
+            <div className="w-[65%] lg:w-[65%] bg-gray-50 h-[116.5vh] p-5">
               {/* En-tête */}
               <div className="mb-8">
-                <h1 className="text-3xl text-center font-bold uppercase tracking-tight text-gray-900">
+                <h1 className="text-3xl font-bold uppercase tracking-tight text-[#035e26e5]">
                   {info.username}
                 </h1>
                 {cvData.titre && (
-                  <p className="text-lg font-medium text-center uppercase mt-2 text-blue-900">
+                  <p className="text-lg font-medium  uppercase mt-2">
                     {cvData.titre}
                   </p>
                 )}
                 {cvData.description && (
-                  <p className="text-gray-600 mt-4 max-w-2xl mx-auto">
+                  <p className="text-[#320E3B] mt-4 max-w-2xl mx-auto">
                     {cvData.description}
                   </p>
                 )}
@@ -338,10 +356,16 @@ export default function ModerneTemplateFirst({
 
               {/* Section Expériences */}
               <div className="mb-8">
-                <h2 className="text-lg uppercase font-bold text-blue-900">
-                  EXPERIENCES PROFESSIONNELLES
-                </h2>
-                <div className="border-b border-gray-300 mb-1"></div>
+                
+                <h2 className="text-lg uppercase font-bold text-[#320E3B]"></h2>
+                <div className="flex gap-2 mb-2">
+                  <div className="bg-[#035e26e5] w-[2%]"></div>
+                  <div>
+                    <h2 className="text-lg uppercase font-bold text-[#035e26e5] mb-1">
+                      EXPERIENCES PROFESSIONNELLES
+                    </h2>
+                  </div>
+                </div>
 
                 <div className="space-y-6">
                   {cvData.experiences.map((exp) => (
@@ -350,19 +374,22 @@ export default function ModerneTemplateFirst({
                         <h4 className="text-[16px] font-semibold text-gray-800">
                           {exp.titre_poste}
                         </h4>
-                        <span className="text-blue-900">
-                        {formatDate(exp.date_debut)} -{" "}
-                        {exp.date_fin ? formatDate(exp.date_fin) : "Présent"}
-                      </span>
+                        <span className="">
+                          {formatDate(exp.date_debut)} -{" "}
+                          {exp.date_fin ? formatDate(exp.date_fin) : "Présent"}
+                        </span>
                       </div>
-                      
-                      <p className="font-medium text-blue-900">
+
+                      <p className="font-medium uppercase text-[#035e269d]">
                         {exp.nom_entreprise}
                       </p>
 
                       <ul className="list-disc list-inside space-y-1 ml-4">
                         {exp.missions.map((mission) => (
-                          <li key={mission.id} className="text-gray-700">
+                          <li
+                            key={mission.id}
+                            className="text-gray-700 whitespace-normal"
+                          >
                             {mission.missions_details}
                           </li>
                         ))}
@@ -374,10 +401,15 @@ export default function ModerneTemplateFirst({
 
               {/* Section Formations */}
               <div>
-                <h2 className="text-lg uppercase font-bold text-blue-900 mb-1">
-                  FORMATIONS
-                </h2>
-                <div className="border-b border-gray-300 mb-1"></div>
+                
+                <div className="flex gap-2 mb-2">
+                  <div className="bg-[#035e26e5] w-[2%]"></div>
+                  <div>
+                    <h2 className="text-lg uppercase font-bold text-[#035e26e5] mb-1">
+                      FORMATIONS
+                    </h2>
+                  </div>
+                </div>
 
                 <div className="space-y-5">
                   {cvData.formations.map((formation) => (
@@ -386,12 +418,12 @@ export default function ModerneTemplateFirst({
                         <h3 className="text-[16px] font-semibold text-gray-800">
                           {formation.diplome}
                         </h3>
-                        <span className="text-blue-900">
+                        <span className="">
                           {formatDate(formation.date_debut)} -{" "}
                           {formatDate(formation.date_fin)}
                         </span>
                       </div>
-                      <p className="text-gray-600">
+                      <p className="text-[#035e26e5]">
                         {formation.nom_etablissement}
                       </p>
                     </div>
