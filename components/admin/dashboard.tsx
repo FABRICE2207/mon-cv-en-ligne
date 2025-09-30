@@ -381,7 +381,7 @@ export default function DashbaordAdmin() {
                       ID de transaction
                     </th>
                     <th className="px-4 py-3 text-left font-semibold text-gray-700">
-                      Statut
+                      Status
                     </th>
 
                     <th className="px-4 py-3 text-left font-semibold text-gray-700">
@@ -417,12 +417,12 @@ export default function DashbaordAdmin() {
                       <td className="px-4 py-3">
                         <span
                           className={`px-2 py-1 rounded-full text-sm font-medium
-                            ${paiment.statut === "PENDING" ? "bg-yellow-500 text-white" :
-                              paiment.statut === "SUCCESS" ? "bg-green-500 text-white" :
-                              paiment.statut === "FAILED" ? "bg-red-500 text-white" :
+                            ${paiment.status === "PENDING" ? "bg-yellow-500 text-white" :
+                              paiment.status === "SUCCESS" ? "bg-green-500 text-white" :
+                              paiment.status === "FAILED" ? "bg-red-500 text-white" :
                               "bg-gray-100 text-gray-600"}`}
                         >
-                          {paiment.statut}
+                          {paiment.status}
                         </span>
                       </td>
 
