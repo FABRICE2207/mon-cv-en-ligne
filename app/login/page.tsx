@@ -98,7 +98,7 @@ export default function LoginPage() {
       <div className="relative z-10 w-full max-w-md">
         <Card>
           <CardHeader>
-            <Link href="/">Retour sur le site</Link>
+            {/* <Link href="/">Retour sur le site</Link> */}
             <CardTitle>Connexion</CardTitle>
             <CardDescription>
               Connectez-vous à votre compte pour accéder à vos CV
