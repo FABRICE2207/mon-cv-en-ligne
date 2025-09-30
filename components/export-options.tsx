@@ -123,7 +123,7 @@ export default function ExportOptions({
 
     // Appel API Flask pour initier le paiement
     const paiementResponse = await apitoken.post("/paiements/payments_init", {
-      montant: 100,
+      montant: 500,
       users_id: userId,
       models_cv_id: modelesId,
     });
@@ -184,7 +184,7 @@ export default function ExportOptions({
           </DialogHeader>
 
           <p className="text-sm text-gray-600">
-            Pour télécharger un cv, un paiement de <strong>1000 FCFA</strong>{" "}
+            Pour télécharger un cv, un paiement de <strong>500 FCFA</strong>{" "}
             est requis.
           </p>
 

@@ -129,7 +129,7 @@ export default function RegisterPage() {
                 <Label htmlFor="username">Nom d'utilisateur</Label>
                 <input
                   id="username"
-                  placeholder="jeandupont"
+                  placeholder="Yao Kan Francine"
                   value={formData.username}
                   onChange={(e) =>
                     setFormData((prev) => ({
@@ -147,7 +147,7 @@ export default function RegisterPage() {
                 <input
                   id="email"
                   type="email"
-                  placeholder="jean.dupont@email.com"
+                  placeholder="yaokan@email.com"
                   value={formData.email}
                   onChange={(e) =>
                     setFormData((prev) => ({ ...prev, email: e.target.value }))

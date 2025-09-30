@@ -721,8 +721,8 @@ export default function HomePage() {
               // },
               {
                 name: "Pro",
-                price: "1000 FCFA / Téléchargement de CV",
-                description: "Le plus populaire",
+                price: "500 FCFA / Téléchargement de CV",
+                // description: "Le plus populaire",
                 features: [
                   "Création de compte gratuite",
                   "Nombre de cv illimités",
@@ -771,7 +771,7 @@ export default function HomePage() {
                     )}
                     <CardTitle className="text-2xl">{plan.name}</CardTitle>
                     <div className="text-3xl font-bold my-4">{plan.price}</div>
-                    <CardDescription>{plan.description}</CardDescription>
+                    {/* <CardDescription>{plan.description}</CardDescription> */}
                   </CardHeader>
                   <CardContent className="flex-grow">
                     <ul className="space-y-3 mb-6">
