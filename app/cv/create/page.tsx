@@ -748,6 +748,7 @@ export default function CreateCVPage({ previewTemplate }: CreateCVPageProps) {
                 onTemplateSelect={handleTemplateSelect}
                 cvData={cvData}
                 setSelectedTemplate={setSelectedTemplate}
+                onExport={exportToPDF}
               />
             </CardContent>
           </Card>

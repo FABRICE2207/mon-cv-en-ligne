@@ -149,7 +149,7 @@ export default function ExportOptions({
     setTimeout(() => {
       setIsPaying(false);
       setOpen(false);
-      handleQuickExport(); // téléchargement après succès
+      // handleQuickExport(); // téléchargement après succès
     }, 2000);
   }
 };
@@ -168,11 +168,12 @@ export default function ExportOptions({
       </Button> */}
       <Button
         onClick={() => setOpen(true)}
-        disabled={isExporting || disabled}
+        // disabled={isExporting || disabled}
         className="flex items-center space-x-2 w-full bg-blue-950 hover:bg-blue-800 text-white"
       >
         <Download className="h-4 w-4" />
-        <span>{isExporting ? "Chargement..." : "Télécharger"}</span>
+        {/* <span>{isExporting ? "Chargement..." : "Télécharger"}</span> */}
+        <span>Télécharger</span>
       </Button>
 
       {/* Popup Paiement */}

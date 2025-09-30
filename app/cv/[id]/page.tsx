@@ -953,6 +953,7 @@ const CVForm = ({ params, previewTemplate }: Props) => {
                 onTemplateSelect={handleTemplateSelect}
                 cvData={cvData}
                 setSelectedTemplate={setSelectedTemplate}
+                onExport={exportToPDF}
               />
             </CardContent>
           </Card>

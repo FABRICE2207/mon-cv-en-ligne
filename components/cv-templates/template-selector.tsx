@@ -6,6 +6,7 @@ import useAuth from "@/hooks/useAuth";
 import TemplatesDemoPage from "./template-selector-admin";
 import { api } from "@/axios.config";
 import { templateComponents } from "@/components/cv-templates";
+import { useRouter } from "next/navigation";
 
 interface Template {
   id: string;
@@ -19,7 +20,16 @@ type TemplateSelectorProps = {
   onTemplateSelect: (templateId: string, modeleId: number) => void;
   cvData: any;
   modelesId: number;
+  onExport: (options: ExportOptions) => void;
 };
+
+export interface ExportOptions {
+  format: "A4" | "Letter";
+  orientation: "portrait" | "landscape";
+  quality: "standard" | "high";
+  includeColors: boolean;
+  filename?: string;
+}
 
 //
 
@@ -29,6 +39,7 @@ export default function TemplateSelector({
   onTemplateSelect,
   cvData,
   setSelectedTemplate,
+  onExport,
 }: TemplateSelectorProps) {
   const [previewTemplate, setPreviewTemplate] = useState<string | null>(null);
   const { isAdmin, isClient, roles } = useAuth();
@@ -36,6 +47,67 @@ export default function TemplateSelector({
   const [templates, setTemplates] = useState<Template[]>([]);
   const scrollRef = useRef<HTMLDivElement>(null);
   const [loading, setLoading] = useState(true);
+  const [isExporting, setIsExporting] = useState(false);
+  const [options, setOptions] = useState<ExportOptions>({
+    format: "A4",
+    orientation: "portrait",
+    quality: "high",
+    includeColors: true,
+  });
+  const [open, setOpen] = useState(false);
+  const [userId, setUserId] = useState<number | null>(null);
+  const [allowedModels, setAllowedModels] = useState<number[]>([]);
+  const [token, setToken] = useState<string | null>(null);
+  const router = useRouter();
+
+  useEffect(() => {
+    const fetchUserAndCVs = async () => {
+      const storedToken = localStorage.getItem("token");
+
+      if (!storedToken) {
+        router.replace("/login");
+        return;
+      }
+
+      try {
+        // Vérifie token et récupère user
+        const response = await api.get("/tokens/users", {
+          headers: { Authorization: `Bearer ${storedToken}` },
+        });
+
+        const fetchedUserId = response.data.id;
+
+        setToken(storedToken);
+        setUserId(fetchedUserId);
+
+        console.log("✅ User ID récupéré :", fetchedUserId);
+      } catch (error) {
+        console.error("❌ Token invalide ou erreur :", error);
+        localStorage.removeItem("token");
+        router.replace("/login");
+      }
+    };
+
+    fetchUserAndCVs();
+  }, [router]);
+
+  useEffect(() => {
+    const fetchAllowedModels = async () => {
+      try {
+        const res = await api.get(
+          `/paiements/payments_success/${userId}/models_cv`
+        );
+        setAllowedModels(res.data.models_cv_ids || []);
+        console.log("📌 Modèles autorisés :", res.data.models_cv_ids);
+      } catch (error) {
+        console.error("❌ Erreur récupération paiements :", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (userId) fetchAllowedModels();
+  }, [userId]);
 
   useEffect(() => {
     if (modelesId !== null) {
@@ -81,6 +153,32 @@ export default function TemplateSelector({
     }
   };
 
+  const handleQuickExport = async () => {
+    try {
+      // Activer l'état de chargement
+      setIsExporting(true);
+
+      // 🔹 Lancer l’export
+      await onExport(options);
+
+      // 🔹 Simuler ou attendre le paiement réussi
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+
+      console.log("✅ Paiement validé. Téléchargement en cours...");
+
+      // 🔹 Ici tu peux déclencher un toast ou une notification
+      // Exemple si tu utilises react-hot-toast :
+      // toast.success("Paiement validé ✅ Téléchargement en cours...");
+    } catch (error) {
+      console.error("❌ Erreur lors de l'export :", error);
+      // toast.error("Échec de l'export. Veuillez réessayer.");
+    } finally {
+      // Désactiver l'état de chargement et fermer la modal
+      setIsExporting(false);
+      setOpen(false);
+    }
+  };
+
   return (
     <div className="space-y-2">
       {isClient && (
@@ -113,9 +211,7 @@ export default function TemplateSelector({
                 <div
                   key={template.id}
                   className={`min-w-[160px] max-w-[160px] cursor-pointer transition-all duration-200 relative ${
-                    selectedTemplate === String(template.id)
-                      ? ""
-                      : ""
+                    selectedTemplate === String(template.id) ? "" : ""
                   }`}
                   onClick={() => {
                     onTemplateSelect(String(template.id), Number(template.id));
@@ -124,7 +220,6 @@ export default function TemplateSelector({
                   }}
                 >
                   <div className="border rounded-md p-2 h-full flex flex-col">
-                    
                     {/* Image avec loader */}
                     <div className="relative flex-1">
                       {selectedTemplate === String(template.id) && (
@@ -147,6 +242,39 @@ export default function TemplateSelector({
                         onError={() => setLoading(false)}
                       />
                     </div>
+
+                    {/* Bouton Imprimer */}
+                    {/* <div className="mt-2">
+                      <button
+                        onClick={handleQuickExport} // ✅ on passe la fonction, sans parenthèses
+                        disabled={isExporting}
+                        className="w-full bg-blue-950 text-white text-sm py-1 px-2 rounded hover:bg-blue-900 transition-colors"
+                      >
+                        {isExporting ? "Impression..." : "Imprimer"}
+                      </button>
+                    </div> */}
+{loading ? (
+  <p className="text-gray-500 text-sm">Vérification du paiement...</p>
+) : allowedModels.includes(Number(template.id)) ? (
+  <div className="mt-2">
+    <button
+      onClick={handleQuickExport}
+      disabled={isExporting}
+      className="w-full bg-blue-950 text-white text-sm py-1 px-2 rounded hover:bg-blue-900 transition-colors"
+    >
+      {isExporting ? "Impression..." : "Imprimer"}
+    </button>
+  </div>
+) : (
+  <div className="mt-2">
+    <button
+      disabled
+      className="w-full bg-gray-400 text-white text-sm py-1 px-2 rounded cursor-not-allowed"
+    >
+      Paiement requis
+    </button>
+  </div>
+)}
                   </div>
                 </div>
               );
