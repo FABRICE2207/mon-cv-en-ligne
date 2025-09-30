@@ -34,7 +34,6 @@ import { useState, useEffect } from "react";
 import { api } from "@/axios.config";
 import { useRef } from "react";
 
-
 interface Template {
   id: string;
   libelle: string;
@@ -56,39 +55,38 @@ export default function page() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-
-    const scroll = (direction: "left" | "right") => {
+  const scroll = (direction: "left" | "right") => {
     if (scrollRef.current) {
       const amount = direction === "left" ? -250 : 250;
       scrollRef.current.scrollBy({ left: amount, behavior: "smooth" });
     }
   };
 
-    // Affiche la liste des modèles de cv
-    useEffect(() => {
-      const fetchModelCv = async () => {
-        try {
-          const response = await api.get("/models/liste_model_cv_actives");
-          const model_actives = response.data;
-  
-          setTemplates(model_actives); //
-          console.log("Model", model_actives);
-        } catch (error) {
-          console.error(
-            "Erreur lors de la récupération des modèles de CV :",
-            error
-          );
-        }
-      };
-      fetchModelCv();
-    }, []);
+  // Affiche la liste des modèles de cv
+  useEffect(() => {
+    const fetchModelCv = async () => {
+      try {
+        const response = await api.get("/models/liste_model_cv_actives");
+        const model_actives = response.data;
+
+        setTemplates(model_actives); //
+        console.log("Model", model_actives);
+      } catch (error) {
+        console.error(
+          "Erreur lors de la récupération des modèles de CV :",
+          error
+        );
+      }
+    };
+    fetchModelCv();
+  }, []);
 
   const navLinks = [
     { name: "Accueil", href: "/" },
     { name: "Modèles", href: "/templates" },
-    { name: "Exemples", href: "/examples" },
-    { name: "Conseils", href: "/blog" },
-    { name: "Tarifs", href: "/pricing" },
+    // { name: "Exemples", href: "/examples" },
+    // { name: "Conseils", href: "/blog" },
+    // { name: "Tarifs", href: "/pricing" },
   ];
 
   return (
@@ -192,7 +190,7 @@ export default function page() {
         )}
       </header>
 
-        <section className="py-20 bg-white">
+      <section className="py-20 bg-white">
         <div className="container mx-auto px-4">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -207,31 +205,29 @@ export default function page() {
           </motion.div>
 
           {/* Liste des cv */}
-          <div
-            className="grid md:grid-cols-2 lg:grid-cols-5 gap-2 justify-center items-center"
-          >
-        {templates.length > 0 ? (
-          templates.map((template) => (
-            
-            <div
-              key={template.id}
-              className="min-w-[150px] max-w-[250px] lg:max-w-[350px] flex-shrink-0 p-2 transition"
-            >
-              <h3 className="text-lg font-semibold text-center text-gray-800">
-                {template.libelle}
-              </h3>
-              <img
-                src={`${process.env.NEXT_PUBLIC_API_URL}/models/modele_cv/${template.images}`}
-                alt={template.libelle}
-                className="w-full object-cover rounded-lg mb-4"
-              />
-              
-            </div>
-          ))
-        ) : (
-          <p className="text-gray-500 ">Aucun modèle disponible.</p>
-        )}
-      </div>
+          <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-2 justify-center items-center">
+            {templates.length > 0 ? (
+              templates.map((template) => (
+                <div
+                  key={template.id}
+                  className="min-w-[150px] max-w-[250px] lg:max-w-[350px] flex-shrink-0 p-2 transition"
+                >
+                  <h3 className="text-lg font-semibold text-center text-gray-800">
+                    {template.libelle}
+                  </h3>
+                  <img
+                    src={`${process.env.NEXT_PUBLIC_API_URL}/models/modele_cv/${template.images}`}
+                    alt={template.libelle}
+                    className="w-full object-cover rounded-lg mb-4"
+                  />
+                </div>
+              ))
+            ) : (
+              <div className="flex justify-center items-center m-auto">
+                <p className="text-gray-500">Aucun modèle disponible.</p>
+              </div>
+            )}
+          </div>
 
           {/* <div className="flex flex-col lg:flex-row items-center gap-12">
             <motion.div
@@ -315,5 +311,5 @@ export default function page() {
         </div>
       </section>
     </div>
-  )
+  );
 }

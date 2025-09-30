@@ -27,6 +27,10 @@ import {
   BadgeCheck,
   Menu,
   X,
+  PhoneCall,
+  Mail,
+  PlaneIcon,
+  MapPin,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { Input } from "@/components/ui/input";
@@ -69,7 +73,7 @@ export default function HomePage() {
         const response = await api.get("/models/liste_model_cv_actives");
         const model_actives = response.data;
 
-        setTemplates(model_actives); //
+        setTemplates(model_actives.slice(0, 6)); // Affiche les 6 premiers
         console.log("Model", model_actives);
       } catch (error) {
         console.error(
@@ -84,9 +88,9 @@ export default function HomePage() {
   const navLinks = [
     { name: "Accueil", href: "/" },
     { name: "Modèles", href: "/templates" },
-    { name: "Exemples", href: "/examples" },
-    { name: "Conseils", href: "/blog" },
-    { name: "Tarifs", href: "/pricing" },
+    // { name: "Exemples", href: "/examples" },
+    // { name: "Conseils", href: "/blog" },
+    // { name: "Tarifs", href: "/pricing" },
   ];
 
   return (
@@ -360,9 +364,9 @@ export default function HomePage() {
             viewport={{ once: true }}
             className="text-center mb-16"
           >
-            <span className="inline-block bg-blue-100 text-blue-950 px-4 py-2 rounded-full text-sm font-medium mb-4">
+            {/* <span className="inline-block bg-blue-100 text-blue-950 px-4 py-2 rounded-full text-sm font-medium mb-4">
               Fonctionnalités
-            </span>
+            </span> */}
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
               Tout pour votre recherche d'emploi
             </h2>
@@ -387,13 +391,13 @@ export default function HomePage() {
                   "Personnalisez chaque détail de votre CV en quelques clics",
                 color: "bg-green-50",
               },
-              {
-                icon: <Check className="h-10 w-10 text-purple-600" />,
-                title: "Conseils experts",
-                description:
-                  "Des suggestions pour améliorer votre CV selon votre secteur",
-                color: "bg-purple-50",
-              },
+              // {
+              //   icon: <Check className="h-10 w-10 text-purple-600" />,
+              //   title: "Conseils experts",
+              //   description:
+              //     "Des suggestions pour améliorer votre CV selon votre secteur",
+              //   color: "bg-purple-50",
+              // },
               {
                 icon: <Download className="h-10 w-10 text-orange-600" />,
                 title: "Téléchargement PDF",
@@ -401,19 +405,19 @@ export default function HomePage() {
                   "Export haute qualité pour impression ou envoi par email",
                 color: "bg-orange-50",
               },
-              {
-                icon: <Share2 className="h-10 w-10 text-red-600" />,
-                title: "Lien partageable",
-                description: "Partagez votre CV en ligne avec un lien unique",
-                color: "bg-red-50",
-              },
-              {
-                icon: <FileText className="h-10 w-10 text-indigo-600" />,
-                title: "Exemples de contenu",
-                description:
-                  "Inspirez-vous de modèles rédigés pour chaque métier",
-                color: "bg-indigo-50",
-              },
+              // {
+              //   icon: <Share2 className="h-10 w-10 text-red-600" />,
+              //   title: "Lien partageable",
+              //   description: "Partagez votre CV en ligne avec un lien unique",
+              //   color: "bg-red-50",
+              // },
+              // {
+              //   icon: <FileText className="h-10 w-10 text-indigo-600" />,
+              //   title: "Exemples de contenu",
+              //   description:
+              //     "Inspirez-vous de modèles rédigés pour chaque métier",
+              //   color: "bg-indigo-50",
+              // },
             ].map((feature, index) => (
               <motion.div
                 key={index}
@@ -490,7 +494,7 @@ export default function HomePage() {
                 templates.map((template) => (
                   <div
                     key={template.id}
-                    className="min-w-[300px] max-w-[300px] lg:max-w-[300px] flex-shrink-0 p-2 transition"
+                    className="min-w-[350px] max-w-[350px] lg:max-w-[350px] flex-shrink-0 p-2 transition"
                   >
                     <h3 className="text-lg font-semibold text-center text-gray-800">
                       {template.libelle}
@@ -524,7 +528,7 @@ export default function HomePage() {
       </section>
 
       {/* Témoignages avec animation améliorée */}
-      <section className="py-20 bg-blue-950 text-white">
+      {/* <section className="py-20 bg-blue-950 text-white">
         <div className="container mx-auto px-4">
           <motion.div
             initial={{ opacity: 0 }}
@@ -606,7 +610,7 @@ export default function HomePage() {
             ))}
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* Section création rapide avec étapes animées */}
       <section className="py-20 bg-white">
@@ -619,9 +623,9 @@ export default function HomePage() {
                 transition={{ duration: 0.5 }}
                 viewport={{ once: true }}
               >
-                <span className="inline-block bg-blue-100 text-blue-950 px-4 py-2 rounded-full text-sm font-medium mb-4">
+                {/* <span className="inline-block bg-blue-100 text-blue-950 px-4 py-2 rounded-full text-sm font-medium mb-4">
                   Processus simple
-                </span>
+                </span> */}
                 <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">
                   Créez votre CV en 5 minutes
                 </h2>
@@ -632,11 +636,11 @@ export default function HomePage() {
 
                 <div className="space-y-6">
                   {[
-                    "Sélectionnez un modèle adapté à votre secteur",
-                    "Remplissez vos informations personnelles",
-                    "Ajoutez vos expériences et formations",
-                    "Personnalisez les couleurs et polices",
-                    "Téléchargez ou partagez en un clic",
+                    "Créer votre comptre",
+                    "Sélectionnez un modèle et saississez vos informations personnelles",
+                    "En suite ajoutez vos expériences, vos formations, etc...",
+                    "Sauvegardez puis cliquez sur télécharger mon cv",
+                    "Enfin payer par mobile money(MTN, ORANGE et MOOV) ou wave",
                   ].map((step, index) => (
                     <motion.div
                       key={index}
@@ -687,9 +691,9 @@ export default function HomePage() {
             viewport={{ once: true }}
             className="text-center mb-16"
           >
-            <span className="inline-block bg-blue-100 text-blue-950 px-4 py-2 rounded-full text-sm font-medium mb-4">
+            {/* <span className="inline-block bg-blue-100 text-blue-950 px-4 py-2 rounded-full text-sm font-medium mb-4">
               Premium
-            </span>
+            </span> */}
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
               Passez à la vitesse supérieure
             </h2>
@@ -699,52 +703,50 @@ export default function HomePage() {
             </p>
           </motion.div>
 
-          <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+          <div className="gap-8 max-w-[20rem] mx-auto">
             {[
-              {
-                name: "Starter",
-                price: "0 FCFA",
-                description: "Parfait pour commencer",
-                features: [
-                  "3 modèles de base",
-                  "1 téléchargement/mois",
-                  "CV partageable",
-                  "Conseils de base",
-                ],
-                cta: "Commencer gratuitement",
-                popular: false,
-                color: "border-gray-200",
-              },
+              // {
+              //   name: "Starter",
+              //   price: "0 FCFA",
+              //   description: "Parfait pour commencer",
+              //   features: [
+              //     "3 modèles de base",
+              //     "1 téléchargement/mois",
+              //     "CV partageable",
+              //     "Conseils de base",
+              //   ],
+              //   cta: "Commencer gratuitement",
+              //   popular: false,
+              //   color: "border-gray-200",
+              // },
               {
                 name: "Pro",
-                price: "5 000 FCFA/mois",
+                price: "1000 FCFA / Téléchargement de CV",
                 description: "Le plus populaire",
                 features: [
-                  "20+ modèles premium",
-                  "Téléchargements illimités",
-                  "Lettre de motivation",
-                  "Analyse experte",
-                  "Statistiques de vue",
+                  "Création de compte gratuite",
+                  "Nombre de cv illimités",
+                  
                 ],
                 cta: "Essai 7 jours",
                 popular: true,
                 color: "border-blue-500",
               },
-              {
-                name: "Entreprise",
-                price: "30 000 FCFA/mois",
-                description: "Pour les recruteurs",
-                features: [
-                  "Tous les modèles Pro",
-                  "Gestion multi-CV",
-                  "Collaboration d'équipe",
-                  "Support prioritaire",
-                  "Branding personnalisé",
-                ],
-                cta: "Contactez-nous",
-                popular: false,
-                color: "border-purple-500",
-              },
+              // {
+              //   name: "Entreprise",
+              //   price: "30 000 FCFA/mois",
+              //   description: "Pour les recruteurs",
+              //   features: [
+              //     "Tous les modèles Pro",
+              //     "Gestion multi-CV",
+              //     "Collaboration d'équipe",
+              //     "Support prioritaire",
+              //     "Branding personnalisé",
+              //   ],
+              //   cta: "Contactez-nous",
+              //   popular: false,
+              //   color: "border-purple-500",
+              // },
             ].map((plan, index) => (
               <motion.div
                 key={index}
@@ -781,18 +783,18 @@ export default function HomePage() {
                       ))}
                     </ul>
                   </CardContent>
-                  <div className="px-6 pb-6">
-                    <Button
-                      size="lg"
+                  {/* <div className="px-6 pb-6">
+                    <Link
+                      href="/"
                       className={`w-full ${
                         plan.popular
                           ? "bg-blue-950 hover:bg-blue-900"
                           : "bg-gray-900 hover:bg-gray-800"
                       }`}
                     >
-                      {plan.cta}
-                    </Button>
-                  </div>
+                      
+                    </Link>
+                  </div> */}
                 </Card>
               </motion.div>
             ))}
@@ -841,9 +843,9 @@ export default function HomePage() {
             viewport={{ once: true }}
             className="text-center mb-16"
           >
-            <span className="inline-block bg-blue-100 text-blue-950 px-4 py-2 rounded-full text-sm font-medium mb-4">
+            {/* <span className="inline-block bg-blue-100 text-blue-950 px-4 py-2 rounded-full text-sm font-medium mb-4">
               Questions fréquentes
-            </span>
+            </span> */}
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
               Vous avez des questions ?
             </h2>
@@ -944,17 +946,16 @@ export default function HomePage() {
       {/* Footer amélioré */}
       <footer className="bg-gray-900 text-white pt-16 pb-8">
         <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12 mb-12">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
             <div className="lg:col-span-2">
               <div className="flex items-center space-x-2 mb-4">
                 <FileText className="h-8 w-8 text-blue-400" />
                 <span className="text-xl font-bold">Mon CV en ligne</span>
               </div>
               <p className="text-gray-400 mb-6">
-                La solution de création de CV la plus utilisée en Côte d'Ivoire
-                pour décrocher le job de vos rêves.
+                La première plateforme ivoirienne de création de CV en ligne.
               </p>
-              <div className="flex space-x-4">
+              {/* <div className="flex space-x-4">
                 {["facebook", "twitter", "linkedin", "instagram"].map(
                   (social) => (
                     <Link
@@ -964,15 +965,15 @@ export default function HomePage() {
                     >
                       <span className="sr-only">{social}</span>
                       <div className="h-8 w-8 rounded-full bg-gray-800 flex items-center justify-center">
-                        {/* Icône sociale ici */}
+                        
                       </div>
                     </Link>
                   )
                 )}
-              </div>
+              </div> */}
             </div>
 
-            <div>
+            {/* <div>
               <h4 className="text-lg font-semibold mb-4">Produit</h4>
               <ul className="space-y-3">
                 <li>
@@ -1008,9 +1009,9 @@ export default function HomePage() {
                   </Link>
                 </li>
               </ul>
-            </div>
+            </div> */}
 
-            <div>
+            {/* <div>
               <h4 className="text-lg font-semibold mb-4">Ressources</h4>
               <ul className="space-y-3">
                 <li>
@@ -1046,28 +1047,37 @@ export default function HomePage() {
                   </Link>
                 </li>
               </ul>
-            </div>
+            </div> */}
 
             <div>
-              <h4 className="text-lg font-semibold mb-4">Entreprise</h4>
-              <ul className="space-y-3">
-                <li>
-                  <Link
-                    href="/about"
-                    className="text-gray-400 hover:text-white transition-colors"
+              <h4 className="text-lg font-semibold mb-4">Nos contacts</h4>
+              <div className="space-y-3">
+                  <div
+                    className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors"
                   >
-                    À propos
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/contact"
-                    className="text-gray-400 hover:text-white transition-colors"
-                  >
-                    Contact
-                  </Link>
-                </li>
-                <li>
+                    <PhoneCall className="w-5 h-5" />
+                    <span>+225 07 49 95 59 45 / 07 78 03 77 84</span>
+                  </div>
+
+                  <div>
+                    <Link
+                      href="mailto:"
+                      className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors"
+                    >
+                      <Mail />
+                      info@djilx.ci
+                    </Link>
+                  </div>
+                  
+                    <div
+                      
+                      className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors"
+                    >
+                      <MapPin />
+                      Attécoubé, Locodjoro, cité Addoha, Immeuble 277
+                    </div>
+                  
+                {/* <li>
                   <Link
                     href="/legal"
                     className="text-gray-400 hover:text-white transition-colors"
@@ -1082,13 +1092,13 @@ export default function HomePage() {
                   >
                     Confidentialité
                   </Link>
-                </li>
-              </ul>
+                </li> */}
+              </div>
             </div>
           </div>
 
           <div className="pt-8 border-t border-gray-800 text-center text-gray-400">
-            <p>© {new Date().getFullYear()} CVPro CI. Tous droits réservés.</p>
+            <p>© {new Date().getFullYear()} Mon CV en ligne. Tous droits réservés. Devéloppé par <a href="http://https://djilx.ci/">DJILX CI</a></p>
           </div>
         </div>
       </footer>

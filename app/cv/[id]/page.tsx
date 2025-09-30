@@ -237,7 +237,7 @@ const CVForm = ({ params, previewTemplate }: Props) => {
 
           setCvData(transformedData);
 
-          console.log();
+          // console.log();
           
 
           if (transformedData.informations_personnelles.photos) {
@@ -435,7 +435,7 @@ const CVForm = ({ params, previewTemplate }: Props) => {
       );
 
       const cvDataUpd = formData; // Emballe formData dans la clé "cvData"
-      console.log("Payload JSON.stringify(formData):", formData);
+      // console.log("Payload JSON.stringify(formData):", formData);
 
       const jsonPayload = {
         titre: cvData.titre,
@@ -453,7 +453,7 @@ const CVForm = ({ params, previewTemplate }: Props) => {
         centres_interet: cvData.centres_interet,
       };
 
-      console.log(jsonPayload);
+      // console.log(jsonPayload);
 
       //Envoi à l'API Flask
       const response = await api.put(`/cv/cvs_update/${id}`, // corrigé ici
@@ -469,7 +469,7 @@ const CVForm = ({ params, previewTemplate }: Props) => {
         }
       );
 
-      console.log("Informations envoyées à l'API :", response.data);
+      // console.log("Informations envoyées à l'API :", response.data);
 
       Swal.fire({
         icon: "success",
@@ -819,7 +819,7 @@ const CVForm = ({ params, previewTemplate }: Props) => {
       images: getModele.images,
     };
     
-    console.log("Photo", cvData.informations_personnelles.photos);
+    // console.log("Photo", cvData.informations_personnelles.photos);
 
 
     const templateProps = {
@@ -895,6 +895,7 @@ const CVForm = ({ params, previewTemplate }: Props) => {
             <ExportOptions
               onExport={exportToPDF}
               isExporting={isExporting}
+              modelesId={modelesId}
               // disabled={!showPreview}
             />
           </div>

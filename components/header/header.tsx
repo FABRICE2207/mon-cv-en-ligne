@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { User, LogOut, StoreIcon, ArrowLeft } from "lucide-react";
+import { User, LogOut, StoreIcon, ArrowLeft, Replace } from "lucide-react";
 import Swal from "sweetalert2";
 import { useRouter } from "next/navigation";
 import { api, apitoken } from "../../axios.config";
@@ -56,13 +56,8 @@ export default function Header() {
       showConfirmButton: false,
     });
 
-    // Empêche le retour arrière
-    if (window.history) {
-      window.history.replaceState(null, "", "/login");
-    }
-
-    // Redirection
-    window.location.href = "/login";
+    // Redirection sans retour arrière
+    window.location.replace("/login");
   };
 
   useEffect(() => {

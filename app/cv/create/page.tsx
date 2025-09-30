@@ -691,6 +691,7 @@ export default function CreateCVPage({ previewTemplate }: CreateCVPageProps) {
               onExport={exportToPDF}
               isExporting={isExporting}
               // disabled={!showPreview}
+              modelesId={modelesId}
             />
           </div>
         </div>

@@ -51,7 +51,7 @@ export default function TemplateSelector({
         const model_actives = response.data;
 
         setTemplates(model_actives); //
-        console.log("Model", model_actives);
+        // console.log("Model", model_actives);
       } catch (error) {
         console.error(
           "Erreur lors de la récupération des modèles de CV :",

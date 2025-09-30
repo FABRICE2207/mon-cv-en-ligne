@@ -9,6 +9,7 @@ import { api, apiImg } from "@/axios.config";
 import Swal from "sweetalert2";
 import { number } from "framer-motion";
 import ReactPaginate from "react-paginate";
+import { Menu } from "lucide-react"; // Icône burger
 
 type Modele = {
   id: number;
@@ -25,6 +26,7 @@ export default function DashbaordAdmin() {
   const [modeles, setModeles] = useState<any[]>([]);
   const [modelesStatut, setModelesStatut] = useState(null);
   const [usersData, setUsersData] = useState<any[]>([]);
+  const [paiementsData, setPaiementsData] = useState<any[]>([]);
 
   const [selectedUser, setSelectedUser] = useState<any>(null);
   const itemsPerPage = 5;
@@ -33,6 +35,7 @@ export default function DashbaordAdmin() {
   const pageCount = Math.ceil(usersData.length / itemsPerPage);
   const offset = currentPage * itemsPerPage;
   const currentUsers = usersData.slice(offset, offset + itemsPerPage);
+  const currentPaiement = paiementsData.slice(offset, offset + itemsPerPage);
 
   const handlePageClick = ({ selected }: { selected: number }) => {
     setCurrentPage(selected);
@@ -41,18 +44,27 @@ export default function DashbaordAdmin() {
   useEffect(() => {
     fetchTemplates();
     fetchUsers();
+    fetchPaiements();
   }, []);
 
   const fetchTemplates = async () => {
     const res = await api.get("models/liste_model_cv");
     setModeles(res.data);
-    console.log(res.data);
+    // console.log(res.data);
   };
 
+  // Liste des utilisateurs
   const fetchUsers = async () => {
     const res = await api.get("users/liste_users");
     setUsersData(res.data);
-    console.log("Liste users", res.data);
+    // console.log("Liste users", res.data);
+  };
+
+  // Liste des utilisateurs
+  const fetchPaiements = async () => {
+    const res = await api.get("paiements/liste_paiement");
+    setPaiementsData(res.data);
+    console.log("Liste des paiements", res.data);
   };
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -78,7 +90,7 @@ export default function DashbaordAdmin() {
     formData.append("images", images);
     formData.append("statut", statut);
 
-    console.log(formData);
+    // console.log(formData);
 
     setLibelle("");
     setImages(null);
@@ -88,7 +100,7 @@ export default function DashbaordAdmin() {
     try {
       const response = await apiImg.post("/models/add_model_cv", formData);
       alert("Modèle enregistré avec succès !");
-      console.log("Réponse API :", response.data);
+      // console.log("Réponse API :", response.data);
     } catch (error) {
       alert("Erreur lors de l'enregistrement");
       console.error("Erreur API :", error);
@@ -134,14 +146,14 @@ export default function DashbaordAdmin() {
   // }
 
   return (
-    <div className="p-2">
+    <div className="mx-2">
       <Tabs defaultValue="stat">
         <TabsList className="flex gap-4 justify-center mb-6  bg-blue-950  text-white px-8 py-6">
           <TabsTrigger value="stat">Statistiques</TabsTrigger>
           <TabsTrigger value="ajout">Ajouter un modèle</TabsTrigger>
-          <TabsTrigger value="users">Liste des utilisateurs</TabsTrigger>
           <TabsTrigger value="liste">Liste des modèles de cv</TabsTrigger>
-          <TabsTrigger value="user-info">Mon profil</TabsTrigger>
+          <TabsTrigger value="users">Liste des utilisateurs</TabsTrigger>
+          <TabsTrigger value="paiements">Paiements</TabsTrigger>
         </TabsList>
 
         {/* --- STATISTIQUES --- */}
@@ -149,11 +161,7 @@ export default function DashbaordAdmin() {
           <div className="space-y-4">
             <h2 className="text-xl font-bold">Statistiques</h2>
 
-            <Card className="overflow-x-auto shadow-sm">
-              
-            </Card>
-
-           
+            <Card className="overflow-x-auto shadow-sm"></Card>
           </div>
         </TabsContent>
 
@@ -264,8 +272,8 @@ export default function DashbaordAdmin() {
         <TabsContent value="users">
           <div className="space-y-4">
             <Card className="overflow-x-auto shadow-sm">
-              <h2 className="text-xl font-bold">Liste des utilisateurs</h2>
-              <span className="font-bold">
+              <h2 className="text-xl font-bold ml-4">Liste des utilisateurs</h2>
+              <span className="font-bold ml-4">
                 Total: {usersData.length} utilisateurs
               </span>
 
@@ -348,29 +356,124 @@ export default function DashbaordAdmin() {
           </div>
         </TabsContent>
 
-        {/* --- INFOS UTILISATEUR --- */}
-        <TabsContent value="user-info">
-          {selectedUser ? (
-            <Card className="max-w-md mx-auto p-4 space-y-2">
-              <h2 className="text-lg font-bold">Informations utilisateur</h2>
-              <p>
-                <strong>Nom :</strong> {selectedUser.nom}
-              </p>
-              <p>
-                <strong>Email :</strong> {selectedUser.email}
-              </p>
-              <p>
-                <strong>Téléphone :</strong> {selectedUser.telephone}
-              </p>
-              <p>
-                <strong>Adresse :</strong> {selectedUser.adresse}
-              </p>
+        {/* --- Paiements --- */}
+        <TabsContent value="paiements">
+          <div className="space-y-4">
+            <Card className="overflow-x-auto shadow-sm">
+              <h2 className="text-xl font-bold ml-4">Liste des paiements</h2>
+              <span className="font-bold ml-4">
+                Total: {paiementsData.length} paiements
+              </span>
+
+              <table className="min-w-full divide-y divide-gray-200 text-sm">
+                <thead className="bg-gray-100">
+                  <tr>
+                    <th className="px-4 py-3 text-left font-semibold text-gray-700">
+                      Nom et prénom
+                    </th>
+                    <th className="px-4 py-3 text-left font-semibold text-gray-700">
+                      Modèle du cv
+                    </th>
+                    <th className="px-4 py-3 text-left font-semibold text-gray-700">
+                      Montant (FCFA)
+                    </th>
+                    <th className="px-4 py-3 text-left font-semibold text-gray-700">
+                      ID de transaction
+                    </th>
+                    <th className="px-4 py-3 text-left font-semibold text-gray-700">
+                      Statut
+                    </th>
+
+                    <th className="px-4 py-3 text-left font-semibold text-gray-700">
+                      Créé le
+                    </th>
+                    <th className="px-4 py-3 text-left font-semibold text-gray-700">
+                      Modifié le
+                    </th>
+                    <th className="px-4 py-3 text-left font-semibold text-gray-700">
+                      Action
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {currentPaiement.map((paiment: any) => (
+                    <tr
+                      key={paiment.id}
+                      className="hover:bg-slate-100 cursor-pointer transition"
+                      onClick={() => setSelectedUser(paiment)}
+                    >
+                      <td className="px-4 py-3 font-medium">
+                        {paiment.users.username}
+                      </td>
+                      <td className="px-4 py-3 font-medium">
+                        {paiment.models_cv.libelle}
+                      </td>
+                      <td className="px-4 py-3 font-medium">
+                        {paiment.amount}
+                      </td>
+                      <td className="px-4 py-3 font-medium">
+                        {paiment.transaction_id}
+                      </td>
+                      <td className="px-4 py-3">
+                        <span
+                          className={`px-2 py-1 rounded-full text-sm font-medium
+                            ${paiment.statut === "PENDING" ? "bg-yellow-500 text-white" :
+                              paiment.statut === "SUCCESS" ? "bg-green-500 text-white" :
+                              paiment.statut === "FAILED" ? "bg-red-500 text-white" :
+                              "bg-gray-100 text-gray-600"}`}
+                        >
+                          {paiment.statut}
+                        </span>
+                      </td>
+
+                      <td className="px-4 py-3 text-gray-600">
+                        {new Date(paiment.created_at).toLocaleString("fr-FR", {
+                          year: "numeric",
+                          month: "long",
+                          day: "numeric",
+                          hour: "2-digit",
+                          minute: "2-digit",
+                          second: "2-digit",
+                        })}
+                      </td>
+                      <td className="px-4 py-3 text-gray-600">
+                        {new Date(paiment.updated_at).toLocaleString("fr-FR", {
+                          year: "numeric",
+                          month: "long",
+                          day: "numeric",
+                          hour: "2-digit",
+                          minute: "2-digit",
+                          second: "2-digit",
+                        })}
+                      </td>
+                      <td className="px-4 py-3 text-blue-600 underline">
+                        Voir
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </Card>
-          ) : (
-            <p className="text-center text-gray-500">
-              Aucun utilisateur sélectionné.
-            </p>
-          )}
+
+            {/* Pagination */}
+            <div className="flex justify-center mt-4">
+              <ReactPaginate
+                previousLabel={"← Précédent"}
+                nextLabel={"Suivant →"}
+                breakLabel={"..."}
+                pageCount={pageCount}
+                marginPagesDisplayed={1}
+                pageRangeDisplayed={2}
+                onPageChange={handlePageClick}
+                containerClassName="flex items-center space-x-2"
+                pageClassName="px-3 py-1 border rounded-md hover:bg-gray-100"
+                activeClassName="bg-blue-950 text-white"
+                previousClassName="px-3 py-1 border rounded-md hover:bg-gray-100"
+                nextClassName="px-3 py-1 border rounded-md hover:bg-gray-100"
+                disabledClassName="opacity-50 pointer-events-none"
+              />
+            </div>
+          </div>
         </TabsContent>
       </Tabs>
     </div>
