@@ -1015,8 +1015,9 @@ const CVForm = ({ params, previewTemplate }: Props) => {
                         <div>
                           <Label>Description de votre profil</Label>
                           <textarea
-                            id="titre"
-                            placeholder="Ex: Responsable Marketing"
+                            id="description"
+                            name="description"
+                            placeholder="Ex: Responsable Marketing avec 5 ans d'expérience dans la gestion de campagnes numériques et l'analyse de marché."
                             value={cvData.description}
                             onChange={handleInputChange}
                             required
