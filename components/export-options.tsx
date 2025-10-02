@@ -24,6 +24,7 @@ import {
   DialogTrigger,
   DialogFooter,
 } from "@/components/ui/dialog";
+import Swal from "sweetalert2";
 
 interface ExportOptionsProps {
   onExport: (options: ExportOptions) => void;
@@ -123,7 +124,7 @@ export default function ExportOptions({
 
     // Appel API Flask pour initier le paiement
     const paiementResponse = await apitoken.post("/paiements/payments_init", {
-      montant: 500,
+      montant: 100,
       users_id: userId,
       models_cv_id: modelesId,
     });
@@ -143,7 +144,12 @@ export default function ExportOptions({
 
   } catch (error: any) {
     console.error("Erreur paiement :", error.response?.data || error.message);
-    alert("Le paiement a échoué ❌");
+    // alert("Le paiement a échoué ❌");
+    Swal.fire({
+      title: "Oups...",
+      text: "Veuillez sélectionner un modèle de CV avant de procéder au paiement.",
+      icon: "error"
+    });
   } finally {
     // 👉 Simuler un délai de traitement (exemple)
     setTimeout(() => {

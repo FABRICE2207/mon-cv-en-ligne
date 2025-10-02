@@ -509,7 +509,7 @@ export default function DashboardPage() {
 
         {/* Quick Actions */}
         {isClient && (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-4">
+          <div className="grid md:grid-cols-2 lg:grid-cols-2 gap-6 mb-4">
             <Card className="border border-gray-300 hover:border-blue-950">
               <CardHeader className="text-center">
                 <Plus className="h-12 w-12 text-gray-400 mx-auto mb-4" />
@@ -548,7 +548,7 @@ export default function DashboardPage() {
               )}
             </Card>
 
-            <Card className="border border-gray-300 hover:border-blue-950">
+            {/* <Card className="border border-gray-300 hover:border-blue-950">
               <CardHeader>
                 <CardTitle>Modèles disponibles</CardTitle>
                 <CardDescription>5 modèles professionnels</CardDescription>
@@ -558,7 +558,7 @@ export default function DashboardPage() {
                   Choisissez parmi nos modèles adaptés à votre secteur
                 </p>
               </CardContent>
-            </Card>
+            </Card> */}
           </div>
         )}
 

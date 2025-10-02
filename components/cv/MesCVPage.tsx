@@ -114,7 +114,7 @@ export default function CvListDisplay() {
                       })}
                     </p>
 
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-2">
+                    <div className="w-full">
                       <div>
                         <Link href={`/cv/${cv.id}`}>
                           <Button className="w-full mt-4 bg-blue-950 hover:bg-blue-900 text-[16px] px-6 py-4">
@@ -122,13 +122,13 @@ export default function CvListDisplay() {
                           </Button>
                         </Link>
                       </div>
-                      <div>
+                      {/* <div>
                         <Link href={`/cv/${cv.id}`}>
                           <Button className="w-full mt-4 bg-red-600 hover:bg-red-500 text-[16px] px-6 py-4">
                             Supprimer
                           </Button>
                         </Link>
-                      </div>
+                      </div> */}
                     </div>
                   </CardContent>
                 </Card>

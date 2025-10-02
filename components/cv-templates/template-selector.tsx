@@ -7,6 +7,7 @@ import TemplatesDemoPage from "./template-selector-admin";
 import { api } from "@/axios.config";
 import { templateComponents } from "@/components/cv-templates";
 import { useRouter } from "next/navigation";
+import { log } from "console";
 
 interface Template {
   id: string;
@@ -30,8 +31,6 @@ export interface ExportOptions {
   includeColors: boolean;
   filename?: string;
 }
-
-//
 
 export default function TemplateSelector({
   selectedTemplate,
@@ -60,6 +59,7 @@ export default function TemplateSelector({
   const [token, setToken] = useState<string | null>(null);
   const router = useRouter();
 
+  // Vérifie si l'utilisateur est connecté et récupère son ID
   useEffect(() => {
     const fetchUserAndCVs = async () => {
       const storedToken = localStorage.getItem("token");
@@ -91,6 +91,7 @@ export default function TemplateSelector({
     fetchUserAndCVs();
   }, [router]);
 
+  // Récupère les modèles autorisés pour l'utilisateur connecté
   useEffect(() => {
     const fetchAllowedModels = async () => {
       try {
@@ -114,6 +115,7 @@ export default function TemplateSelector({
       console.log("modelesId mis à jour :", modelesId);
     }
   }, [modelesId]);
+
 
   // Affiche la liste des modèles de cv
   useEffect(() => {
@@ -164,11 +166,7 @@ export default function TemplateSelector({
       // 🔹 Simuler ou attendre le paiement réussi
       await new Promise((resolve) => setTimeout(resolve, 1500));
 
-      console.log("✅ Paiement validé. Téléchargement en cours...");
-
-      // 🔹 Ici tu peux déclencher un toast ou une notification
-      // Exemple si tu utilises react-hot-toast :
-      // toast.success("Paiement validé ✅ Téléchargement en cours...");
+      
     } catch (error) {
       console.error("❌ Erreur lors de l'export :", error);
       // toast.error("Échec de l'export. Veuillez réessayer.");
@@ -179,6 +177,10 @@ export default function TemplateSelector({
     }
   };
 
+// 👉 Quand on clique sur Imprimer → juste appeler handleQuickExport
+const handleClickPrint = () => {
+  handleQuickExport();
+};
   return (
     <div className="space-y-2">
       {isClient && (
@@ -253,28 +255,118 @@ export default function TemplateSelector({
                         {isExporting ? "Impression..." : "Imprimer"}
                       </button>
                     </div> */}
-{loading ? (
-  <p className="text-gray-500 text-sm">Vérification du paiement...</p>
+                    {loading ? (
+                        <p className="text-gray-500 text-sm">Vérification du paiement...</p>
+                      ) : allowedModels.includes(Number(template.id)) ? (
+                        <div className="mt-2">
+                          <button
+                            onClick={handleQuickExport}
+                            // disabled={isExporting}
+                            className="w-full bg-blue-950 text-white text-sm py-1 px-2 rounded hover:bg-blue-900 transition-colors"
+                          >
+                            {isExporting ? "Impression..." : "Imprimer"}
+                          </button>
+                        </div>
+                      ) : (
+                        <div className="mt-2">
+                          <button
+                            disabled
+                            className="w-full bg-gray-400 text-white text-sm py-1 px-2 rounded cursor-not-allowed"
+                          >
+                            Paiement requis
+                          </button>
+                        </div>
+                      )}
+
+                    {/* {loading ? (
+                      <p className="text-gray-500 text-sm">
+                        Vérification du paiement...
+                      </p>
+                    ) : allowedModels.includes(Number(template.id)) ? (
+                      isExpired ? (
+                        <button
+                          onClick={handleQuickExport}
+                          disabled={isExporting}
+                          className="w-full bg-blue-950 text-white text-sm py-1 px-2 rounded hover:bg-blue-900 transition-colors"
+                        >
+                          {isExporting ? "Impression..." : "Imprimer"}
+                        </button>
+                      ) : (
+                        <button
+                          disabled
+                          className="w-full bg-gray-400 text-white text-sm py-1 px-2 rounded cursor-not-allowed"
+                        >
+                          Paiement requis
+                        </button>
+                      )
+                    ) : (
+                      <button
+                        disabled
+                        className="w-full bg-gray-400 text-white text-sm py-1 px-2 rounded cursor-not-allowed"
+                      >
+                        Paiement requis
+                      </button>
+                    )} */}
+                    {/* {loading ? (
+  <p className="text-gray-500 text-sm">
+    Vérification du paiement...
+  </p>
 ) : allowedModels.includes(Number(template.id)) ? (
-  <div className="mt-2">
+  !isExpired ? ( // ✅ tant que ce n'est pas expiré, autoriser l'impression
     <button
       onClick={handleQuickExport}
-      disabled={isExporting}
+      
       className="w-full bg-blue-950 text-white text-sm py-1 px-2 rounded hover:bg-blue-900 transition-colors"
     >
       {isExporting ? "Impression..." : "Imprimer"}
     </button>
-  </div>
-) : (
-  <div className="mt-2">
+  ) : (
     <button
       disabled
       className="w-full bg-gray-400 text-white text-sm py-1 px-2 rounded cursor-not-allowed"
     >
       Paiement requis
     </button>
-  </div>
-)}
+  )
+) : (
+  <button
+    disabled
+    className="w-full bg-gray-400 text-white text-sm py-1 px-2 rounded cursor-not-allowed"
+  >
+    Paiement requis
+  </button>
+)} */}
+
+{/* {loading ? (
+  <p className="text-gray-500 text-sm">
+    Vérification du paiement...
+  </p>
+) : allowedModels.includes(Number(template.id)) ? (
+  isExpired ? ( // ✅ Si pas expiré → bouton Imprimer
+    <button
+      onClick={handleClickPrint}
+      className="w-full bg-blue-950 text-white text-sm py-1 px-2 rounded hover:bg-blue-900 transition-colors"
+    >
+      {isExporting ? "Impression..." : "Imprimer"}
+    </button>
+  ) : (
+    <button
+      disabled
+      className="w-full bg-gray-400 text-white text-sm py-1 px-2 rounded cursor-not-allowed"
+    >
+      Paiement requis
+    </button>
+  )
+) : (
+  <button
+    disabled
+    className="w-full bg-gray-400 text-white text-sm py-1 px-2 rounded cursor-not-allowed"
+  >
+    Paiement requis
+  </button>
+)} */}
+
+
                   </div>
                 </div>
               );

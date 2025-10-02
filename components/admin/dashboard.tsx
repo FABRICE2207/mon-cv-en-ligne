@@ -10,6 +10,8 @@ import Swal from "sweetalert2";
 import { number } from "framer-motion";
 import ReactPaginate from "react-paginate";
 import { Menu } from "lucide-react"; // Icône burger
+import DashboardStats from "../statistic";
+
 
 type Modele = {
   id: number;
@@ -47,11 +49,21 @@ export default function DashbaordAdmin() {
     fetchPaiements();
   }, []);
 
+  // Liste des modèles de cv
   const fetchTemplates = async () => {
+  try {
     const res = await api.get("models/liste_model_cv");
-    setModeles(res.data);
-    // console.log(res.data);
-  };
+
+    // Ajouter un délai de 2 secondes avant d'afficher les données
+    setTimeout(() => {
+      setModeles(res.data);
+      // console.log(res.data);
+    }, 2000);
+  } catch (error) {
+    console.error("Erreur récupération des modèles :", error);
+  }
+};
+
 
   // Liste des utilisateurs
   const fetchUsers = async () => {
@@ -158,11 +170,7 @@ export default function DashbaordAdmin() {
 
         {/* --- STATISTIQUES --- */}
         <TabsContent value="stat">
-          <div className="space-y-4">
-            <h2 className="text-xl font-bold">Statistiques</h2>
-
-            <Card className="overflow-x-auto shadow-sm"></Card>
-          </div>
+          <DashboardStats />
         </TabsContent>
 
         {/* --- AJOUT --- */}
@@ -233,7 +241,15 @@ export default function DashbaordAdmin() {
             {modeles.map((tpl: any) => (
               <Card key={tpl.id}>
                 <CardContent className="p-2 space-y-2">
-                  <h3 className="font-semibold">{tpl.libelle}</h3>
+                  <div className="flex justify-between items-center">
+                    <h3 className="font-semibold">{tpl.libelle}</h3>
+                  <div
+                    className={`text-white text-sm font-medium px-2 rounded-full inline-block
+                      ${tpl.statut === "Activé" ? "bg-green-500" : "bg-red-500"}`}
+                    >
+                      {tpl.statut}
+                  </div>
+                  </div>
 
                   <img
                     src={`${process.env.NEXT_PUBLIC_API_URL}/models/modele_cv/${tpl.images}`}
@@ -242,13 +258,6 @@ export default function DashbaordAdmin() {
                   />
 
                   <div className="flex justify-between items-center space-x-2">
-                    <div
-                      className={`text-white text-sm font-medium px-2 rounded-full inline-block
-            ${tpl.statut === "Activé" ? "bg-green-500" : "bg-red-500"}`}
-                    >
-                      {tpl.statut}
-                    </div>
-
                     <Button
                       variant="outline"
                       size="sm"
@@ -417,10 +426,15 @@ export default function DashbaordAdmin() {
                       <td className="px-4 py-3">
                         <span
                           className={`px-2 py-1 rounded-full text-sm font-medium
-                            ${paiment.status === "PENDING" ? "bg-yellow-500 text-white" :
-                              paiment.status === "SUCCESS" ? "bg-green-500 text-white" :
-                              paiment.status === "FAILED" ? "bg-red-500 text-white" :
-                              "bg-gray-100 text-gray-600"}`}
+                            ${
+                              paiment.status === "PENDING"
+                                ? "bg-yellow-500 text-white"
+                                : paiment.status === "SUCCESS"
+                                ? "bg-green-500 text-white"
+                                : paiment.status === "FAILED"
+                                ? "bg-red-500 text-white"
+                                : "bg-gray-100 text-gray-600"
+                            }`}
                         >
                           {paiment.status}
                         </span>

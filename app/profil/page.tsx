@@ -109,7 +109,8 @@ export default function Profil() {
                     value={userData.username}
                     onChange={handleInputChange}
                     required
-                    className="w-full p-2 rounded border  focus:bg-white border-gray-300 focus:outline-none focus:border-blue-950 focus:ring-1 focus:ring-blue-950"
+                    disabled
+                    className="w-full p-2 rounded border bg-[#dad9d9]  focus:bg-white border-gray-300 focus:outline-none focus:border-blue-950 focus:ring-1 focus:ring-blue-950"
                   />
                 </div>
                 <div>
@@ -120,7 +121,8 @@ export default function Profil() {
                     value={userData.email}
                     onChange={handleInputChange}
                     required
-                    className="w-full p-2 rounded border  focus:bg-white border-gray-300 focus:outline-none focus:border-blue-950 focus:ring-1 focus:ring-blue-950"
+                    disabled
+                    className="w-full p-2 rounded border bg-[#dad9d9]  focus:bg-white border-gray-300 focus:outline-none focus:border-blue-950 focus:ring-1 focus:ring-blue-950"
                   />
                 </div>
                 <div>
@@ -128,7 +130,8 @@ export default function Profil() {
                   <input
                     type="password"
                     required
-                    className="w-full p-2 rounded border  focus:bg-white border-gray-300 focus:outline-none focus:border-blue-950 focus:ring-1 focus:ring-blue-950"
+                    disabled
+                    className="w-full p-2 rounded border bg-[#dad9d9]  focus:bg-white border-gray-300 focus:outline-none focus:border-blue-950 focus:ring-1 focus:ring-blue-950"
                   />
                 </div>
                 <div>
@@ -136,13 +139,15 @@ export default function Profil() {
                   <input
                     type="password"
                     required
-                    className="w-full p-2 rounded border  focus:bg-white border-gray-300 focus:outline-none focus:border-blue-950 focus:ring-1 focus:ring-blue-950"
+                    disabled
+                    className="w-full p-2 rounded border bg-[#dad9d9] focus:bg-white border-gray-300 focus:outline-none focus:border-blue-950 focus:ring-1 focus:ring-blue-950"
                   />
                 </div>
               </div>
 
               <div className="w-full  flex justify-end">
                 <Button
+                  
                   className={cn(
                     "text-lg px-8 py-6 transition-colors duration-200",
                     isFormValid

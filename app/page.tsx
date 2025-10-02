@@ -221,7 +221,7 @@ export default function HomePage() {
                     size="lg"
                     className="border bg-transparent hover:bg-white hover:text-blue-950 border-white text-lg px-8 py-6"
                   >
-                    Créer mon CV gratuitement{" "}
+                    Créer mon CV {" "}
                     <ArrowRight className="ml-2 h-5 w-5" />
                   </Button>
                 </Link>
@@ -725,7 +725,8 @@ export default function HomePage() {
                 // description: "Le plus populaire",
                 features: [
                   "Création de compte gratuite",
-                  "Nombre de cv illimités",
+                  "Diponibilité de tous les modèles",
+                  "Possibilité d'imprimer votre CV pendant 24h",
                   
                 ],
                 cta: "Essai 7 jours",
@@ -859,7 +860,12 @@ export default function HomePage() {
               {
                 question: "Est-ce vraiment gratuit ?",
                 answer:
-                  "Oui, vous pouvez créer et télécharger votre CV gratuitement. Nous proposons également des options premium avec des fonctionnalités avancées.",
+                  "Non, pour imprimer votre CV, un petit paiement unique de 500 FCFA est requis. Créez votre compte et commencez gratuitement !",
+              },
+              {
+                question: "Comment fonctionne le paiement ?",
+                answer:
+                  "Nous acceptons les paiements via Mobile Money (MTN, Orange, Moov) et Wave grâce à cineyPay pour une transaction sécurisée et rapide.",
               },
               {
                 question: "Mes données sont-elles sécurisées ?",
@@ -946,8 +952,8 @@ export default function HomePage() {
       {/* Footer amélioré */}
       <footer className="bg-gray-900 text-white pt-16 pb-8">
         <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
-            <div className="lg:col-span-2">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-12">
+            <div className="">
               <div className="flex items-center space-x-2 mb-4">
                 <FileText className="h-8 w-8 text-blue-400" />
                 <span className="text-xl font-bold">Mon CV en ligne</span>
@@ -955,100 +961,8 @@ export default function HomePage() {
               <p className="text-gray-400 mb-6">
                 La première plateforme ivoirienne de création de CV en ligne.
               </p>
-              {/* <div className="flex space-x-4">
-                {["facebook", "twitter", "linkedin", "instagram"].map(
-                  (social) => (
-                    <Link
-                      key={social}
-                      href="#"
-                      className="text-gray-400 hover:text-white transition-colors"
-                    >
-                      <span className="sr-only">{social}</span>
-                      <div className="h-8 w-8 rounded-full bg-gray-800 flex items-center justify-center">
-                        
-                      </div>
-                    </Link>
-                  )
-                )}
-              </div> */}
             </div>
-
-            {/* <div>
-              <h4 className="text-lg font-semibold mb-4">Produit</h4>
-              <ul className="space-y-3">
-                <li>
-                  <Link
-                    href="/templates"
-                    className="text-gray-400 hover:text-white transition-colors"
-                  >
-                    Modèles de CV
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/examples"
-                    className="text-gray-400 hover:text-white transition-colors"
-                  >
-                    Exemples de CV
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/pricing"
-                    className="text-gray-400 hover:text-white transition-colors"
-                  >
-                    Tarifs
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/features"
-                    className="text-gray-400 hover:text-white transition-colors"
-                  >
-                    Fonctionnalités
-                  </Link>
-                </li>
-              </ul>
-            </div> */}
-
-            {/* <div>
-              <h4 className="text-lg font-semibold mb-4">Ressources</h4>
-              <ul className="space-y-3">
-                <li>
-                  <Link
-                    href="/blog"
-                    className="text-gray-400 hover:text-white transition-colors"
-                  >
-                    Conseils emploi
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/guides"
-                    className="text-gray-400 hover:text-white transition-colors"
-                  >
-                    Guides
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/faq"
-                    className="text-gray-400 hover:text-white transition-colors"
-                  >
-                    FAQ
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/help"
-                    className="text-gray-400 hover:text-white transition-colors"
-                  >
-                    Centre d'aide
-                  </Link>
-                </li>
-              </ul>
-            </div> */}
-
+            
             <div>
               <h4 className="text-lg font-semibold mb-4">Nos contacts</h4>
               <div className="space-y-3">
@@ -1076,23 +990,6 @@ export default function HomePage() {
                       <MapPin />
                       Attécoubé, Locodjoro, cité Addoha, Immeuble 277
                     </div>
-                  
-                {/* <li>
-                  <Link
-                    href="/legal"
-                    className="text-gray-400 hover:text-white transition-colors"
-                  >
-                    Mentions légales
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/privacy"
-                    className="text-gray-400 hover:text-white transition-colors"
-                  >
-                    Confidentialité
-                  </Link>
-                </li> */}
               </div>
             </div>
           </div>
