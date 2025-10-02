@@ -124,7 +124,7 @@ export default function ExportOptions({
 
     // Appel API Flask pour initier le paiement
     const paiementResponse = await apitoken.post("/paiements/payments_init", {
-      montant: 100,
+      montant: 500,
       users_id: userId,
       models_cv_id: modelesId,
     });
