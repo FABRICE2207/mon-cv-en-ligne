@@ -37,7 +37,8 @@ export default function DashbaordAdmin() {
   const pageCount = Math.ceil(usersData.length / itemsPerPage);
   const offset = currentPage * itemsPerPage;
   const currentUsers = usersData.slice(offset, offset + itemsPerPage);
-  const currentPaiement = paiementsData.slice(offset, offset + itemsPerPage);
+  const itemsPerPageP = 5;
+  const currentPaiement = paiementsData.slice(offset, offset + itemsPerPageP);
 
   const handlePageClick = ({ selected }: { selected: number }) => {
     setCurrentPage(selected);
