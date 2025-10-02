@@ -42,7 +42,7 @@ export default function DashbaordAdmin() {
   const currentUsers = usersData.slice(offset, offset + itemsPerPage);
 
   // Pagination paiements
-  const itemsPerPageP = 5;
+  const itemsPerPageP = 6;
   const offsetP = currentPageP * itemsPerPageP;
   const currentPaiement = paiementsData.slice(offsetP, offsetP + itemsPerPageP);
 
