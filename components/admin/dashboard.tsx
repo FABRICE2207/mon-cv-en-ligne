@@ -31,17 +31,27 @@ export default function DashbaordAdmin() {
   const [paiementsData, setPaiementsData] = useState<any[]>([]);
 
   const [selectedUser, setSelectedUser] = useState<any>(null);
-  const itemsPerPage = 5;
+  const [selectedUserP, setSelectedUserP] = useState<any>(null);
   const [currentPage, setCurrentPage] = useState(0);
-
+  const [currentPageP, setCurrentPageP] = useState(0);
+  
+  // Pagination utilisateurs
+  const itemsPerPage = 5;
   const pageCount = Math.ceil(usersData.length / itemsPerPage);
   const offset = currentPage * itemsPerPage;
   const currentUsers = usersData.slice(offset, offset + itemsPerPage);
+
+  // Pagination paiements
   const itemsPerPageP = 5;
-  const currentPaiement = paiementsData.slice(offset, offset + itemsPerPageP);
+  const offsetP = currentPageP * itemsPerPageP;
+  const currentPaiement = paiementsData.slice(offsetP, offsetP + itemsPerPageP);
 
   const handlePageClick = ({ selected }: { selected: number }) => {
     setCurrentPage(selected);
+  };
+
+  const handlePageClickP = ({ selected }: { selected: number }) => {
+    setCurrentPageP(selected);
   };
 
   useEffect(() => {
@@ -410,7 +420,7 @@ export default function DashbaordAdmin() {
                     <tr
                       key={paiment.id}
                       className="hover:bg-slate-100 cursor-pointer transition"
-                      onClick={() => setSelectedUser(paiment)}
+                      onClick={() => setSelectedUserP(paiment)}
                     >
                       <td className="px-4 py-3 font-medium">
                         {paiment.users.username}
@@ -479,7 +489,7 @@ export default function DashbaordAdmin() {
                 pageCount={pageCount}
                 marginPagesDisplayed={1}
                 pageRangeDisplayed={2}
-                onPageChange={handlePageClick}
+                onPageChange={handlePageClickP}
                 containerClassName="flex items-center space-x-2"
                 pageClassName="px-3 py-1 border rounded-md hover:bg-gray-100"
                 activeClassName="bg-blue-950 text-white"
