@@ -38,11 +38,13 @@ export default function DashbaordAdmin() {
   // Pagination utilisateurs
   const itemsPerPage = 5;
   const pageCount = Math.ceil(usersData.length / itemsPerPage);
+ 
   const offset = currentPage * itemsPerPage;
   const currentUsers = usersData.slice(offset, offset + itemsPerPage);
 
   // Pagination paiements
   const itemsPerPageP = 6;
+  const pageCountP = Math.ceil(paiementsData.length / itemsPerPageP);
   const offsetP = currentPageP * itemsPerPageP;
   const currentPaiement = paiementsData.slice(offsetP, offsetP + itemsPerPageP);
 
@@ -486,7 +488,7 @@ export default function DashbaordAdmin() {
                 previousLabel={"← Précédent"}
                 nextLabel={"Suivant →"}
                 breakLabel={"..."}
-                pageCount={pageCount}
+                pageCount={pageCountP}
                 marginPagesDisplayed={1}
                 pageRangeDisplayed={2}
                 onPageChange={handlePageClickP}
